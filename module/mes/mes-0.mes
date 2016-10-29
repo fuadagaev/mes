@@ -267,3 +267,19 @@
 ;;ignored
 begin
 
+((lambda (program)
+   (display "PROGRAM done program=")
+   ;; (display "program=")
+   ;; (display program)
+   ;; (newline)
+   ;;(eval (read-file (read-env a) a) a)
+   ;;(apply-env eval (read-file (read-env a) a) a)
+   ;;(loop-1 (read-file (read-env a) a) a)
+   (eval-expand program (current-module))
+   )
+ (read-file (read-env (current-module)) (current-module)))
+;; boot into mes-0
+(cache-invalidate-range (current-module) '())
+()
+;;ignored
+begin
