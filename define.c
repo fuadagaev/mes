@@ -25,12 +25,12 @@ define (scm *x, scm *a)
   scm *e;
   scm *name = cadr (x);
   if (name->type != PAIR)
-    e = builtin_eval (caddr (x), cons (cons (cadr (x), cadr (x)), a));
+    e = eval (caddr (x), cons (cons (cadr (x), cadr (x)), a));
   else {
     name = car (name);
     scm *p = pairlis (cadr (x), cadr (x), a);
     cache_invalidate_range (p, a);
-    e = builtin_eval (make_lambda (cdadr (x), cddr (x)), p);
+    e = eval (make_lambda (cdadr (x), cddr (x)), p);
   }
   if (eq_p (car (x), &symbol_define_macro) == &scm_t)
     e = make_macro (name, e);

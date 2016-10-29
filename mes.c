@@ -330,8 +330,8 @@ scm *
 evlis_env (scm *m, scm *a)
 {
   if (m == &scm_nil) return &scm_nil;
-  if (m->type != PAIR) return builtin_eval (m, a);
-  scm *e = builtin_eval (car (m), a);
+  if (m->type != PAIR) return eval (m, a);
+  scm *e = eval (car (m), a);
   return cons (e, evlis_env (cdr (m), a));
 }
 
@@ -342,6 +342,7 @@ apply_env (scm *fn, scm *x, scm *a)
     {
       if (fn == &scm_car) return x->car->car;
       if (fn == &scm_cdr) return x->car->cdr;
+      if (fn == &scm_eval) assert (!"JA HEE!");
       if (builtin_p (fn) == &scm_t)
         return call (fn, x);
       if (eq_p (fn, &symbol_call_with_values) == &scm_t)
@@ -370,7 +371,7 @@ apply_env (scm *fn, scm *x, scm *a)
   else if (fn->car == &scm_label)
     return apply_env (caddr (fn), x, cons (cons (cadr (fn), caddr (fn)), a));
 #endif
-  scm *efn = builtin_eval (fn, a);
+  scm *efn = eval (fn, a);
   if (efn == &scm_f || efn == &scm_t) assert (!"apply bool");
   if (efn->type == NUMBER) assert (!"apply number");
   if (efn->type == STRING) assert (!"apply string");
@@ -378,7 +379,33 @@ apply_env (scm *fn, scm *x, scm *a)
 }
 
 scm *
-builtin_eval (scm *e, scm *a)
+eval (scm *e, scm *a)
+{
+  static scm s = {SYMBOL, "eval"};
+  static scm *x = 0;
+  fprintf (stderr, "c:eval e=");
+  display_ (stderr, e);
+  fprintf (stderr, "\n");
+
+  if (!x) x = make_symbol (&s);
+  scm *eval = assq_ref_cache (x, a);
+
+  // fprintf (stderr, "eval=");
+  // display_ (stderr, eval);
+  // fprintf (stderr, "\n");
+
+
+  if (eval != &scm_undefined && builtin_p (eval) == &scm_f) {
+    fprintf (stderr, "gotta eval=");
+    display_ (stderr, eval);
+    fprintf (stderr, "\n");
+    // return apply_env (eval, cons (e, cons (a, &scm_nil)), a);
+  }
+  return eval_ (e, a);
+}
+
+scm *
+eval_ (scm *e, scm *a)
 {
   if (builtin_p (e) == &scm_t) return e;
   if (e->type == SCM) return e;
@@ -429,14 +456,14 @@ builtin_eval (scm *e, scm *a)
       assert (e->car != &symbol_define_macro);
 #endif
       if (e->car == &symbol_set_x)
-        return set_env_x (cadr (e), builtin_eval (caddr (e), a), a);
+        return set_env_x (cadr (e), eval (caddr (e), a), a);
 #if QUASIQUOTE
       if (e->car == &symbol_unquote)
-        return builtin_eval (cadr (e), a);
+        return eval (cadr (e), a);
       if (e->car == &symbol_quasiquote)
         return eval_quasiquote (cadr (e), add_unquoters (a));
       if (e->car == &symbol_unsyntax)
-        return builtin_eval (cadr (e), a);
+        return eval (cadr (e), a);
       if (e->car == &symbol_quasisyntax)
         return eval_quasisyntax (cadr (e), add_unsyntaxers (a));
 #endif //QUASIQUOTE
@@ -459,7 +486,7 @@ begin (scm *e, scm *a)
 {
   scm *r = &scm_unspecified;
   while (e != &scm_nil) {
-    r = builtin_eval (e->car, a);
+    r = eval (e->car, a);
     e = e->cdr;
   }
   return r;
@@ -468,10 +495,10 @@ begin (scm *e, scm *a)
 scm *
 builtin_if (scm *e, scm *a)
 {
-  if (builtin_eval (car (e), a) != &scm_f)
-    return builtin_eval (cadr (e), a);
+  if (eval (car (e), a) != &scm_f)
+    return eval (cadr (e), a);
   if (cddr (e) != &scm_nil)
-    return builtin_eval (caddr (e), a);
+    return eval (caddr (e), a);
   return &scm_unspecified;
 }
 

@@ -55,10 +55,10 @@ eval_quasiquote (scm *e, scm *a)
   if (e == &scm_nil) return e;
   else if (atom_p (e) == &scm_t) return e;
   else if (eq_p (car (e), &symbol_unquote) == &scm_t)
-    return builtin_eval (cadr (e), a);
+    return eval (cadr (e), a);
   else if (e->type == PAIR && e->car->type == PAIR
            && eq_p (caar (e), &symbol_unquote_splicing) == &scm_t)
-      return append2 (builtin_eval (cadar (e), a), eval_quasiquote (cdr (e), a));
+      return append2 (eval (cadar (e), a), eval_quasiquote (cdr (e), a));
   return cons (eval_quasiquote (car (e), a), eval_quasiquote (cdr (e), a));
 }
 
@@ -68,10 +68,10 @@ eval_quasisyntax (scm *e, scm *a)
   if (e == &scm_nil) return e;
   else if (atom_p (e) == &scm_t) return e;
   else if (eq_p (car (e), &symbol_unsyntax) == &scm_t)
-    return builtin_eval (cadr (e), a);
+    return eval (cadr (e), a);
   else if (e->type == PAIR && e->car->type == PAIR
            && eq_p (caar (e), &symbol_unsyntax_splicing) == &scm_t)
-      return append2 (builtin_eval (cadar (e), a), eval_quasisyntax (cdr (e), a));
+      return append2 (eval (cadar (e), a), eval_quasisyntax (cdr (e), a));
   return cons (eval_quasisyntax (car (e), a), eval_quasisyntax (cdr (e), a));
 }
 
