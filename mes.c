@@ -342,7 +342,9 @@ apply_env (scm *fn, scm *x, scm *a)
     {
       if (fn == &scm_car) return x->car->car;
       if (fn == &scm_cdr) return x->car->cdr;
+#if BOOT
       if (fn == &scm_eval) assert (!"JA HEE!");
+#endif
       if (builtin_p (fn) == &scm_t)
         return call (fn, x);
       if (eq_p (fn, &symbol_call_with_values) == &scm_t)
@@ -378,14 +380,22 @@ apply_env (scm *fn, scm *x, scm *a)
   return apply_env (efn, x, a);
 }
 
+scm *mes_eval = 0;
+scm *
+boot (scm *eval)
+{
+  mes_eval = eval;
+}
+
 scm *
 eval (scm *e, scm *a)
 {
-  static scm s = {SYMBOL, "eval"};
+#if 0
+  static scm s = {SYMBOL, "mes:eval"};
   static scm *x = 0;
-  fprintf (stderr, "c:eval e=");
-  display_ (stderr, e);
-  fprintf (stderr, "\n");
+  // fprintf (stderr, "c:eval e=");
+  // display_ (stderr, e);
+  // fprintf (stderr, "\n");
 
   if (!x) x = make_symbol (&s);
   scm *eval = assq_ref_cache (x, a);
@@ -402,6 +412,20 @@ eval (scm *e, scm *a)
     // return apply_env (eval, cons (e, cons (a, &scm_nil)), a);
   }
   return eval_ (e, a);
+#else
+  //if (mes_eval) return apply_env (mes_eval, cons (e, cons (a, &scm_nil)), a);
+  if (mes_eval) {
+    fprintf (stderr, "gotta eval e=");
+    // display_ (stderr, mes_eval);
+    // fprintf (stderr, "e=");
+    display_ (stderr, e);
+    fprintf (stderr, "\n");
+    return apply_env (mes_eval, cons (e, cons (a, &scm_nil)), a);
+    //return eval_ (e, a); //cons (mes_eval, cons (e, a)), a);
+  }
+
+  return eval_ (e, a);
+#endif
 }
 
 scm *

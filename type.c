@@ -57,6 +57,12 @@ string_p (scm *x)
 }
 
 scm *
+internal_p (scm *x)
+{
+  return x->type == SCM ? &scm_t : &scm_f;
+}
+
+scm *
 symbol_p (scm *x)
 {
   return x->type == SYMBOL ? &scm_t : &scm_f;
