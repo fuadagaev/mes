@@ -2,7 +2,11 @@ Source: mes
 Section: devel
 Priority: extra
 Maintainer: Vagrant Cascadian <vagrant@debian.org>
-Build-Depends: debhelper (>=11), guile-2.2
+Build-Depends: debhelper (>=11),
+ guile-2.2,
+ guile-2.2-dev,
+ mescc-tools,
+ nyacc
 Standards-Version: 4.1.5
 Homepage: https://gitlab.com/janneke/mes
 
