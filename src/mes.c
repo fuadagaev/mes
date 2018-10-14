@@ -415,7 +415,7 @@ list_of_char_equal_p (SCM a, SCM b) ///((internal))
 }
 
 SCM
-lookup_symbol_ (SCM s)
+list_to_symbol (SCM s)
 {
   SCM x = g_symbols;
   while (x)
@@ -583,6 +583,12 @@ SCM
 cstring_to_list (char const* s)
 {
   return string_to_list (s, strlen (s));
+}
+
+SCM
+cstring_to_symbol (char const *s)
+{
+  return list_to_symbol (cstring_to_list (s));
 }
 
 //  extra lib
