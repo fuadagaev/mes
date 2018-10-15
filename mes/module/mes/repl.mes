@@ -136,7 +136,7 @@ along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
     (define (quit . x)
       (exit 0))
     (define (use a)
-      (lambda ()
+      (lambda (. x)
         (let ((module (read)))
           (mes-load-module-env module a))))
     (define (meta command a)

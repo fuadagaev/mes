@@ -1375,9 +1375,6 @@ eval_apply ()
 
  macro_expand:
   {
-    macro;
-    expanders;
-
     if (TYPE (r1) != TPAIR || CAR (r1) == cell_symbol_quote)
       goto vm_return;
 
