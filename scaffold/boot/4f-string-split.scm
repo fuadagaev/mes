@@ -35,20 +35,10 @@
 (define-macro (simple-let bindings . rest)
   (cons (cons 'lambda (cons (map car bindings) rest))
         (map cadr bindings)))
-
-;; (define-macro (xsimple-let bindings rest)
-;;   `(,`(lambda ,(map car bindings) ,@rest)
-;;     ,@(map cadr bindings)))
-
 (define-macro (xsimple-let bindings rest)
   (cons* (cons* (quote lambda)
                 (map car bindings) (append2 rest (quote ())))
          (append2 (map cadr bindings) (quote ()))))
-
-;; (define-macro (xnamed-let name bindings rest)
-;;   `(simple-let ((,name *unspecified*))
-;;      (set! ,name (lambda ,(map car bindings) ,@rest))
-;;      (,name ,@(map cadr bindings))))
 
 (define-macro  (xnamed-let name bindings rest)
   (list (quote simple-let)
@@ -59,11 +49,6 @@
                      (map car bindings)
                      (append2 rest (quote ()))))
         (cons* name (append2 (map cadr bindings) (quote ())))))
-
-;; (define-macro (let bindings-or-name . rest)
-;;   (if (symbol? bindings-or-name)
-;;       `(xnamed-let ,bindings-or-name ,(car rest) ,(cdr rest))
-;;       `(xsimple-let ,bindings-or-name ,rest)))
 
 (define-macro (let bindings-or-name . rest)
   (if (symbol? bindings-or-name) (list (quote xnamed-let) bindings-or-name (car rest) (cdr rest))
@@ -83,13 +68,6 @@
 (define (ss-list-head x n)
   (if (= 0 n) '()
       (cons (car x) (ss-list-head (cdr x) (- n 1)))))
-
-;; (define (foo x y)
-;;   (cons x y))
-
-;; (define (ss-list-head x n)
-;;   (if (= 0 n) '()
-;;       (foo (car x) (ss-list-head (cdr x) (- n 1)))))
 
 (define (string->list s)
   (core:car s))

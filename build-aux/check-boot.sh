@@ -75,6 +75,8 @@ tests="
 2f-define-second.scm
 2f-define-second-lambda.scm
 2g-vector.scm
+2h-recurse-twice.scm
+2h-recurse-twice-cond.scm
 
 30-capture.scm
 31-capture-define.scm
@@ -101,10 +103,10 @@ tests="
 49-macro-override.scm
 4a-define-macro-define-macro.scm
 4b-define-macro-define.scm
+4f-string-split.scm
 4c-quasiquote.scm
 4d-let-map.scm
 4e-let-global.scm
-4f-string-split.scm
 
 50-primitive-load.scm
 51-module.scm
