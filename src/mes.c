@@ -867,11 +867,19 @@ set_env_x (SCM x, SCM e, SCM a)
   return set_cdr_x (p, e);
 }
 
+SCM expand_variable (SCM x, SCM formals, int global_p); // MOEFMIE
+
 SCM
-call_lambda (SCM e, SCM x, SCM aa, SCM a) ///((internal))
+call_lambda (SCM e, SCM formals, SCM a) ///((internal))
 {
-  SCM cl = cons (cons (cell_closure, x), x);
+  SCM cl = cons (cons (cell_closure, a), a);
   r1 = e;
+  // expand_variable (e, formals, 0);
+  r0 = CDR (a);
+  expand_variable (e, formals, 0);
+  // expand_variable (e, cell_nil, 0);
+  // no effect, but 2x slower on mescc compiling main.c
+  // expand_variable (e, cell_nil, 1);
   r0 = cl;
   return cell_unspecified;
 }
@@ -983,30 +991,42 @@ formal_p (SCM x, SCM formals) /// ((internal))
 }
 
 SCM
-expand_variable_ (SCM x, SCM formals, int top_p) ///((internal))
+expand_variable_ (SCM x, SCM formals, int global_p, int top_p) ///((internal))
 {
   while (TYPE (x) == TPAIR)
     {
+      if (g_debug > 2)
+        {
+          eputs ("expand x=");
+          display_error_ (x);
+          eputs ("\n");
+        }
       if (TYPE (CAR (x)) == TPAIR)
         {
           if (CAAR (x) == cell_symbol_lambda)
             {
+              if (!global_p)
+                return cell_unspecified;
               SCM f = CAR (CDAR (x));
               formals = add_formals (formals, f);
             }
           else if (CAAR (x) == cell_symbol_define
                    || CAAR (x) == cell_symbol_define_macro)
             {
+              if (!global_p)
+                return cell_unspecified;
               SCM f = CAR (CDAR (x));
               formals = add_formals (formals, f);
             }
           if (CAAR (x) != cell_symbol_quote)
-            expand_variable_ (CAR (x), formals, 0);
+            expand_variable_ (CAR (x), formals, global_p, 0);
         }
       else
         {
           if (CAR (x) == cell_symbol_lambda)
             {
+              if (!global_p)
+                return cell_unspecified;
               SCM f = CADR (x);
               formals = add_formals (formals, f);
               x = CDR (x);
@@ -1014,6 +1034,8 @@ expand_variable_ (SCM x, SCM formals, int top_p) ///((internal))
           else if (CAR (x) == cell_symbol_define
                    || CAR (x) == cell_symbol_define_macro)
             {
+              if (!global_p)
+                return cell_unspecified;
               SCM f = CADR (x);
               if (top_p && TYPE (f) == TPAIR)
                 f = CDR (f);
@@ -1022,6 +1044,34 @@ expand_variable_ (SCM x, SCM formals, int top_p) ///((internal))
             }
           else if (CAR (x) == cell_symbol_quote)
             return cell_unspecified;
+          else if (0 && TYPE (CAR (x)) == TVARIABLE && LOCAL_P (CAR (x)))
+            {
+              SCM n = CAR (VARIABLE (CAR (x)));
+              if (g_debug > 2)
+                {
+                  eputs ("local_p: "); display_error_ (CAR (x)); eputs ("\n");
+                }
+              SCM v = module_variable (r0, n);
+              if (g_debug > 2)
+                {
+                  eputs (" ==>: "); display_error_ (v); eputs ("\n");
+                }
+              if (v == cell_f && g_debug > 2)
+                {
+                  eputs ("local_p: "); display_error_ (CAR (x)); eputs ("\n");
+                  //exit (22);
+                }
+              if (v == cell_f || formal_p (n, formals))
+                v = n;
+              CAR (x) = v;
+            }
+          else if (TYPE (CAR (x)) == TVARIABLE)
+            {
+              if (g_debug > 2)
+                {
+                  eputs ("global: "); display_error_ (CAR (x)); eputs ("\n");
+                }
+            }
           else if (TYPE (CAR (x)) == TSYMBOL
                    && CAR (x) != cell_symbol_boot_module
                    && CAR (x) != cell_symbol_current_module
@@ -1029,7 +1079,14 @@ expand_variable_ (SCM x, SCM formals, int top_p) ///((internal))
                    && !formal_p (CAR (x), formals))
             {
               SCM v = module_variable (r0, CAR (x));
-              if (v != cell_f && !LOCAL_P (v))
+              if (g_debug > 1 && v != cell_f)
+                {
+                  eputs ("expanding: "); display_error_ (v); eputs ("\n");
+                }
+              if (v != cell_f && (!LOCAL_P (v) || !global_p))  // deze!
+              //if (v != cell_f && !(global_p && LOCAL_P (v)))
+              //if (v != cell_f && !LOCAL_P (v))
+              //if (v != cell_f)
                 CAR (x) = v;
             }
         }
@@ -1040,9 +1097,9 @@ expand_variable_ (SCM x, SCM formals, int top_p) ///((internal))
 }
 
 SCM
-expand_variable (SCM x, SCM formals) ///((internal))
+expand_variable (SCM x, SCM formals, int global_p) ///((internal))
 {
-  return expand_variable_ (x, formals, 1);
+  return expand_variable_ (x, formals, global_p, 1);
 }
 
 SCM struct_ref_ (SCM x, long i);
@@ -1142,7 +1199,7 @@ eval_apply ()
       aa = CDR (aa);
       check_formals (CAR (r1), formals, CDR (r1));
       p = pairlis (formals, args, aa);
-      call_lambda (body, p, aa, r0);
+      call_lambda (body, formals, p);
       goto begin;
     }
   else if (t == TCONTINUATION)
@@ -1206,7 +1263,7 @@ eval_apply ()
           body = CDDR (CAR (r1));
           p = pairlis (formals, CDR (r1), r0);
           check_formals (r1, formals, args);
-          call_lambda (body, p, p, r0);
+          call_lambda (body, formals, p);
           goto begin;
         }
     }
@@ -1318,7 +1375,7 @@ eval_apply ()
                   body = CDDR (r1);
 
                   if (macro_p || global_p)
-                    expand_variable (body, formals);
+                    expand_variable (body, formals, 1);
                   r1 = cons (cell_symbol_lambda, cons (formals, body));
                   push_cc (r1, r2, p, cell_vm_eval_define);
                   goto eval;
@@ -1560,7 +1617,7 @@ eval_apply ()
           continue;
         }
       r1 = r2;
-      expand_variable (CAR (r1), cell_nil);
+      expand_variable (CAR (r1), cell_nil, 1);
       push_cc (CAR (r1), r1, r0, cell_vm_begin_expand_eval);
       goto eval;
     begin_expand_eval:
