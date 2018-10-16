@@ -875,8 +875,8 @@ call_lambda (SCM e, SCM formals, SCM a) ///((internal))
   SCM cl = cons (cons (cell_closure, a), a);
   r1 = e;
   // expand_variable (e, formals, 0);
-  r0 = CDR (a);
-  expand_variable (e, formals, 0);
+  r0 = cl;
+  expand_variable (e, cell_nil, 0);
   // expand_variable (e, cell_nil, 0);
   // no effect, but 2x slower on mescc compiling main.c
   // expand_variable (e, cell_nil, 1);
@@ -1044,7 +1044,7 @@ expand_variable_ (SCM x, SCM formals, int global_p, int top_p) ///((internal))
             }
           else if (CAR (x) == cell_symbol_quote)
             return cell_unspecified;
-          else if (0 && TYPE (CAR (x)) == TVARIABLE && LOCAL_P (CAR (x)))
+          else if (TYPE (CAR (x)) == TVARIABLE && LOCAL_P (CAR (x)))
             {
               SCM n = CAR (VARIABLE (CAR (x)));
               if (g_debug > 2)
@@ -1061,7 +1061,8 @@ expand_variable_ (SCM x, SCM formals, int global_p, int top_p) ///((internal))
                   eputs ("local_p: "); display_error_ (CAR (x)); eputs ("\n");
                   //exit (22);
                 }
-              if (v == cell_f || formal_p (n, formals))
+              ///if (v == cell_f || formal_p (n, formals))
+              if (v == cell_f) // || formal_p (n, formals))
                 v = n;
               CAR (x) = v;
             }
@@ -1083,10 +1084,8 @@ expand_variable_ (SCM x, SCM formals, int global_p, int top_p) ///((internal))
                 {
                   eputs ("expanding: "); display_error_ (v); eputs ("\n");
                 }
-              if (v != cell_f && (!LOCAL_P (v) || !global_p))  // deze!
-              //if (v != cell_f && !(global_p && LOCAL_P (v)))
-              //if (v != cell_f && !LOCAL_P (v))
-              //if (v != cell_f)
+              if (v != cell_f && (!LOCAL_P (v) || !global_p))  // local expand!
+              //if (v != cell_f && !LOCAL_P (v)) // no local expand: works
                 CAR (x) = v;
             }
         }
