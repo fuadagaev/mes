@@ -124,6 +124,7 @@ struct scm {
     long length;
   };
   union {
+    long local_p;
     long value;
     long function;
     long port;
@@ -311,6 +312,7 @@ int g_function = 0;
 
 #if !_POSIX_SOURCE
 #define LENGTH(x) g_cells[x].car
+#define LOCAL_P(x) g_cells[x].cdr
 #define REF(x) g_cells[x].car
 #define STRING(x) g_cells[x].car
 #define VARIABLE(x) g_cells[x].car
@@ -332,8 +334,9 @@ int g_function = 0;
 #define NVECTOR(x) g_news[x].cdr
 
 #else
-#define CONTINUATION(x) g_cells[x].cdr
+#define CONTINUATION(x) g_cells[x].continuation
 #define HITS(x) g_cells[x].hits
+#define LOCAL_P(x) g_cells[x].local_p
 #define LENGTH(x) g_cells[x].length
 #define NAME(x) g_cells[x].name
 #define STRING(x) g_cells[x].string
@@ -855,8 +858,10 @@ set_env_x (SCM x, SCM e, SCM a)
   SCM p;
   if (TYPE (x) == TVARIABLE)
     p = VARIABLE (x);
-  else
+  if (TYPE (x) == TSYMBOL)
     p = assert_defined (x, module_variable (a, x));
+  if (TYPE (p) == TVARIABLE)
+    p = VARIABLE (p);
   if (TYPE (p) != TPAIR)
     error (cell_symbol_not_a_pair, cons (p, x));
   return set_cdr_x (p, e);
@@ -878,10 +883,16 @@ make_closure_ (SCM args, SCM body, SCM a) ///((internal))
 }
 
 SCM
-make_variable_ (SCM var) ///((internal))
+make_variable_ (SCM var, int local_p) ///((internal))
 {
-  return make_cell__ (TVARIABLE, var, 0);
+  return make_cell__ (TVARIABLE, var, local_p);
 }
+
+// SCM
+// make_variable (SCM var, SCM local_p)
+// {
+//   return make_variable_ (var, VALUE (local_p));
+// }
 
 SCM
 macro_ref (SCM table, SCM name) ///((internal))
@@ -1018,8 +1029,8 @@ expand_variable_ (SCM x, SCM formals, int top_p) ///((internal))
                    && !formal_p (CAR (x), formals))
             {
               SCM v = module_variable (r0, CAR (x));
-              if (v != cell_f)
-                CAR (x) = make_variable_ (v);
+              if (v != cell_f && !LOCAL_P (v))
+                CAR (x) = v;
             }
         }
       x = CDR (x);
@@ -1053,6 +1064,7 @@ eval_apply ()
   SCM p;
   SCM program;
   SCM sc_expand;
+  SCM v;
   SCM x;
   int global_p;
   int macro_p;
@@ -1323,7 +1335,8 @@ eval_apply ()
                 }
               else if (global_p)
                 {
-                  entry = module_variable (r0, name);
+                  v = module_variable (r0, name);
+                  entry = VARIABLE (v);
                   set_cdr_x (entry, r1);
                 }
               else
@@ -1332,7 +1345,8 @@ eval_apply ()
                   aa = cons (entry, cell_nil);
                   set_cdr_x (aa, cdr (r0));
                   set_cdr_x (r0, aa);
-                  cl = module_variable (r0, cell_closure);
+                  v = module_variable (r0, cell_closure);
+                  cl = VARIABLE (v);
                   set_cdr_x (cl, aa);
                 }
               r1 = cell_unspecified;

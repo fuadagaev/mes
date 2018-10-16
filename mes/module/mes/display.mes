@@ -120,6 +120,8 @@
         (display ">" port))
        ((variable? x)
         (display "#<variable " port)
+        (when (not (zero? (core:cdr x)))
+          (display "*local* " port))
         (write (list->string (car (core:car x))) port)
         (display ">" port))
        ((number? x)

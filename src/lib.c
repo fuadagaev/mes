@@ -80,6 +80,8 @@ display_helper (SCM x, int cont, char* sep, int fd, int write_p)
   else if (t == TVARIABLE)
     {
       fdputs ("#<variable ", fd);
+      if (LOCAL_P (x))
+        fdputs ("*local* ", fd);
       display_helper (CAR (VARIABLE (x)), cont, "", fd, 0);
       fdputs (">", fd);
     }

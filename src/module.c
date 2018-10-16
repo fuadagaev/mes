@@ -91,14 +91,22 @@ module_printer (SCM module)
 SCM
 module_variable (SCM module, SCM name)
 {
+  if (g_debug > 4)
+    {
+      eputs ("module_variable: "); display_error_ (name); eputs ("\n");
+    }
   //SCM locals = struct_ref_ (module, 3);
   SCM locals = module;
   SCM x = assq (name, locals);
-  if (x == cell_f)
+  if (x != cell_f)
+      x = make_variable_ (x, 1);
+  else
     {
       module = m0;
       SCM globals = struct_ref_ (module, 5);
       x = hashq_ref (globals, name, cell_f);
+      if (x != cell_f)
+        x = make_variable_ (x, 0);
     }
   return x;
 }
@@ -106,13 +114,10 @@ module_variable (SCM module, SCM name)
 SCM
 module_ref (SCM module, SCM name)
 {
-  if (g_debug > 4)
-    {
-      eputs ("module_ref: "); display_error_ (name); eputs ("\n");
-    }
   SCM x = module_variable (module, name);
   if (x == cell_f)
     return cell_undefined;
+  x = VARIABLE (x);
   return CDR (x);
 }
 
