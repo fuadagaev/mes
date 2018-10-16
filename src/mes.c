@@ -874,12 +874,8 @@ call_lambda (SCM e, SCM formals, SCM a) ///((internal))
 {
   SCM cl = cons (cons (cell_closure, a), a);
   r1 = e;
-  // expand_variable (e, formals, 0);
   r0 = cl;
-  expand_variable (e, cell_nil, 0);
-  // expand_variable (e, cell_nil, 0);
-  // no effect, but 2x slower on mescc compiling main.c
-  // expand_variable (e, cell_nil, 1);
+  expand_variable (e, formals, 0);
   r0 = cl;
   return cell_unspecified;
 }
@@ -1059,11 +1055,11 @@ expand_variable_ (SCM x, SCM formals, int global_p, int top_p) ///((internal))
               if (v == cell_f && g_debug > 2)
                 {
                   eputs ("local_p: "); display_error_ (CAR (x)); eputs ("\n");
-                  //exit (22);
+                  exit (22);
                 }
-              ///if (v == cell_f || formal_p (n, formals))
-              if (v == cell_f) // || formal_p (n, formals))
-                v = n;
+              //if (v == cell_f || formal_p (n, formals))
+              //if (v == cell_f)
+              //v = n;
               CAR (x) = v;
             }
           else if (TYPE (CAR (x)) == TVARIABLE)
