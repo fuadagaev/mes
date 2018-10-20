@@ -10,6 +10,70 @@ Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 
 Please send Mes bug reports to bug-mes@gnu.org.
 
+* Changes in 0.19 since 0.18
+** Core
+*** The build system has been simplified.
+*** Mes now prints a backtrace upon error.
+*** Performance has been improved 2-8 times, making Mes 2-10 times slower than Guile.
+*** Mes now supports a module type and uses a `boot-module'.
+*** Mes now supports a hash_table type.
+*** Mes now supports a struct type.
+*** Mes now supports building a %bootstrap-mes seed from Guix.
+** Language
+*** Records are now implemented using struct (WAS: vector).
+*** 44 new functions
+ceil,
+char-downcase,
+char-set-adjoin,
+char-set-complement,
+char-upcase,
+current-time,
+delete-file,
+dup,
+dup2,
+file-exists?,
+floor,
+frame-printer,
+get-internal-run-time,
+getcwd,
+gettimeofday,
+hash,
+hash-ref,
+hash-set!,
+hash-table-printer,
+hashq,
+hashq-get-handle,
+hashq-ref,
+hashq-set,
+inexact->exact,
+make-hash-table,
+make-stack,
+make-struct,
+module-define!,
+module-printer,
+module-ref,
+module-variable,
+read-line,
+round,
+stack-length,
+stack-ref,
+string-downcase,
+string-tokenize,
+string-upcase,
+struct-length,
+struct-ref,
+struct-set!
+struct-vtable,
+struct-vtable,
+with-error-to-file.
+** MesCC
+*** MesCC now supports compiling Bash.
+*** Assembly defines have been cleaned-up: duplicates deleted, missing added, wrong fixed.
+** Noteworthy bug fixes
+*** MesCC now supports the unary plus operator.
+*** MesCC now supports the `U' integer suffix.
+*** MesCC now comes with INTnn_MIN/MAX, UINTnn defines in stdint.h.
+*** MesCC now always exits non-zero when assembler or linker fail.
 * Changes in 0.18 since 0.17.1
 ** Core
 *** Mes/MesCC now supports x86_64.
