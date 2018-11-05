@@ -18,18 +18,20 @@
 # You should have received a copy of the GNU General Public License
 # along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
-set -ex
+set -e
 
 VERSION=0.18
 
 # parse --prefix=prefix
 cmdline=$(echo "$@")
-p=$(echo "$@" | grep -o '[-][-]prefix=[^ ]*')
-p=$(echo "$p" | sed -e 's,--prefix=,,')
+p=${cmdline##*--prefix=}
+p=${p% *}
+p=${p% -*}
 if [ -z "$p" ]; then
     p=${prefix-/usr/local}
 fi
 prefix=$p
+
 srcdir=${srcdir-$(dirname $0)}
 . ${srcdest}build-aux/trace.sh
 
