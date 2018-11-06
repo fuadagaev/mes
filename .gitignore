@@ -30,6 +30,7 @@
 *.mini-M1
 *.mini-guile
 *.mini-hex2
+*.a
 *.o
 *.seed-out
 *.stderr
@@ -37,6 +38,7 @@
 *.x86-out
 *.x86_64-mes-E
 *.x86_64-mes-S
+*.x86_64-mes-gcc-a
 *.x86_64-mes-gcc-o
 *.x86_64-mes-gcc-out
 *.x86_64-mes-gcc-stdout
@@ -75,16 +77,17 @@
 /doc/mescc.1
 /doc/version.texi
 
+/config.status
 /pre-inst-env
+/build.sh
+/check.sh
+/install.sh
+/uninstall.sh
 /mes/module/mes/boot-0.scm
 /scripts/mescc
 /doc/images/gcc-mesboot-graph.png
 /GNUmakefile
-/build.sh
-/check.sh
-/install.sh
 /pre-inst-env
-/uninstall.sh
 /doc/images/gcc-mesboot-graph.eps
 /doc/images/gcc-mesboot-graph.pdf
 /doc/web/
