@@ -8,15 +8,15 @@ Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
   notice and this notice are preserved.
 
 * SETUP
-    guix environment -l .guix.scm     #64 bit + 32bit
+    GUIX_PACKAGE_PATH=guix guix environment -l .guix.scm     #64 bit + 32bit
 
 or
 
-    guix environment --system=i686-linux -l .guix.scm #32 bit only
+    GUIX_PACKAGE_PATH=guix guix environment --system=i686-linux -l .guix.scm #32 bit only
 
 or
 
-    guix package --profile=~/.config/guix/mes --manifest=build-aux/manifest.scm
+    GUIX_PACKAGE_PATH=guix guix package --profile=~/.config/guix/mes --manifest=build-aux/manifest.scm
     . ~/.config/guix/mes/etc/profile
 
 * BUILD
@@ -260,3 +260,4 @@ https://notabug.org/rain1/hex86/src/master/tests/hex0b3.hex86
 ** <pdewacht> e.g. as described here
            https://jamey.thesharps.us/2016/07/15/testing-strategies-for-corrode/
            ("Randomized testing with Csmith and C-Reduce")  [10:58]
+** linux syscalls: https://fedora.juszkiewicz.com.pl/syscalls.html
