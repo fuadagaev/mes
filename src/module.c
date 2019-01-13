@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
  * Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jeremiah Orians <jeremiah@pdp10.guru>
  *
  * This file is part of GNU Mes.
  *
@@ -21,13 +22,11 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
-
-SCM
-make_module_type ()             ///(internal))
+struct scm *
+make_module_type ()
 {
-  SCM record_type = cell_symbol_record_type;    // FIXME
-  SCM fields = cell_nil;
+  struct scm *record_type = cell_symbol_record_type;    /* FIXME */
+  struct scm *fields = cell_nil;
   fields = cons (cstring_to_symbol ("globals"), fields);
   fields = cons (cstring_to_symbol ("locals"), fields);
   fields = cons (cstring_to_symbol ("name"), fields);
@@ -36,85 +35,58 @@ make_module_type ()             ///(internal))
   return make_struct (record_type, fields, cell_unspecified);
 }
 
-SCM
-make_initial_module (SCM a)     ///((internal))
+struct scm *
+module_variable (struct scm *module, struct scm *name)
 {
-  SCM module_type = make_module_type ();
-  a = acons (cell_symbol_module, module_type, a);
+  /* struct scm* locals = struct_ref_ (module, 3); */
+  struct scm *locals = module;
+  struct scm *x = assq (name, locals);
 
-  SCM hashq_type = make_hashq_type ();
-  a = acons (cell_symbol_hashq_table, hashq_type, a);
-
-  SCM name = cons (cstring_to_symbol ("boot"), cell_nil);
-  SCM globals = make_hash_table_ (0);
-  SCM locals = cell_nil;
-
-  SCM values = cell_nil;
-  values = cons (globals, values);
-  values = cons (locals, values);
-  values = cons (name, values);
-  values = cons (cell_symbol_module, values);
-  SCM module = make_struct (module_type, values, cstring_to_symbol ("module-printer"));
-  r0 = cell_nil;
-  r0 = cons (CADR (a), r0);
-  r0 = cons (CAR (a), r0);
-  m0 = module;
-  while (TYPE (a) == TPAIR)
-    {
-      module_define_x (module, CAAR (a), CDAR (a));
-      a = CDR (a);
-    }
-
-  return module;
-}
-
-SCM
-module_printer (SCM module)
-{
-  //module = m0;
-  fdputs ("#<", __stdout);
-  display_ (struct_ref_ (module, 2));
-  fdputc (' ', __stdout);
-  fdputs ("name: ", __stdout);
-  display_ (struct_ref_ (module, 3));
-  fdputc (' ', __stdout);
-  fdputs ("locals: ", __stdout);
-  display_ (struct_ref_ (module, 4));
-  fdputc (' ', __stdout);
-  SCM table = struct_ref_ (module, 5);
-  fdputs ("globals:\n  ", __stdout);
-  display_ (table);
-  fdputc ('>', __stdout);
-}
-
-SCM
-module_variable (SCM module, SCM name)
-{
-  //SCM locals = struct_ref_ (module, 3);
-  SCM locals = module;
-  SCM x = assq (name, locals);
   if (x == cell_f)
     {
-      module = m0;
-      SCM globals = struct_ref_ (module, 5);
+      struct scm *globals = struct_ref_ (M0, 5);
       x = hashq_get_handle (globals, name, cell_f);
     }
+
   return x;
 }
 
-SCM
-module_ref (SCM module, SCM name)
+
+struct scm *
+module_ref (struct scm *module, struct scm *name)
 {
-  SCM x = module_variable (module, name);
-  if (x == cell_f)
-    return cell_undefined;
-  return CDR (x);
+  struct scm *y = module_variable (module, name);
+
+  if (y == cell_f)
+    {
+      return cell_undefined;
+    }
+
+  return y->cdr;
 }
 
-SCM
-module_define_x (SCM module, SCM name, SCM value)
+struct scm *
+module_define_x (struct scm *module, struct scm *name, struct scm *value)
 {
-  module = m0;
-  SCM globals = struct_ref_ (module, 5);
+  struct scm *globals = struct_ref_ (M0, 5);
   return hashq_set_x (globals, name, value);
+}
+
+/* External functions */
+struct scm *
+module_variable_ (struct scm *module, struct scm *name) /* EXTERNAL */
+{
+  return module_variable (module, name);
+}
+
+struct scm *
+module_ref_ (struct scm *module, struct scm *name)      /* EXTERNAL */
+{
+  return module_ref (module, name);
+}
+
+struct scm *
+make_module_type_ ()            /* EXTERNAL */
+{
+  return make_module_type ();
 }

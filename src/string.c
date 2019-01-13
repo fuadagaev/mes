@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jeremiah Orians <jeremiah@pdp10.guru>
  *
  * This file is part of GNU Mes.
  *
@@ -21,234 +22,263 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
-
 #include <limits.h>
 #include <string.h>
 
-long MAX_STRING;
-
-void
-assert_max_string (size_t i, char const *msg, char *string)
+int
+string_len (char *a)
 {
-  if (i > MAX_STRING)
-    {
-      eputs (msg);
-      eputs (":string too long[");
-      eputs (itoa (i));
-      eputs ("]:");
-      string[MAX_STRING - 1] = 0;
-      eputs (string);
-      error (cell_symbol_system_error, cell_f);
-    }
+  int i = 0;
+  while (0 != a[i])
+    i = i + 1;
+  return i;
 }
 
 char const *
-list_to_cstring (SCM list, size_t * size)
+list_to_cstring (struct scm *list, int *size)
 {
-  size_t i = 0;
-  char *p = g_buf;
+  int i = 0;
+
   while (list != cell_nil)
     {
-      if (i > MAX_STRING)
-        assert_max_string (i, "list_to_string", g_buf);
-      g_buf[i++] = VALUE (car (list));
-      list = cdr (list);
+      assert_max_string (i, "list_to_string", g_buf);
+
+      g_buf[i] = list->car->value;
+      i = i + 1;
+      list = list->cdr;
     }
+
   g_buf[i] = 0;
   *size = i;
   return g_buf;
 }
 
-size_t
-bytes_cells (size_t length)
+struct scm *
+make_string_ (char *s)          /* internal only */
 {
-  return (1 + sizeof (long) + sizeof (long) + length + sizeof (SCM)) / sizeof (SCM);
+  SCM l = string_len (s);
+  assert_max_string (l, "make_string_", s);
+
+  struct scm *y = make_tstring1 (l);
+  y->cdr = make_bytes (s, l);
+  return y;
 }
 
-SCM
-make_bytes (char const *s, size_t length)
+struct scm *
+make_string (char const *s, int length)
 {
-  size_t size = bytes_cells (length);
-  SCM x = alloc (size);
-  TYPE (x) = TBYTES;
-  LENGTH (x) = length;
-  char *p = (char *) &g_cells[x].cdr;
-  if (!length)
-    *(char *) p = 0;
-  else
-    memcpy (p, s, length + 1);
-  return x;
+  assert_max_string (length, "make_string", (char *) s);
+  struct scm *x = make_tstring1 (length);
+  struct scm *y = x;
+  struct scm *v = make_bytes (s, length);
+  y->cdr = v;
+  return y;
 }
 
-SCM
-make_string (char const *s, size_t length)
+struct scm *
+string_equal_p (struct scm *a, struct scm *b)
 {
-  if (length > MAX_STRING)
-    assert_max_string (length, "make_string", (char *) s);
-  SCM x = make_cell__ (TSTRING, length, 0);
-  SCM v = make_bytes (s, length);
-  CDR (x) = v;
-  return x;
-}
+  struct scm *a2 = a;
+  struct scm *b2 = b;
+  assert (a2->type == TSTRING || a2->type == TKEYWORD);
+  assert (b2->type == TSTRING || b2->type == TKEYWORD);
+  struct scm *tee = cell_t;
+  struct scm *nil = cell_f;
 
-SCM
-string_equal_p (SCM a, SCM b)   ///((name . "string=?"))
-{
-  if (!((TYPE (a) == TSTRING && TYPE (b) == TSTRING) || (TYPE (a) == TKEYWORD || TYPE (b) == TKEYWORD)))
+  /* If they are the same thing */
+  if (a == b)
+    return tee;
+
+  /* If they point to the same string */
+  if (a2->cdr == b2->cdr)
+    return tee;
+
+  /*If they are both empty strings */
+  if ((NULL == a2->car) && (NULL == b2->car))
+    return tee;
+
+  /* If they are different lengths they can't be the same string */
+  if (a2->length != b2->length)
+    return nil;
+
+  /* Need to fix */
+  char *s1 = a2->cdr->string;
+  char *s2 = b2->cdr->string;
+
+  while (s1[0] == s2[0])
     {
-      eputs ("type a: ");
-      eputs (itoa (TYPE (a)));
-      eputs ("\n");
-      eputs ("type b: ");
-      eputs (itoa (TYPE (b)));
-      eputs ("\n");
-      eputs ("a= ");
-      write_error_ (a);
-      eputs ("\n");
-      eputs ("b= ");
-      write_error_ (b);
-      eputs ("\n");
-      assert ((TYPE (a) == TSTRING && TYPE (b) == TSTRING) || (TYPE (a) == TKEYWORD || TYPE (b) == TKEYWORD));
+      if (0 == s1[0])
+        return tee;
+      s1 = s1 + 1;
+      s2 = s2 + 1;
     }
-  if (a == b
-      || STRING (a) == STRING (b)
-      || (!LENGTH (a) && !LENGTH (b))
-      || (LENGTH (a) == LENGTH (b) && !memcmp (CSTRING (a), CSTRING (b), LENGTH (a))))
-    return cell_t;
-  return cell_f;
+
+  return nil;
 }
 
-SCM
-symbol_to_string (SCM symbol)
+struct scm *
+symbol_to_string (struct scm *symbol)
 {
-  return make_cell__ (TSTRING, CAR (symbol), CDR (symbol));
+  struct scm *a = symbol;
+  return make_tstring2 (a->car, a->cdr);
 }
 
-SCM
-symbol_to_keyword (SCM symbol)
+struct scm *
+symbol_to_keyword (struct scm *symbol)
 {
-  return make_cell__ (TKEYWORD, CAR (symbol), CDR (symbol));
+  struct scm *a = symbol;
+  return make_keyword (a->car, a->cdr);
 }
 
-SCM
-keyword_to_string (SCM keyword)
+struct scm *
+make_symbol (struct scm *string)
 {
-  return make_cell__ (TSTRING, CAR (keyword), CDR (keyword));
-}
-
-SCM
-string_to_symbol (SCM string)
-{
-  SCM x = hash_ref (g_symbols, string, cell_f);
-  if (x == cell_f)
-    x = make_symbol (string);
-  return x;
-}
-
-SCM
-make_symbol (SCM string)
-{
-  SCM x = make_cell__ (TSYMBOL, LENGTH (string), STRING (string));
+  struct scm *s = string;
+  struct scm *x = make_tsymbol (s->car, s->cdr);
   hash_set_x (g_symbols, string, x);
   return x;
 }
 
-SCM
-bytes_to_list (char const *s, size_t i)
+struct scm *
+string_to_symbol (struct scm *string)
 {
-  SCM p = cell_nil;
-  while (i--)
+  struct scm *x = hash_ref (g_symbols, string, cell_f);
+
+  if (x == cell_f)
     {
-      int c = (0x100 + s[i]) % 0x100;
-      p = cons (MAKE_CHAR (c), p);
+      x = make_symbol (string);
     }
-  return p;
+
+  return x;
 }
 
-SCM
-cstring_to_list (char const *s)
+struct scm *
+cstring_to_symbol (char *s)
 {
-  return bytes_to_list (s, strlen (s));
-}
-
-SCM
-cstring_to_symbol (char const *s)
-{
-  SCM string = MAKE_STRING0 (s);
+  struct scm *string = make_string_ (s);
   return string_to_symbol (string);
 }
 
-SCM
-string_to_list (SCM string)
+/* EXTERNAL */
+
+struct scm *
+string_equal_p_ (struct scm *a, struct scm *b)
 {
-  return bytes_to_list (CSTRING (string), LENGTH (string));
+  return string_equal_p (a, b);
 }
 
-SCM
-list_to_string (SCM list)
+struct scm *
+symbol_to_string_ (struct scm *symbol)
 {
-  size_t size;
+  return symbol_to_string (symbol);
+}
+
+struct scm *
+symbol_to_keyword_ (struct scm *symbol)
+{
+  return symbol_to_keyword (symbol);
+}
+
+struct scm *
+keyword_to_string (struct scm *keyword)
+{
+  struct scm *a = keyword;
+  return make_tstring2 (a->car, a->cdr);
+}
+
+struct scm *
+make_symbol_ (struct scm *string)
+{
+  return make_symbol (string);
+}
+
+struct scm *
+string_to_list (struct scm *string)
+{
+  struct scm *x = string;
+  char *s = x->cdr->string;
+  SCM i = string_len (s);
+  struct scm *p = cell_nil;
+
+  while (0 != i)
+    {
+      i = i - 1;
+      int c = (0xFF & s[i]);
+      p = cons (make_char (c), p);
+    }
+
+  return p;
+}
+
+struct scm *
+list_to_string (struct scm *list)
+{
+  int size;
   char const *s = list_to_cstring (list, &size);
   return make_string (s, size);
 }
 
-SCM
-read_string (SCM port)          ///((arity . n))
+void
+block_copy (void *source, void *destination, int num)
 {
-  int fd = __stdin;
-  if (TYPE (port) == TPAIR && TYPE (car (port)) == TNUMBER)
-    __stdin = VALUE (CAR (port));
-  int c = readchar ();
-  size_t i = 0;
-  while (c != -1)
+  char *s;
+  char *d = destination;
+  for (s = source; 0 < num; num = num - 1)
     {
-      if (i > MAX_STRING)
-        assert_max_string (i, "read_string", g_buf);
-      g_buf[i++] = c;
-      c = readchar ();
+      d[0] = s[0];
+      d = d + 1;
+      s = s + 1;
     }
-  g_buf[i] = 0;
-  __stdin = fd;
-  return make_string (g_buf, i);
 }
 
-SCM
-string_append (SCM x)           ///((arity . n))
+struct scm *
+string_append (struct scm *x)   /*((arity . n)) */
 {
   char *p = g_buf;
   g_buf[0] = 0;
-  size_t size = 0;
-  while (x != cell_nil)
+  int size = 0;
+  struct scm *y1 = x;
+
+  while (y1 != cell_nil)
     {
-      SCM string = CAR (x);
-      assert (TYPE (string) == TSTRING);
-      memcpy (p, CSTRING (string), LENGTH (string) + 1);
-      p += LENGTH (string);
-      size += LENGTH (string);
-      if (size > MAX_STRING)
-        assert_max_string (size, "string_append", g_buf);
-      x = CDR (x);
+      struct scm *y2 = y1->car;
+      assert (y2->type == TSTRING);
+      memcpy (p, y2->cdr->string, y2->rac + 1);
+      p += y2->length;
+      size += y2->length;
+
+      assert_max_string (size, "string_append", g_buf);
+
+      y1 = y1->cdr;
     }
+
   return make_string (g_buf, size);
 }
 
-SCM
-string_length (SCM string)
+struct scm *
+string_length (struct scm *string)
 {
-  assert (TYPE (string) == TSTRING);
-  return MAKE_NUMBER (LENGTH (string));
+  struct scm *x = string;
+  assert (x->type == TSTRING);
+  return make_number (x->length);
 }
 
-SCM
-string_ref (SCM str, SCM k)
+struct scm *
+string_ref (struct scm *str, struct scm *k)
 {
-  assert (TYPE (str) == TSTRING);
-  assert (TYPE (k) == TNUMBER);
-  size_t size = LENGTH (str);
-  size_t i = VALUE (k);
+  struct scm *x = str;
+  struct scm *y = k;
+  assert (x->type == TSTRING);
+  assert (y->type == TNUMBER);
+  size_t size = x->length;
+  size_t i = y->value;
+
   if (i > size)
-    error (cell_symbol_system_error, cons (MAKE_STRING0 ("value out of range"), k));
-  char const *p = CSTRING (str);
-  return MAKE_CHAR (p[i]);
+    {
+      error (cell_symbol_system_error,
+             cons (make_string ("value out of range", string_len ("value out of range")), k));
+    }
+
+  char *p = x->cdr->string;
+  return make_char (p[i]);
 }

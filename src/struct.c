@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jeremiah Orians <jeremiah@pdp10.guru>
  *
  * This file is part of GNU Mes.
  *
@@ -21,68 +22,62 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
-
-SCM
-make_struct (SCM type, SCM fields, SCM printer)
+struct scm *
+struct_length (struct scm *x)
 {
-  long size = 2 + length__ (fields);
-  SCM v = alloc (size);
-  SCM x = make_cell__ (TSTRUCT, size, v);
-  g_cells[v] = g_cells[vector_entry (type)];
-  g_cells[v + 1] = g_cells[vector_entry (printer)];
-  for (long i = 2; i < size; i++)
+  assert (x->type == TSTRUCT);
+  return make_number (x->length);
+}
+
+struct scm *
+struct_ref_ (struct scm *x, long i)
+{
+  assert (x->type == TSTRUCT);
+  assert (i < x->length);
+  struct scm *f = x->cdr + i;
+
+  if (f->type == TREF)
     {
-      SCM e = cell_unspecified;
-      if (fields != cell_nil)
-        {
-          e = CAR (fields);
-          fields = CDR (fields);
-        }
-      g_cells[v + i] = g_cells[vector_entry (e)];
+      return f->car;
     }
-  return x;
+
+  if (f->type == TCHAR)
+    {
+      return make_char (f->value);
+    }
+
+  if (f->type == TNUMBER)
+    {
+      return make_number (f->value);
+    }
+
+  return f;
 }
 
-SCM
-struct_length (SCM x)
+struct scm *
+struct_set_x_ (struct scm *x, long i, struct scm *e)
 {
-  assert (TYPE (x) == TSTRUCT);
-  return MAKE_NUMBER (LENGTH (x));
-}
-
-SCM
-struct_ref_ (SCM x, long i)
-{
-  assert (TYPE (x) == TSTRUCT);
-  assert (i < LENGTH (x));
-  SCM e = STRUCT (x) + i;
-  if (TYPE (e) == TREF)
-    e = REF (e);
-  if (TYPE (e) == TCHAR)
-    e = MAKE_CHAR (VALUE (e));
-  if (TYPE (e) == TNUMBER)
-    e = MAKE_NUMBER (VALUE (e));
-  return e;
-}
-
-SCM
-struct_set_x_ (SCM x, long i, SCM e)
-{
-  assert (TYPE (x) == TSTRUCT);
-  assert (i < LENGTH (x));
-  g_cells[STRUCT (x) + i] = g_cells[vector_entry (e)];
+  assert (x->type == TSTRUCT);
+  assert (i < x->length);
+  struct scm *v = vector_entry (e);
+  struct scm *y = x->cdr + i;
+  /* The below is likely going to be a problem for M2-Planet until we add pointer dereferencing */
+  *y = *v;
   return cell_unspecified;
 }
 
-SCM
-struct_ref (SCM x, SCM i)
+struct scm *
+struct_ref (struct scm *x, struct scm *i)       /* External */
 {
-  return struct_ref_ (x, VALUE (i));
+  struct scm *h = i;
+  struct scm *y = x;
+  return struct_ref_ (y, h->value);
 }
 
-SCM
-struct_set_x (SCM x, SCM i, SCM e)
+struct scm *
+struct_set_x (struct scm *x, struct scm *i, struct scm *e)
 {
-  return struct_set_x_ (x, VALUE (i), e);
+  struct scm *h = i;
+  struct scm *y = x;
+  return struct_set_x_ (y, h->value, e);
 }

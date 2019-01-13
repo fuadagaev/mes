@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jeremiah Orians <jeremiah@pdp10.guru>
  *
  * This file is part of GNU Mes.
  *
@@ -21,99 +22,170 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
-
-SCM
-make_vector__ (long k)
+struct scm *
+make_vector_ (struct scm *n)
 {
-  SCM v = alloc (k);
-  SCM x = make_cell__ (TVECTOR, k, v);
-  for (long i = 0; i < k; i++)
-    g_cells[v + i] = g_cells[vector_entry (cell_unspecified)];
-  return x;
+  struct scm *m = n;
+  return make_vector__ (m->cdr);
 }
 
-SCM
-make_vector_ (SCM n)
+struct scm *
+vector_length (struct scm *x)
 {
-  return make_vector__ (VALUE (n));
+  assert (x->type == TVECTOR);
+  return make_number (x->length);
 }
 
-SCM
-vector_length (SCM x)
+struct scm *
+vector_ref_ (struct scm *table, long i)
 {
-  assert (TYPE (x) == TVECTOR);
-  return MAKE_NUMBER (LENGTH (x));
-}
+  struct scm *y = table;
+  assert (y->type == TVECTOR);
+  assert (i < y->length);
+  struct scm *e = y->cdr + i;
 
-SCM
-vector_ref_ (SCM x, long i)
-{
-  assert (TYPE (x) == TVECTOR);
-  assert (i < LENGTH (x));
-  SCM e = VECTOR (x) + i;
-  if (TYPE (e) == TREF)
-    e = REF (e);
-  if (TYPE (e) == TCHAR)
-    e = MAKE_CHAR (VALUE (e));
-  if (TYPE (e) == TNUMBER)
-    e = MAKE_NUMBER (VALUE (e));
+  if (e->type == TREF)
+    {
+      return e->car;
+    }
+
   return e;
 }
 
-SCM
-vector_ref (SCM x, SCM i)
+struct scm *
+vector_equal_p (struct scm *a, struct scm *b)
 {
-  return vector_ref_ (x, VALUE (i));
+  struct scm *a2 = a;
+  struct scm *b2 = b;
+
+  if (a2->length != b2->length)
+    {
+      return cell_f;
+    }
+
+  SCM i;
+  for (i = 0; i < a2->length; i = i + 1)
+    {
+      struct scm *ai = a2->vector + i;
+      struct scm *ai2 = ai;
+      struct scm *bi = b2->vector + i;
+      struct scm *bi2 = bi;
+
+      if (ai2->type == TREF)
+        {
+          ai = ai2->car;
+        }
+
+      if (bi2->type == TREF)
+        {
+          bi = bi2->car;
+        }
+
+      if (equal2_p (ai, bi) == cell_f)
+        {
+          return cell_f;
+        }
+    }
+  return cell_t;
 }
 
-SCM
-vector_entry (SCM x)
+struct scm *
+vector_ref (struct scm *x, struct scm *i)
 {
-  if (TYPE (x) != TCHAR && TYPE (x) != TNUMBER)
-    x = MAKE_REF (x);
-  return x;
+  assert (x->type == TVECTOR);
+  assert (i->value < x->length);
+  struct scm *e = x->cdr + i->value;
+
+  if (e->type == TREF)
+    {
+      return e->car;
+    }
+
+  return e;
 }
 
-SCM
-vector_set_x_ (SCM x, long i, SCM e)
+struct scm *
+vector_entry (struct scm *x)
 {
-  assert (TYPE (x) == TVECTOR);
-  assert (i < LENGTH (x));
-  g_cells[VECTOR (x) + i] = g_cells[vector_entry (e)];
+  if (TCHAR == x->type)
+    {
+      return x;
+    }
+
+  if (TNUMBER == x->type)
+    {
+      return x;
+    }
+
+  return make_tref (x);
+}
+
+void
+vector_set_x_ (struct scm *x, long i, struct scm *e)
+{
+  assert (x->type == TVECTOR);
+  assert (i < x->length);
+  struct scm *z = x->cdr + i;
+  struct scm *f = vector_entry (e);
+
+  z->type = f->type;
+  z->car = f->car;
+  z->cdr = f->cdr;
+}
+
+struct scm *
+vector_set_x (struct scm *x)
+{
+  SCM i = x->cdr->car->value;
+  assert (x->car->type == TVECTOR);
+  assert (i < x->car->length);
+  struct scm *z = x->car->cdr + (i * CELL_SIZE);
+  struct scm *f = vector_entry (x->cdr->cdr->car);
+
+  z->type = f->type;
+  z->car = f->car;
+  z->cdr = f->cdr;
   return cell_unspecified;
 }
 
-SCM
-vector_set_x (SCM x, SCM i, SCM e)
+struct scm *
+list_to_vector (struct scm *x)
 {
-  return vector_set_x_ (x, VALUE (i), e);
-}
+  struct scm *v = make_vector__ (length__ (x));
+  struct scm *y = x;
+  struct scm *p = v->cdr;
+  struct scm *z;
 
-SCM
-list_to_vector (SCM x)
-{
-
-  SCM v = make_vector__ (length__ (x));
-  SCM p = VECTOR (v);
-  while (x != cell_nil)
+  while (y != cell_nil)
     {
-      g_cells[p++] = g_cells[vector_entry (car (x))];
-      x = cdr (x);
+      z = vector_entry (y->car);
+      p->type = z->type;
+      p->car = z->car;
+      p->cdr = z->cdr;
+      p = p + 1;
+      y = y->cdr;
     }
+
   return v;
 }
 
-SCM
-vector_to_list (SCM v)
+struct scm *
+vector_to_list (struct scm *v)
 {
-  SCM x = cell_nil;
-  for (long i = LENGTH (v); i; i--)
+  struct scm *x = cell_nil;
+  SCM i;
+
+  for (i = v->length; i; i = i - 1)
     {
-      SCM e = VECTOR (v) + i - 1;
-      if (TYPE (e) == TREF)
-        e = REF (e);
-      x = cons (e, x);
+      struct scm *f = v->cdr + i - 1;
+
+      if (f->type == TREF)
+        {
+          f = f->car;
+        }
+
+      x = cons (f, x);
     }
+
   return x;
 }

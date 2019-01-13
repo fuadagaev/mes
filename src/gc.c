@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jeremiah Orians
  *
  * This file is part of GNU Mes.
  *
@@ -21,326 +22,332 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
+SCM GC_SAFETY;
+SCM ARENA_SIZE;
+SCM MAX_ARENA_SIZE;
+SCM JAM_SIZE;
+// CONSTANT FRAME_SIZE 5
+#define FRAME_SIZE 5
+
 #include <assert.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 
-long ARENA_SIZE;
-long MAX_ARENA_SIZE;
-long STACK_SIZE;
-long JAM_SIZE;
-long GC_SAFETY;
-long MAX_STRING;
-char *g_arena;
-long g_free;
-SCM g_stack;
-SCM *g_stack_array;
-struct scm *g_cells;
 struct scm *g_news;
 
-SCM
-gc_init ()                ///((internal))
+void
+initialize_memory ()
 {
-#if SYSTEM_LIBC
-  ARENA_SIZE = 100000000;    // 2.3GiB
-#else
-  ARENA_SIZE = 300000;       // 32b: 3MiB, 64b: 6 MiB
-#endif
-  MAX_ARENA_SIZE = 100000000;
-  STACK_SIZE = 20000;
-
-  JAM_SIZE = 20000;
-  GC_SAFETY = 2000;
-  MAX_STRING = 524288;
-
-  char *p;
-  if (p = getenv ("MES_MAX_ARENA"))
-    MAX_ARENA_SIZE = atoi (p);
-  if (p = getenv ("MES_ARENA"))
-    ARENA_SIZE = atoi (p);
-  JAM_SIZE = ARENA_SIZE / 10;
-  if (p = getenv ("MES_JAM"))
-    JAM_SIZE = atoi (p);
-  GC_SAFETY = ARENA_SIZE / 100;
-  if (p = getenv ("MES_SAFETY"))
-    GC_SAFETY = atoi (p);
-  if (p = getenv ("MES_STACK"))
-    STACK_SIZE = atoi (p);
-  if (p = getenv ("MES_MAX_STRING"))
-    MAX_STRING = atoi (p);
-
-  long arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
-  void *a = malloc (arena_bytes + STACK_SIZE * sizeof (SCM));
-  g_cells = (struct scm *) a;
-  g_stack_array = (SCM *) (a + arena_bytes);
-
-  TYPE (0) = TVECTOR;
-  LENGTH (0) = 1000;
-  VECTOR (0) = 0;
-  g_cells++;
-  TYPE (0) = TCHAR;
-  VALUE (0) = 'c';
-
-  // FIXME: remove MES_MAX_STRING, grow dynamically
-  g_buf = (char *) malloc (MAX_STRING);
-
-  return 0;
-}
-
-SCM
-gc_init_news ()                 ///((internal))
-{
-  g_news = g_cells + g_free;
-  NTYPE (0) = TVECTOR;
-  NLENGTH (0) = 1000;
-  NVECTOR (0) = 0;
-  g_news++;
-  NTYPE (0) = TCHAR;
-  NVALUE (0) = 'n';
-  return 0;
-}
-
-SCM
-gc_up_arena ()                  ///((internal))
-{
-  long old_arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
-  if (ARENA_SIZE >> 1 < MAX_ARENA_SIZE >> 2)
-    {
-      ARENA_SIZE <<= 1;
-      JAM_SIZE <<= 1;
-      GC_SAFETY <<= 1;
-    }
-  else
-    ARENA_SIZE = MAX_ARENA_SIZE - JAM_SIZE;
-  long arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
-  void *p = realloc (g_cells - 1, arena_bytes + STACK_SIZE * sizeof (SCM));
-  if (!p)
-    {
-      eputs ("realloc failed, g_free=");
-      eputs (itoa (g_free));
-      eputs (":");
-      eputs (itoa (ARENA_SIZE - g_free));
-      eputs ("\n");
-      assert (0);
-      exit (1);
-    }
-  g_cells = (struct scm *) p;
-  memcpy (p + arena_bytes, p + old_arena_bytes, STACK_SIZE * sizeof (SCM));
-  g_cells++;
-
-  return 0;
+  g_news = 0;
+  MAX_ARENA_SIZE = get_env_value ("MES_MAX_ARENA", 100000000);
+  ARENA_SIZE = get_env_value ("MES_ARENA", 10000000);
+  JAM_SIZE = get_env_value ("MES_JAM", ARENA_SIZE / 10);
+  GC_SAFETY = get_env_value ("MES_SAFETY", ARENA_SIZE / 100);
+  STACK_SIZE = get_env_value ("MES_STACK", 20000);
+  MAX_STRING = get_env_value ("MES_MAX_STRING", 524288);
 }
 
 void
-gc_flip ()                      ///((internal))
+gc_init_cells ()                /* ((internal)) */
 {
-  if (g_debug > 2)
-    {
-      eputs (";;;   => jam[");
-      eputs (itoa (g_free));
-      eputs ("]\n");
-    }
-  if (g_free > JAM_SIZE)
-    JAM_SIZE = g_free + g_free / 2;
-  memcpy (g_cells - 1, g_news - 1, (g_free + 2) * sizeof (struct scm));
+  SCM stack_size = ((ARENA_SIZE + JAM_SIZE) * sizeof (struct scm)) + (STACK_SIZE * sizeof (SCM));
+  g_stack_array = malloc (stack_size);
+  g_buf = malloc (MAX_STRING);
 }
 
-SCM
-gc_copy (SCM old)               ///((internal))
+struct scm *make_char (SCM c);
+struct scm *
+mes_g_stack (struct scm *a)     /* ((internal)) */
 {
-  if (TYPE (old) == TBROKEN_HEART)
-    return g_cells[old].car;
-  SCM new = g_free++;
-  g_news[new] = g_cells[old];
-  if (NTYPE (new) == TSTRUCT || NTYPE (new) == TVECTOR)
-    {
-      NVECTOR (new) = g_free;
-      for (long i = 0; i < LENGTH (old); i++)
-        g_news[g_free++] = g_cells[VECTOR (old) + i];
-    }
-  else if (NTYPE (new) == TBYTES)
-    {
-      char const *src = CBYTES (old);
-      char *dest = NCBYTES (new);
-      size_t length = NLENGTH (new);
-      memcpy (dest, src, length + 1);
-      g_free += bytes_cells (length) - 1;
+  g_stack = STACK_SIZE;
+  R0 = a;
+  R1 = make_char (0);
+  R2 = make_char (0);
+  R3 = make_char (0);
+  return R0;
+}
 
-      if (g_debug > 4)
+struct scm *
+make_frame (SCM index)
+{
+  SCM array_index = (STACK_SIZE - (index * FRAME_SIZE));
+  struct scm *procedure = g_stack_array[array_index + FRAME_PROCEDURE];
+
+  if (!procedure)
+    {
+      procedure = cell_f;
+    }
+
+  return make_struct (make_frame_type (), cons (cell_symbol_frame, cons (procedure, cell_nil)),
+                      cstring_to_symbol ("frame-printer"));
+}
+
+struct scm *
+make_stack ()                   /* ((arity . n)) */
+{
+  struct scm *stack_type = make_stack_type ();
+  SCM size = (STACK_SIZE - g_stack) / FRAME_SIZE;
+  struct scm *frames = make_vector__ (size);
+  SCM i;
+
+  for (i = 0; i < size; i = i + 1)
+    {
+      struct scm *frame = make_frame (i);
+      vector_set_x_ (frames, i, frame);
+    }
+
+  struct scm *values = cell_nil;
+  values = cons (frames, values);
+  values = cons (cell_symbol_stack, values);
+  return make_struct (stack_type, values, cell_unspecified);
+}
+
+
+struct scm *
+make_cell (struct scm *type, struct scm *car, struct scm *cdr)
+{
+  require (type->type == TNUMBER, "type does not match TNUMBER in src/gc.c: make_cell\n");
+
+  if (type->value == TCHAR || type->value == TNUMBER)
+    {
+      if (0 != car)
         {
-          eputs ("gc copy bytes: ");
-          eputs (src);
-          eputs ("\n");
-          eputs ("    length: ");
-          eputs (itoa (LENGTH (old)));
-          eputs ("\n");
-          eputs ("    nlength: ");
-          eputs (itoa (NLENGTH (new)));
-          eputs ("\n");
-          eputs ("        ==> ");
-          eputs (dest);
-          eputs ("\n");
+          car = car->car;
+        }
+
+      if (0 != cdr)
+        {
+          cdr = cdr->cdr;
         }
     }
-  TYPE (old) = TBROKEN_HEART;
-  CAR (old) = new;
-  return new;
+
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = type->value;
+  x->car = car;
+  x->cdr = cdr;
+  return x;
 }
 
-SCM
-gc_relocate_car (SCM new, SCM car)      ///((internal))
-{
-  g_news[new].car = car;
-  return cell_unspecified;
-}
 
-SCM
-gc_relocate_cdr (SCM new, SCM cdr)      ///((internal))
+struct scm *
+make_bytes (char *s, SCM length)
 {
-  g_news[new].cdr = cdr;
-  return cell_unspecified;
-}
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TBYTES;
+  x->length = length;
+  x->string = malloc (length + 1);
+  char *p = x->string;
 
-void
-gc_loop (SCM scan)              ///((internal))
-{
-  SCM car;
-  SCM cdr;
-  while (scan < g_free)
+  if (0 != length)
     {
-      if (NTYPE (scan) == TBROKEN_HEART)
-        error (cell_symbol_system_error, cstring_to_symbol ("gc"));
-      if (NTYPE (scan) == TMACRO || NTYPE (scan) == TPAIR || NTYPE (scan) == TREF || scan == 1  // null
-          || NTYPE (scan) == TVARIABLE)
-        {
-          car = gc_copy (g_news[scan].car);
-          gc_relocate_car (scan, car);
-        }
-      if ((NTYPE (scan) == TCLOSURE || NTYPE (scan) == TCONTINUATION || NTYPE (scan) == TKEYWORD || NTYPE (scan) == TMACRO || NTYPE (scan) == TPAIR || NTYPE (scan) == TPORT || NTYPE (scan) == TSPECIAL || NTYPE (scan) == TSTRING || NTYPE (scan) == TSYMBOL || scan == 1     // null
-           || NTYPE (scan) == TVALUES) && g_news[scan].cdr)     // allow for 0 terminated list of symbols
-        {
-          cdr = gc_copy (g_news[scan].cdr);
-          gc_relocate_cdr (scan, cdr);
-        }
-      if (NTYPE (scan) == TBYTES)
-        scan += bytes_cells (NLENGTH (scan)) - 1;
-      scan++;
+      block_copy (s, p, length + 1);
     }
-  gc_flip ();
+
+  return x;
 }
 
-SCM
+struct scm *
+make_tref (struct scm *y)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TREF;
+  x->car = y;
+  x->cdr = 0;
+  return x;
+}
+
+struct scm *
+make_vector__ (SCM k)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  struct scm *v = malloc (k * sizeof (struct scm));
+  x->type = TVECTOR;
+  x->length = k;
+  x->cdr = v;
+
+  for (k = k - 1; k >= 0; k = k - 1)
+    {
+      v->type = TREF;
+      v->car = cell_unspecified;
+      v->cdr = 0;
+      v = v + CELL_SIZE;
+    }
+
+  return x;
+}
+
+struct scm *
+make_struct (struct scm *type, struct scm *fields, struct scm *printer)
+{
+  SCM size = 2 + length__ (fields);
+  struct scm *v = malloc (size * sizeof (struct scm));
+  struct scm *w = v + 1;
+  struct scm *entry = vector_entry (type);
+  struct scm *print = vector_entry (printer);
+
+  v->type = entry->type;
+  v->car = entry->car;
+  v->cdr = entry->cdr;
+
+  w->type = print->type;
+  w->car = print->car;
+  w->cdr = print->cdr;
+
+  SCM i;
+  for (i = 2; i < size; i = i + 1)
+    {
+      struct scm *e = cell_unspecified;
+
+      if (fields != cell_nil)
+        {
+          e = fields->car;
+          fields = fields->cdr;
+        }
+
+      entry = vector_entry (e);
+      w = v + i;
+
+      w->type = entry->type;
+      w->car = entry->car;
+      w->cdr = entry->cdr;
+    }
+
+  struct scm *r = malloc (sizeof (struct scm));
+  r->type = TSTRUCT;
+  r->length = size;
+  r->cdr = v;
+  return r;
+}
+
+struct scm *
 gc_check ()
 {
-  if (g_free + GC_SAFETY > ARENA_SIZE)
-    gc ();
   return cell_unspecified;
 }
 
-SCM
-gc_ ()                          ///((internal))
-{
-  gc_init_news ();
-  if (g_debug == 2)
-    eputs (".");
-  if (g_debug > 2)
-    {
-      eputs (";;; gc[");
-      eputs (itoa (g_free));
-      eputs (":");
-      eputs (itoa (ARENA_SIZE - g_free));
-      eputs ("]...");
-    }
-  g_free = 1;
-
-#if __MESC__
-  if (ARENA_SIZE < MAX_ARENA_SIZE && (long) g_news > 0)
-#else
-  if (ARENA_SIZE < MAX_ARENA_SIZE && g_news > 0)
-#endif
-    {
-      if (g_debug == 2)
-        eputs ("+");
-      if (g_debug > 2)
-        {
-          eputs (" up[");
-          eputs (itoa ((unsigned long) g_cells));
-          eputs (",");
-          eputs (itoa ((unsigned long) g_news));
-          eputs (":");
-          eputs (itoa (ARENA_SIZE));
-          eputs (",");
-          eputs (itoa (MAX_ARENA_SIZE));
-          eputs ("]...");
-        }
-      gc_up_arena ();
-    }
-
-  for (long i = g_free; i < g_symbol_max; i++)
-    gc_copy (i);
-  g_symbols = gc_copy (g_symbols);
-  g_macros = gc_copy (g_macros);
-  g_ports = gc_copy (g_ports);
-  m0 = gc_copy (m0);
-  for (long i = g_stack; i < STACK_SIZE; i++)
-    g_stack_array[i] = gc_copy (g_stack_array[i]);
-  gc_loop (1);
-}
-
-SCM
+struct scm *
 gc ()
 {
-  if (g_debug > 5)
-    {
-      eputs ("symbols: ");
-      write_error_ (g_symbols);
-      eputs ("\n");
-      eputs ("R0: ");
-      write_error_ (r0);
-      eputs ("\n");
-    }
-  gc_push_frame ();
-  gc_ ();
-  gc_pop_frame ();
-  if (g_debug > 5)
-    {
-      eputs ("symbols: ");
-      write_error_ (g_symbols);
-      eputs ("\n");
-      eputs ("R0: ");
-      write_error_ (r0);
-      eputs ("\n");
-    }
+  return cell_unspecified;
 }
 
-SCM
-gc_push_frame ()                ///((internal))
+struct scm *
+make_tstring1 (SCM n)
 {
-  if (g_stack < 5)
-    assert (!"STACK FULL");
-  g_stack_array[--g_stack] = cell_f;
-  g_stack_array[--g_stack] = r0;
-  g_stack_array[--g_stack] = r1;
-  g_stack_array[--g_stack] = r2;
-  g_stack_array[--g_stack] = r3;
-  return g_stack;
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TSTRING;
+  x->length = n;
+  x->cdr = 0;
+  return x;
 }
 
-SCM
-gc_peek_frame ()                ///((internal))
+struct scm *
+make_tstring2 (struct scm *a, struct scm *b)
 {
-  r3 = g_stack_array[g_stack];
-  r2 = g_stack_array[g_stack + 1];
-  r1 = g_stack_array[g_stack + 2];
-  r0 = g_stack_array[g_stack + 3];
-  return g_stack_array[g_stack + FRAME_PROCEDURE];
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TSTRING;
+  x->car = a;
+  x->cdr = b;
+  return x;
 }
 
-SCM
-gc_pop_frame ()                 ///((internal))
+struct scm *
+make_keyword (struct scm *a, struct scm *b)
 {
-  SCM x = gc_peek_frame ();
-  g_stack += 5;
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TKEYWORD;
+  x->car = a;
+  x->cdr = b;
+  return x;
+}
+
+struct scm *
+make_tsymbol (struct scm *a, struct scm *b)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TSYMBOL;
+  x->car = a;
+  x->cdr = b;
+  return x;
+}
+
+struct scm *
+make_port (SCM n, struct scm *s)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TPORT;
+  x->port = n;
+  x->cdr = s;
+  return x;
+}
+
+struct scm *
+make_char (SCM c)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TCHAR;
+  x->car = 0;
+  x->value = c;
+  return x;
+}
+
+struct scm *
+make_number (SCM n)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TNUMBER;
+  x->car = 0;
+  x->value = n;
+  return x;
+}
+
+struct scm *
+make_tmacro (struct scm *a, struct scm *b)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TMACRO;
+  x->car = a;
+  x->cdr = b;
+  return x;
+}
+
+struct scm *
+make_tcontinuation (SCM a, SCM b)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TCONTINUATION;
+  x->length = a;
+  x->value = b;
+  return x;
+}
+
+struct scm *
+make_tpair (struct scm *a, struct scm *b)
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TPAIR;
+  x->car = a;
+  x->cdr = b;
+  return x;
+}
+
+struct scm *
+make_closure_ (struct scm *args, struct scm *body, struct scm *a)       /* ((internal)) */
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TCLOSURE;
+  x->car = cell_f;
+  x->cdr = cons (cons (cell_circular, a), cons (args, body));
+  return x;
+}
+
+struct scm *
+make_variable_ (struct scm *var)        /* ((internal)) */
+{
+  struct scm *x = malloc (sizeof (struct scm));
+  x->type = TVARIABLE;
+  x->car = var;
+  x->cdr = 0;
   return x;
 }

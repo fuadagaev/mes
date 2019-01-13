@@ -69,6 +69,10 @@ lib/mes/ntoab.c
 lib/mes/oputc.c
 lib/mes/ultoa.c
 lib/mes/utoa.c
+
+lib/m2/file_print.c
+lib/m2/numerate.c
+lib/m2/in_set.c
 "
 
 if test $mes_libc = mes; then

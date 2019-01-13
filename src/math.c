@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
  * Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jeremiah Orians <jeremiah@pdp10.guru>
  *
  * This file is part of GNU Mes.
  *
@@ -21,212 +22,278 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
 #include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
 
 void
-assert_number (char const *name, SCM x)
+assert_number (char *name, struct scm *x)
 {
-  if (TYPE (x) != TNUMBER)
+  struct scm *y = x;
+  if (y->type != TNUMBER)
     {
       eputs (name);
       error (cell_symbol_not_a_number, x);
     }
 }
 
-SCM
-greater_p (SCM x)               ///((name . ">") (arity . n))
+struct scm *
+greater_p (struct scm *x)       /* ((name . ">") (arity . n)) */
 {
-  if (x == cell_nil)
-    return cell_t;
-  assert_number ("greater_p", CAR (x));
-  long n = VALUE (CAR (x));
-  x = CDR (x);
-  while (x != cell_nil)
+  struct scm *y = x;
+  if (y == cell_nil)
     {
-      assert_number ("greater_p", CAR (x));
-      if (VALUE (car (x)) >= n)
-        return cell_f;
-      n = VALUE (car (x));
-      x = cdr (x);
+      return cell_t;
     }
+
+  assert_number ("greater_p", y->car);
+  SCM n = y->car->value;
+  y = y->cdr;
+
+  while (y != cell_nil)
+    {
+      assert_number ("greater_p", y->car);
+
+      if (y->car->value >= n)
+        {
+          return cell_f;
+        }
+
+      n = y->car->value;
+      y = y->cdr;
+    }
+
   return cell_t;
 }
 
-SCM
-less_p (SCM x)                  ///((name . "<") (arity . n))
+struct scm *
+less_p (struct scm *x)          /* ((name . "<") (arity . n)) */
 {
-  if (x == cell_nil)
-    return cell_t;
-  assert_number ("less_p", CAR (x));
-  long n = VALUE (CAR (x));
-  x = CDR (x);
-  while (x != cell_nil)
+  struct scm *y = x;
+  if (y == cell_nil)
     {
-      assert_number ("less_p", CAR (x));
-      if (VALUE (car (x)) <= n)
-        return cell_f;
-      n = VALUE (car (x));
-      x = cdr (x);
+      return cell_t;
     }
+
+  assert_number ("less_p", y->car);
+  SCM n = y->car->value;
+  y = y->cdr;
+
+  while (y != cell_nil)
+    {
+      assert_number ("less_p", y->car);
+
+      if (y->car->value <= n)
+        {
+          return cell_f;
+        }
+
+      n = y->car->value;
+      y = y->cdr;
+    }
+
   return cell_t;
 }
 
-SCM
-is_p (SCM x)                    ///((name . "=") (arity . n))
+struct scm *
+is_p (struct scm *x)            /* ((name . "=") (arity . n)) */
 {
-  if (x == cell_nil)
-    return cell_t;
-  assert_number ("is_p", CAR (x));
-  long n = VALUE (CAR (x));
-  x = cdr (x);
-  while (x != cell_nil)
+  struct scm *y = x;
+  if (y == cell_nil)
     {
-      if (VALUE (car (x)) != n)
-        return cell_f;
-      x = cdr (x);
+      return cell_t;
     }
+
+  assert_number ("is_p", y->car);
+  SCM n = y->car->value;
+  y = y->cdr;
+
+  while (y != cell_nil)
+    {
+      if (y->car->value != n)
+        {
+          return cell_f;
+        }
+
+      y = y->cdr;
+    }
+
   return cell_t;
 }
 
-SCM
-minus (SCM x)                   ///((name . "-") (arity . n))
+struct scm *
+minus (struct scm *x)           /* ((name . "-") (arity . n)) */
 {
-  assert_number ("minus", CAR (x));
-  long n = VALUE (CAR (x));
-  x = cdr (x);
-  if (x == cell_nil)
-    n = -n;
-  while (x != cell_nil)
+  struct scm *y = x;
+  assert_number ("minus", y->car);
+  SCM n = y->car->value;
+  y = y->cdr;
+
+  if (y == cell_nil)
     {
-      assert_number ("minus", CAR (x));
-      n -= VALUE (car (x));
-      x = cdr (x);
+      n = -n;
     }
-  return MAKE_NUMBER (n);
+
+  while (y != cell_nil)
+    {
+      assert_number ("minus", y->car);
+      n = n - y->car->value;
+      y = y->cdr;
+    }
+
+  return make_number (n);
 }
 
-SCM
-plus (SCM x)                    ///((name . "+") (arity . n))
+struct scm *
+plus (struct scm *x)            /* ((name . "+") (arity . n)) */
 {
-  long n = 0;
-  while (x != cell_nil)
+  struct scm *y = x;
+  SCM n = 0;
+
+  while (y != cell_nil)
     {
-      assert_number ("plus", CAR (x));
-      n += VALUE (car (x));
-      x = cdr (x);
+      assert_number ("plus", y->car);
+      n = n + y->car->value;
+      y = y->cdr;
     }
-  return MAKE_NUMBER (n);
+
+  return make_number (n);
 }
 
-SCM
-divide (SCM x)                  ///((name . "/") (arity . n))
+struct scm *
+divide (struct scm *x)          /* ((name . "/") (arity . n)) */
 {
-  long n = 1;
-  if (x != cell_nil)
+  struct scm *y = x;
+  SCM n = 1;
+
+  if (y != cell_nil)
     {
-      assert_number ("divide", CAR (x));
-      n = VALUE (car (x));
-      x = cdr (x);
+      assert_number ("divide", y->car);
+      n = y->car->value;
+      y = y->cdr;
     }
-  while (x != cell_nil)
+
+  while (y != cell_nil)
     {
-      assert_number ("divide", CAR (x));
-      long y = VALUE (CAR (x));
-      if (y == 0)
-        error (cstring_to_symbol ("divide-by-zero"), x);
+      assert_number ("divide", y->car);
+
       if (!n)
-        break;
-      n /= y;
-      x = cdr (x);
+        {
+          break;
+        }
+
+      n = n / y->car->value;
+      y = y->cdr;
     }
-  return MAKE_NUMBER (n);
+
+  return make_number (n);
 }
 
-SCM
-modulo (SCM a, SCM b)
+struct scm *
+modulo (struct scm *a, struct scm *b)
 {
+  struct scm *a2 = a;
+  struct scm *b2 = b;
   assert_number ("modulo", a);
   assert_number ("modulo", b);
-  long x = VALUE (a);
-  long y = VALUE (b);
-  if (y == 0)
-    error (cstring_to_symbol ("divide-by-zero"), a);
-  while (x < 0)
-    x += y;
-  x = x ? x % y : 0;
-  return MAKE_NUMBER (x);
+  SCM x = a2->value;
+
+  x = x % b2->value;
+  if (b2->value < 0)
+    x = x + b2->value;
+
+  return make_number (x);
 }
 
-SCM
-multiply (SCM x)                ///((name . "*") (arity . n))
+struct scm *
+multiply (struct scm *x)        /* ((name . "*") (arity . n)) */
 {
-  long n = 1;
-  while (x != cell_nil)
+  struct scm *y = x;
+  SCM n = 1;
+
+  while (y != cell_nil)
     {
-      assert_number ("multiply", CAR (x));
-      n *= VALUE (car (x));
-      x = cdr (x);
+      assert_number ("multiply", y->car);
+      n = n * y->car->value;
+      y = y->cdr;
     }
-  return MAKE_NUMBER (n);
+
+  return make_number (n);
 }
 
-SCM
-logand (SCM x)                  ///((arity . n))
+struct scm *
+logand (struct scm *x)          /* ((arity . n)) */
 {
-  long n = 0;
-  while (x != cell_nil)
+  struct scm *y = x;
+  SCM n = -1;
+
+  while (y != cell_nil)
     {
-      assert_number ("multiply", CAR (x));
-      n &= VALUE (car (x));
-      x = cdr (x);
+      assert_number ("multiply", y->car);
+      n = n & y->car->value;
+      y = y->cdr;
     }
-  return MAKE_NUMBER (n);
+
+  return make_number (n);
 }
 
-SCM
-logior (SCM x)                  ///((arity . n))
+struct scm *
+logior (struct scm *x)          /* ((arity . n)) */
 {
-  long n = 0;
-  while (x != cell_nil)
+  struct scm *y = x;
+  SCM n = 0;
+
+  while (y != cell_nil)
     {
-      assert_number ("logior", CAR (x));
-      n |= VALUE (car (x));
-      x = cdr (x);
+      assert_number ("logior", y->car);
+      n = n | y->car->value;
+      y = y->cdr;
     }
-  return MAKE_NUMBER (n);
+
+  return make_number (n);
 }
 
-SCM
-lognot (SCM x)
+struct scm *
+lognot (struct scm *x)
 {
+  struct scm *y = x;
   assert_number ("lognot", x);
-  long n = ~VALUE (x);
-  return MAKE_NUMBER (n);
+  SCM n = ~y->value;
+  return make_number (n);
 }
 
-SCM
-logxor (SCM x)                  ///((arity . n))
+struct scm *
+logxor (struct scm *x)          /* ((arity . n)) */
 {
-  long n = 0;
-  while (x != cell_nil)
+  struct scm *y = x;
+  SCM n = 0;
+
+  while (y != cell_nil)
     {
-      assert_number ("logxor", CAR (x));
-      n ^= VALUE (car (x));
-      x = cdr (x);
+      assert_number ("logxor", y->car);
+      n = n ^ y->car->value;
+      y = y->cdr;
     }
-  return MAKE_NUMBER (n);
+
+  return make_number (n);
 }
 
-SCM
-ash (SCM n, SCM count)
+struct scm *
+ash (struct scm *n, struct scm *count)
 {
+  struct scm *n2 = n;
+  struct scm *count2 = count;
   assert_number ("ash", n);
   assert_number ("ash", count);
-  long cn = VALUE (n);
-  long ccount = VALUE (count);
-  return MAKE_NUMBER ((ccount < 0) ? cn >> -ccount : cn << ccount);
+  SCM cn = n2->value;
+  SCM ccount = count2->value;
+
+  SCM r;
+  if (ccount < 0)
+    r = cn >> -ccount;
+  else
+    r = cn << ccount;
+
+  return make_number (r);
 }

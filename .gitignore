@@ -170,3 +170,8 @@
 /body-hello-mes
 /exit-42
 /hello-mes
+
+/lib/*/*.im
+/lib/*/*.m
+/src/*.im
+/src/*.m
