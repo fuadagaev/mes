@@ -61,6 +61,24 @@ typedef long long int64_t;
 typedef int intmax_t;
 typedef unsigned uintmax_t;
 
+#ifndef __MES_SIZE_T
+#define __MES_SIZE_T
+#undef size_t
+typedef unsigned long size_t;
+#endif
+
+#ifndef __MES_INTPTR_T
+#define __MES_INTPTR_T
+#undef intptr_t
+typedef long intptr_t;
+#endif
+
+#ifndef __MES_UINTPTR_T
+#define __MES_UINTPTR_T
+#undef uintptr_t
+typedef long uintptr_t;
+#endif
+
 #include <sys/types.h>
 
 #define CHAR_BIT 8
