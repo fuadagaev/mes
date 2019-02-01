@@ -229,7 +229,10 @@ lib/dirent/__getdirentries.c
 lib/dirent/closedir.c
 lib/dirent/opendir.c
 lib/dirent/readdir.c
+lib/math/ceil.c
 lib/math/fabs.c
+lib/math/floor.c
+lib/math/labs.c
 lib/mes/fdgets.c
 lib/posix/alarm.c
 lib/posix/execl.c
@@ -267,9 +270,12 @@ lib/string/strncat.c
 lib/string/strpbrk.c
 lib/string/strspn.c
 lib/stub/__cleanup.c
+lib/stub/atan2.c
 lib/stub/bsearch.c
 lib/stub/chown.c
+lib/stub/cos.c
 lib/stub/ctime.c
+lib/stub/exp.c
 lib/stub/fpurge.c
 lib/stub/freadahead.c
 lib/stub/frexp.c
@@ -281,9 +287,12 @@ lib/stub/getpgrp.c
 lib/stub/getpwnam.c
 lib/stub/getpwuid.c
 lib/stub/gmtime.c
+lib/stub/log.c
 lib/stub/mktime.c
+lib/stub/modf.c
 lib/stub/pclose.c
 lib/stub/popen.c
+lib/stub/pow.c
 lib/stub/rand.c
 lib/stub/setbuf.c
 lib/stub/setgrent.c
@@ -293,6 +302,8 @@ lib/stub/sigaddset.c
 lib/stub/sigblock.c
 lib/stub/sigdelset.c
 lib/stub/sigsetmask.c
+lib/stub/sin.c
+lib/stub/sqrt.c
 lib/stub/strftime.c
 lib/stub/sys_siglist.c
 lib/stub/system.c
