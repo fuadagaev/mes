@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2017,2020,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  * Copyright © 2018 Peter De Wachter <pdewacht@gmail.com>
  *
  * This file is part of GNU Mes.
@@ -105,6 +105,12 @@ typedef long uintptr_t;
 
 #define INT_MIN -2147483648
 #define INT_MAX 2147483647
+
+#define SHRT_MAX INT16_MAX
+#define SHRT_MIN INT16_MIN
+#define USHRT_MAX UINT16_MAX
+#define USHRT_MIN UINT16_MIN
+
 #if __i386__ || __arm__
 #define LONG_MIN INT_MIN
 #define LONG_MAX INT_MAX
