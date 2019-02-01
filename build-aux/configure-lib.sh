@@ -243,7 +243,9 @@ lib/stdio/feof.c
 lib/stdio/fgets.c
 lib/stdio/fileno.c
 lib/stdio/freopen.c
+lib/stdio/fscanf.c
 lib/stdio/perror.c
+lib/stdio/vfscanf.c
 lib/stdlib/__exit.c
 lib/stdlib/abort.c
 lib/stdlib/abs.c
