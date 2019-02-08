@@ -26,7 +26,7 @@
 int
 vfprintf (FILE * f, char const *format, va_list ap)
 {
-  int fd = (long) f;
+  int fd = fileno (f);
   char const *p = format;
   int count = 0;
   while (*p)
@@ -41,6 +41,7 @@ vfprintf (FILE * f, char const *format, va_list ap)
         char c = *p;
         int left_p = 0;
         int precision = -1;
+        int prefix_p = 0;
         int width = -1;
         if (c == '-')
           {
@@ -51,12 +52,17 @@ vfprintf (FILE * f, char const *format, va_list ap)
         if (c == ' ')
           {
             pad = c;
-            c = *p++;
+            c = *++p;
+          }
+        if (c == '#')
+          {
+            prefix_p = 1;
+            c = *++p;
           }
         if (c == '0')
           {
             pad = c;
-            c = *p++;
+            c = *++p;
           }
         if (c >= '0' && c <= '9')
           {
@@ -134,6 +140,18 @@ vfprintf (FILE * f, char const *format, va_list ap)
                       count++;
                     }
                 }
+              if (prefix_p && *s && c == 'o')
+                {
+                  fputc ('0', f);
+                  width--;
+                }
+              if (prefix_p && *s && (c == 'x' || c == 'X'))
+                {
+                  fputc ('0', f);
+                  width--;
+                  fputc ('x', f);
+                  width--;
+                }
               while (*s)
                 {
                   if (precision-- <= 0)
@@ -194,6 +212,9 @@ vfprintf (FILE * f, char const *format, va_list ap)
           case 'G':
             {
               double d = va_arg8 (ap, double);
+#if 1
+              fputs ("0.0", f);
+#else
               char *s = dtoab (d, 10, 1);
               if (c == 'E' || c == 'G')
                 strupr (s);
@@ -229,6 +250,7 @@ vfprintf (FILE * f, char const *format, va_list ap)
                   fputc (pad, f);
                   count++;
                 }
+#endif
               break;
             }
           case 'n':
@@ -241,6 +263,8 @@ vfprintf (FILE * f, char const *format, va_list ap)
             {
               eputs ("vfprintf: not supported: %:");
               eputc (c);
+              eputs (", in format: ");
+              eputs (format);
               eputs ("\n");
               p++;
             }
@@ -248,5 +272,5 @@ vfprintf (FILE * f, char const *format, va_list ap)
         p++;
       }
   va_end (ap);
-  return 0;
+  return count;
 }

@@ -43,6 +43,7 @@ vsnprintf (char *str, size_t size, char const *format, va_list ap)
         c = *p;
         int left_p = 0;
         int precision = -1;
+        int prefix_p = 0;
         int width = -1;
         if (c == '-')
           {
@@ -53,12 +54,17 @@ vsnprintf (char *str, size_t size, char const *format, va_list ap)
         if (c == ' ')
           {
             pad = c;
-            c = *p++;
+            c = *++p;
+          }
+        if (c == '#')
+          {
+            prefix_p = 1;
+            c = *++p;
           }
         if (c == '0')
           {
             pad = c;
-            c = *p++;
+            c = *++p;
           }
         if (c >= '0' && c <= '9')
           {
@@ -142,6 +148,18 @@ vsnprintf (char *str, size_t size, char const *format, va_list ap)
                       count++;
                     }
                 }
+              if (prefix_p && *s && c == 'o')
+                {
+                  *s++ = '0';
+                  width--;
+                }
+              if (prefix_p && *s && (c == 'x' || c == 'X'))
+                {
+                  *s++ = '0';
+                  width--;
+                  *s++ = 'x';
+                  width--;
+                }
               while (*s)
                 {
                   if (precision-- <= 0)
@@ -210,6 +228,11 @@ vsnprintf (char *str, size_t size, char const *format, va_list ap)
           case 'G':
             {
               double d = va_arg8 (ap, double);
+#if 1
+              *str++ = '0';
+              *str++ = '.';
+              *str++ = '0';
+#else
               char *s = dtoab (d, 10, 1);
               if (c == 'E' || c == 'G')
                 strupr (s);
@@ -250,6 +273,7 @@ vsnprintf (char *str, size_t size, char const *format, va_list ap)
                     *str++ = pad;
                   count++;
                 }
+#endif
               break;
             }
           case 'n':
@@ -262,6 +286,8 @@ vsnprintf (char *str, size_t size, char const *format, va_list ap)
             {
               eputs ("vsnprintf: not supported: %:");
               eputc (c);
+              eputs (", in format: ");
+              eputs (format);
               eputs ("\n");
               p++;
             }
