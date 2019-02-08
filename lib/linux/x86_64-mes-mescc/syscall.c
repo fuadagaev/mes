@@ -23,7 +23,7 @@
 
 long
 //__sys_call (long one, long two, long three, long four)
-__sys_call (long sys_call, long one, long two, long three, long four)
+__sys_call (long sys_call, long one, long two, long three, long four, long five, long six)
 {
 #if 1                           // !MES_CCAMD64
   // asm ("mov____0x8(%rbp),%rdi !0x10");
@@ -37,6 +37,8 @@ __sys_call (long sys_call, long one, long two, long three, long four)
   asm ("mov____0x8(%rbp),%rsi !0x20");
   asm ("mov____0x8(%rbp),%rdx !0x28");
   asm ("mov____0x8(%rbp),%r10 !0x30");
+  asm ("mov____0x8(%rbp),%r8  !0x38");
+  asm ("mov____0x8(%rbp),%r9  !0x40");
 #endif
 
   asm ("syscall");
@@ -119,5 +121,14 @@ _sys_call4 (long sys_call, long one, long two, long three, long four)
     }
   else
     errno = 0;
+  return r;
+}
+
+long
+_sys_call6 (long sys_call, long one, long two, long three, long four, long five, long six)
+{
+  // long rax = sys_call;
+  // long r = __sys_call6 (one, two, three, four, five, six);
+  long r = __sys_call (sys_call, one, two, three, four, five, six);
   return r;
 }
