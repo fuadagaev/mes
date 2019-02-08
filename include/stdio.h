@@ -79,6 +79,7 @@ int putc (int c, FILE * stream);
 int putchar (int c);
 int puts (char const *s);
 int remove (char const *file_name);
+void rewind (FILE * stream);
 int setvbuf (FILE * stream, char *buf, int mode, size_t size);
 int snprintf (char *str, size_t size, char const *format, ...);
 int sprintf (char *str, char const *format, ...);
