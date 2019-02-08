@@ -85,4 +85,8 @@
 #define SYS_readlink  0x59
 #define SYS_mknod     0x85
 
+// gcc-4.6.4
+#define SYS_mmap      0x09
+#define SYS_munmap    0x0b
+
 #endif // __MES_LINUX_X86_64_SYSCALL_H
