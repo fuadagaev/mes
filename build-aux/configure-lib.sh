@@ -323,6 +323,7 @@ lib/dirent/readdir.c
 lib/math/ceil.c
 lib/math/fabs.c
 lib/math/floor.c
+lib/math/labs.c
 lib/mes/fdgets.c
 lib/posix/alarm.c
 lib/posix/execl.c
