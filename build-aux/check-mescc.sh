@@ -210,6 +210,7 @@ lib/tests/stdio/90-fopen-append.c
 lib/tests/stdio/90-fread-fwrite.c
 lib/tests/stdio/90-fseek.c
 lib/tests/stdio/90-sprintf.c
+lib/tests/stdio/90-sscanf.c
 lib/tests/stdlib/90-strtol.c
 lib/tests/string/90-snprintf.c
 lib/tests/string/90-strpbrk.c
@@ -285,6 +286,7 @@ lib/tests/stdio/80-sscanf.c
 lib/tests/mes/90-abtod.c
 lib/tests/posix/90-execlp.c
 lib/tests/string/90-snprintf.c
+lib/tests/stdio/90-sscanf.c
 "
     fi
 fi
