@@ -632,11 +632,13 @@ See \"Porting GNU Mes\" in the manual, or try --with-courage\n" mes-system)
                     "build-aux/install.sh.in"
                     "build-aux/pre-inst-env.in"
                     "build-aux/uninstall.sh.in"
+                    "scripts/m2-merge.scm.in"
                     "scripts/mesar.in"
                     "scripts/mescc.scm.in"
                     "scripts/mescc.in"
                     ))
         (chmod "pre-inst-env" #o755)
+        (chmod "scripts/m2-merge.scm" #o755)
         (chmod "scripts/mesar" #o755)
         (chmod "scripts/mescc" #o755)
         (chmod "scripts/mescc.scm" #o755)
