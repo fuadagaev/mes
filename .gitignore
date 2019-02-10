@@ -147,6 +147,7 @@
 /install.sh
 /uninstall.sh
 /mes/module/mes/boot-0.scm
+/scripts/m2-merge.scm
 /scripts/mesar
 /scripts/mescc.scm
 /scripts/mescc
