@@ -19,3 +19,4 @@
 # along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
 for i in $(find . -name '*.c' -o -name '*.h' -o -name '*.i'); do indent $i --no-tabs --line-length 110 --honour-newlines; done
+rm -f $(find . -name '*~')

@@ -1,0 +1,193 @@
+#! @GUILE@ \
+--no-auto-compile -e main -L @guile_site_dir@ -C @guile_site_ccache_dir@ -s
+!#
+;;; GNU Mes --- Maxwell Equations of Software
+;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;;
+;;; This file is part of GNU Mes.
+;;;
+;;; GNU Mes is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Mes is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; src/mes is being rewritten to the simplified M2-Planet C subset (M2
+;; for short).  This rewrite is a joint undertaking that takes place in
+;; a separate repository (mes-m2), using a non-GNU coding style.
+
+;; This script means to maintain the history of the rewrite while
+;; being minimally disruptive to the GNU Mes repository.
+
+;; git filter-branch -f --tree-filter ~/src/mes/wip-m2-merge/scripts/m2-merge.scm HEAD
+;;   or
+;; git filter-branch -f --tree-filter ~/src/mes/wip-m2-merge/build-aux/indent.sh HEAD~8..HEAD
+
+;;; Code:
+
+(use-modules (srfi srfi-26)
+             (guix build utils))
+
+(define (m2->mes file-name)
+  (let ((m2->mes-alist '(("mes.c" . "src/mes.c")
+
+                         ("mes_builtins.c" . "src/builtins.c")
+                         ("mes_eval.c" . "src/eval.c")
+                         ("mes_gc.c" . "src/gc.c")
+                         ("mes_hash.c" . "src/hash.c")
+                         ("mes_init.c" . "src/init.c")
+                         ("mes_lib.c" . "src/lib.c")
+                         ("mes_math.c" . "src/math.c")
+                         ("mes_module.c" . "src/module.c")
+                         ("mes_posix.c" . "src/posix.c")
+                         ("mes_printer.c" . "src/printer.c")
+                         ("mes_reader.c" . "src/reader.c")
+                         ("mes_strings.c" . "src/string.c")
+                         ("mes_struct.c" . "src/struct.c")
+                         ("mes_vector.c" . "src/vector.c")
+                         ("temp.c" . "src/temp.c")
+
+                         ("libmes.c" . "lib/libmes.c")
+
+                         ("lib/builtins.c" . "src/builtins.c")
+                         ("lib/eval.c" . "src/eval.c")
+                         ("lib/gc.c" . "src/gc.c")
+                         ("lib/hash.c" . "src/hash.c")
+                         ("lib/lib.c" . "src/lib.c")
+                         ("lib/math.c" . "src/math.c")
+                         ("lib/mes.c" . "src/mes.c")
+                         ("lib/module.c" . "src/module.c")
+                         ("lib/posix.c" . "src/posix.c")
+                         ("lib/printer.c" . "src/printer.c")
+                         ("lib/reader.c" . "src/reader.c")
+                         ("lib/strings.c" . "src/string.c")
+                         ("lib/struct.c" . "src/struct.c")
+                         ("lib/vector.c" . "src/vector.c")
+
+                         ("include/libmes.h" . "include/mes/lib.h")
+                         ("include/libmes-mini.h" . "include/mes/lib-mini.h")
+
+                         ("lib/libmes.h" . "lib/mes/lib.h")
+                         ("lib/libmes-mini.h" . "lib/mes/lib-mini.h")
+                         ("lib/builtins.h" . "lib/mes/builtins.h")
+
+                         ("functions/eputs.c" . "lib/m2/eputs.c")
+                         ("functions/file_print.c" . "lib/m2/file_print.c")
+                         ("functions/in_set.c" . "lib/m2/in_set.c")
+                         ("functions/match.c" . "lib/m2/match.c")
+                         ("functions/mes_open.c" . "lib/m2/mes_open.c")
+                         ("functions/ntoab.c" . "lib/m2/ntoab.c")
+                         ("functions/numerate.c" . "lib/m2/numerate.c")
+
+                         ("mes_constants.h" . "include/mes/constants.h")
+                         ("gcc_req.h" . "include/gcc/mes.h")
+                         ("mes.h" . "include/mes/mes.h")
+                         ("mes2.h" . "include/mes/mes2.h")
+                         ("mes_macros.h" . "include/mes/macros.h"))))
+    (substitute* file-name
+      (("builtins\\.h") "mes/builtins.h")
+      (("gcc_req\\.h") "gcc/mes.h")
+      (("mes_constants\\.h") "mes/constants.h")
+      (("mes\\.h") "mes/mes.h")
+      (("mes2\\.h") "mes/mes2.h")
+      (("mes_macros\\.h") "mes/macros.h")
+
+      (("mes/mes/constants\\.h") "mes/constants.h")
+      (("mes/mes/mes_macros\\.h") "mes/macros.h")
+      (("mes/mes/mes\\.h") "mes/mes.h")
+      (("mes/mes/builtins\\.h") "mes/builtins.h")
+      (("mes/mes/mes2\\.h") "mes/mes2.h")
+      (("gcc/mes/mes\\.h") "gcc/mes.h")
+
+      (("libmes/mes\\.h") "mes/lib.h")
+      (("libmes-mini\\.h") "mes/lib-mini.h")
+
+      (("strings\\.c") "string.c")
+
+      (("lib/builtins\\.c") "src/builtins.c")
+      (("lib/eval\\.c") "src/eval.c")
+      (("lib/gc\\.c") "src/gc.c")
+      (("lib/hash\\.c") "src/hash.c")
+      (("lib/lib\\.c") "src/lib.c")
+      (("lib/math\\.c") "src/math.c")
+      (("lib/mes\\.c") "src/mes.c")
+      (("lib/module\\.c") "src/module.c")
+      (("lib/posix\\.c") "src/posix.c")
+      (("lib/printer\\.c") "src/printer.c")
+      (("lib/reader\\.c") "src/reader.c")
+      (("lib/string\\.c") "src/string.c")
+      (("lib/string\\.c") "src/string.c")
+      (("lib/strings\\.c") "src/string.c")
+      (("lib/struct\\.c") "src/struct.c")
+      (("lib/vector\\.c") "src/vector.c")
+
+      (("mes\\.c") "src/mes.c")
+      (("src/src/mes\\.c") "src/mes.c")
+      (("libsrc/mes\\.c") "libmes.c")
+
+      (("mes_builtins\\.c") "src/builtins.c")
+      (("mes_eval\\.c") "src/eval.c")
+      (("mes_gc\\.c") "src/gc.c")
+      (("mes_hash\\.c") "src/hash.c")
+      (("mes_init\\.c") "src/init.c")
+      (("mes_lib\\.c") "src/lib.c")
+      (("mes_math\\.c") "src/math.c")
+      (("mes_module\\.c") "src/module.c")
+      (("mes_posix\\.c") "src/posix.c")
+      (("mes_printer\\.c") "src/printer.c")
+      (("mes_reader\\.c") "src/reader.c")
+      (("mes_strings\\.c") "src/string.c")
+      (("mes_string\\.c") "src/string.c")
+      (("mes_struct\\.c") "src/struct.c")
+      (("mes_vector\\.c") "src/vector.c")
+      (("temp\\.c") "src/temp.c")
+      (("src/src/temp\\.c") "src/temp.c")
+
+      (("times/mes\\.h") "times.h")
+      (("tisrc/mes\\.c") "times.c")
+      (("mksrc/temp.c\\.c") "mktemp.c")
+
+      (("x86-mes/src/") "x86-mes/")
+      (("x86_64-mes/src/") "x86_64-mes/")
+      (("x86-mes-gcc/src/") "x86-mes-gcc/")
+      (("x86_64-mes-gcc/src/") "x86_64-mes-gcc/")
+
+      (("functions/eputs\\.c") "lib/m2/eputs.c")
+      (("functions/file_print\\.c") "lib/m2/file_print.c")
+      (("functions/in_set\\.c") "lib/m2/in_set.c")
+      (("functions/match\\.c") "lib/m2/match.c")
+      (("functions/mes_open\\.c") "lib/m2/mes_open.c")
+      (("functions/numerate\\.c") "lib/m2/numerate.c")
+      (("functions/ntoab\\.c") "lib/m2/ntoab.c"))
+    (and=> (assoc-ref m2->mes-alist file-name) (cut rename-file file-name <>))))
+
+(define (indent file-name)
+  ;; we don't want init_builtin, init_symbol to be broken...
+  (system* "indent" file-name "--no-tabs" "--honour-newlines" "--line-length" "110")
+  (delete-file (string-append file-name "~"))
+  file-name)
+
+(define (main args)
+  (format (current-error-port) "hello!\n")
+  (let* ((h-files (find-files "." "\\.h$"))
+         (c-files (find-files "." "\\.c$"))
+         (script-files (map (cut string-drop <> 2)
+                            (append (find-files "." "simple.sh")
+                                    (find-files "." "makefile"))))
+         (files (append c-files h-files))
+         (files (map (cut string-drop <> 2) files)))
+    (mkdir-p "include/gcc")
+    (mkdir-p "include/mes")
+    (mkdir-p "lib/m2")
+    (mkdir-p "src")
+    (for-each (compose m2->mes indent) files)
+    (for-each m2->mes script-files)))
