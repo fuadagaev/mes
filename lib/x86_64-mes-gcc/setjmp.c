@@ -34,6 +34,7 @@ longjmp (jmp_buf env, int val)
   exit (42);
 }
 
+// *NO-INDENT*
 int
 setjmp (jmp_buf env)
 {
