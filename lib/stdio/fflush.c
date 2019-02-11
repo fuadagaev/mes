@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 int
-fflush (FILE *stream)
+fflush (FILE * stream)
 {
   int filedes = (int)stream;
   if (filedes < 3)

@@ -61,8 +61,8 @@ int errno;
 #include <ctype/isupper.c>
 #include <ctype/tolower.c>
 #include <ctype/toupper.c>
-#include <mes/abtod.c> // implementation instead of stub for GNU gawk
-#include <mes/dtoab.c> // implementation instead of stub for GNU gawk
+#include <mes/abtod.c>          // implementation instead of stub for GNU gawk
+#include <mes/dtoab.c>          // implementation instead of stub for GNU gawk
 #include <mes/search-path.c>
 #include <posix/execvp.c>
 #include <stdio/fclose.c>

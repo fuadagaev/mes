@@ -25,7 +25,7 @@ int
 vexec (char const *file_name, va_list ap)
 {
   char *arg = va_arg (ap, char const *);
-  char *argv[1000];           // POSIX minimum 4096
+  char *argv[1000];             // POSIX minimum 4096
   int i = 0;
 
   argv[i++] = file_name;
@@ -35,7 +35,11 @@ vexec (char const *file_name, va_list ap)
       arg = va_arg (ap, char const *);
       if (__mes_debug () > 2)
         {
-          eputs ("arg["); eputs (itoa (i)); eputs ("]: "); eputs (argv[i-1]); eputs ("\n");
+          eputs ("arg[");
+          eputs (itoa (i));
+          eputs ("]: ");
+          eputs (argv[i - 1]);
+          eputs ("\n");
         }
     }
   argv[i] = 0;
@@ -52,7 +56,9 @@ execl (char const *file_name, char const *arg, ...)
   va_start (ap, arg);
   if (__mes_debug () > 2)
     {
-      eputs ("execl "); eputs (file_name); eputs ("\n");
+      eputs ("execl ");
+      eputs (file_name);
+      eputs ("\n");
     }
   r = vexec (file_name, ap);
   va_end (ap);

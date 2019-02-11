@@ -19,7 +19,8 @@
  */
 
 void *
-mmap (void* addr, size_t len, int prot, int flags, int fd, off_t offset)
+mmap (void *addr, size_t len, int prot, int flags, int fd, off_t offset)
 {
-  return _sys_call6 (SYS_mmap, (long)addr, (long)len, (int)prot, (int)flags, (int)fd, (long)offset);
+  return _sys_call6 (SYS_mmap, (long)addr, (long)len, (int)prot, (int)flags,
+                     (int)fd, (long)offset);
 }

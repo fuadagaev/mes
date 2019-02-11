@@ -32,11 +32,11 @@
 #include <sys/types.h>
 
 #if _ALLOCA_UNSIGNED
-void * alloca (unsigned size);
+void *alloca (unsigned size);
 #elif _ALLOCA_CHAR
-char * alloca (int);
+char *alloca (int);
 #else
-void * alloca (size_t size);
+void *alloca (size_t size);
 #endif
 
 #endif // ! WITH_GLIBC

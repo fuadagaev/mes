@@ -29,6 +29,6 @@ getpwnam (const char *name)
     eputs ("getpwnam stub\n");
   stub = 1;
   errno = 0;
-  static struct passwd root = {"root", "*", 0, 0, "", "/root", "/bin/sh"};
+  static struct passwd root = { "root", "*", 0, 0, "", "/root", "/bin/sh" };
   return &root;
 }

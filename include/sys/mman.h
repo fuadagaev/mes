@@ -40,7 +40,8 @@
 #define PROT_WRITE 2
 #define PROT_EXEC 4
 
-void *mmap (void *address, size_t length, int protect, int flags, int filedes, off_t offset);
+void *mmap (void *address, size_t length, int protect, int flags, int filedes,
+            off_t offset);
 int mprotect (void *addr, size_t len, int prot);
 int munmap (void *addr, size_t length);
 

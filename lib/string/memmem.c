@@ -31,7 +31,8 @@ unsigned char *
 _memmem (unsigned char const *haystack, int haystack_len,
          unsigned char const *needle, int needle_len)
 {
-  unsigned char const *end_haystack = haystack + haystack_len - needle_len + 1;
+  unsigned char const *end_haystack =
+    haystack + haystack_len - needle_len + 1;
   unsigned char const *end_needle = needle + needle_len;
 
   /* Ahhh ... Some minimal lowlevel stuff. This *is* nice; Varation
@@ -45,7 +46,7 @@ _memmem (unsigned char const *haystack, int haystack_len,
           goto next;
 
       /* Completed the needle.  Gotcha.  */
-      return (unsigned char *) haystack;
+      return (unsigned char *)haystack;
     next:
       haystack++;
     }

@@ -62,7 +62,7 @@ vsscanf (char const *s, char const *template, va_list ap)
               char r = *p++;
               if (!skip_p)
                 {
-                  char *c = va_arg (ap, char*);
+                  char *c = va_arg (ap, char *);
                   *c = r;
                   count++;
                 }
@@ -76,7 +76,7 @@ vsscanf (char const *s, char const *template, va_list ap)
                 abtol (&p, 10);
               else
                 {
-                  int *d = va_arg (ap, int*);
+                  int *d = va_arg (ap, int *);
                   *d = abtol (&p, 10);
                   count++;
                 }
@@ -92,7 +92,7 @@ vsscanf (char const *s, char const *template, va_list ap)
                 strtod (p, &p);
               else
                 {
-                  float *f = va_arg (ap, float*);
+                  float *f = va_arg (ap, float *);
                   *f = strtod (p, &p);
                   count++;
                 }
@@ -100,7 +100,7 @@ vsscanf (char const *s, char const *template, va_list ap)
             }
           case 's':
             {
-              char *s = skip_p ? 0 : va_arg (ap, char*);
+              char *s = skip_p ? 0 : va_arg (ap, char *);
               char r = *p;
               while (r && !isspace (r) && (length == -1 || length--))
                 {
@@ -117,7 +117,7 @@ vsscanf (char const *s, char const *template, va_list ap)
             }
           case '[':
             {
-              char *s = skip_p ? 0 : va_arg (ap, char*);
+              char *s = skip_p ? 0 : va_arg (ap, char *);
               char set[1024];
               int i = 0;
               int not_in_set_p = 0;
@@ -134,7 +134,7 @@ vsscanf (char const *s, char const *template, va_list ap)
                   if (*t == '-')
                     {
                       char end = *t++;
-                      for (char x=set[i-1] + 1; x < end; x++)
+                      for (char x = set[i - 1] + 1; x < end; x++)
                         set[i++] = x;
                     }
                   else
@@ -153,11 +153,11 @@ vsscanf (char const *s, char const *template, va_list ap)
                     *s++ = r;
                   r = *++p;
                 }
-                if (!skip_p)
-                  {
-                    count++;
-                    *s = 0;
-                  }
+              if (!skip_p)
+                {
+                  count++;
+                  *s = 0;
+                }
               break;
             }
           default:

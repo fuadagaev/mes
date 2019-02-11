@@ -42,13 +42,17 @@ main ()
 
   char *p = "16";
   int n = strtol (p, (char **)&p, 0);
-  eputs ("p="); eputs (p); eputs ("\n");
+  eputs ("p=");
+  eputs (p);
+  eputs ("\n");
   if (*p != 0)
     return 5;
 
   p = "0x12";
   n = strtol (p, (char **)&p, 0);
-  eputs ("p="); eputs (p); eputs ("\n");
+  eputs ("p=");
+  eputs (p);
+  eputs ("\n");
   if (*p != 0)
     return 5;
 

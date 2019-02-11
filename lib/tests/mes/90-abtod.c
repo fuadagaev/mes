@@ -26,7 +26,7 @@ main ()
 {
   char *s = "1.2e3";
   char *p = s;
-  double d =  abtod (&p, 0);
+  double d = abtod (&p, 0);
   printf ("%f\n", d);
 
   return 0;

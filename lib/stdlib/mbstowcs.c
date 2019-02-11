@@ -21,8 +21,7 @@
 #include <stdlib.h>
 
 size_t
-mbstowcs (wchar_t *wstring, char const *string,
-          size_t size)
+mbstowcs (wchar_t *wstring, char const *string, size_t size)
 {
   static int stub = 0;
   if (__mes_debug () && !stub)

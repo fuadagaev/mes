@@ -65,7 +65,7 @@
 #include <stub/pclose.c>
 #include <stub/popen.c>
 #include <string/rindex.c>
-#include <stdio/rewind.c>     // for gcc-4.6.4; could be stubbed
+#include <stdio/rewind.c>       // for gcc-4.6.4; could be stubbed
 #include <stub/setbuf.c>
 #include <stub/system.c>
 #include <string/strerror.c>
@@ -87,8 +87,8 @@
 #include <stub/sys_siglist.c>
 #include <stub/umask.c>
 #include <stub/utime.c>
-#include <stdio/fscanf.c>     // for gcc-4.6.4; could be stubbed
-#include <stdio/vfscanf.c>    // dependency of fscanf
+#include <stdio/fscanf.c>       // for gcc-4.6.4; could be stubbed
+#include <stdio/vfscanf.c>      // dependency of fscanf
 #include <ctype/isascii.c>
 #include <stdlib/bsearch.c>
 #include <stub/gmtime.c>

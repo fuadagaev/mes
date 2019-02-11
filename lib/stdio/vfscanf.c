@@ -23,7 +23,7 @@
 #include <stdio.h>
 
 int
-vfscanf (FILE *stream, char const *template, va_list ap)
+vfscanf (FILE * stream, char const *template, va_list ap)
 {
   char r = fgetc (stream);
   char const *t = template;
@@ -61,7 +61,7 @@ vfscanf (FILE *stream, char const *template, va_list ap)
               r = fgetc (stream);
               if (!skip_p)
                 {
-                  char *c = va_arg (ap, char*);
+                  char *c = va_arg (ap, char *);
                   *c = r;
                   count++;
                 }
@@ -71,7 +71,7 @@ vfscanf (FILE *stream, char const *template, va_list ap)
           case 'i':
           case 'u':
             {
-              int *d = skip_p ? 0 : va_arg (ap, int*);
+              int *d = skip_p ? 0 : va_arg (ap, int *);
               char buf[20];
               char *q = buf;
               if (r == '+' || r == '-')
@@ -102,7 +102,7 @@ vfscanf (FILE *stream, char const *template, va_list ap)
           case 'E':
           case 'G':
             {
-              float *f = skip_p ? 0 : va_arg (ap, float*);
+              float *f = skip_p ? 0 : va_arg (ap, float *);
               char buf[20];
               char *q = buf;
               if (r == '+' || r == '-')
@@ -129,7 +129,7 @@ vfscanf (FILE *stream, char const *template, va_list ap)
             }
           case 's':
             {
-              char *s = skip_p ? 0 : va_arg (ap, char*);
+              char *s = skip_p ? 0 : va_arg (ap, char *);
               while (r && !isspace (r) && (length == -1 || length--))
                 {
                   if (!skip_p)
@@ -145,7 +145,7 @@ vfscanf (FILE *stream, char const *template, va_list ap)
             }
           case '[':
             {
-              char *s = skip_p ? 0 : va_arg (ap, char*);
+              char *s = skip_p ? 0 : va_arg (ap, char *);
               char set[1024];
               int i = 0;
               int not_in_set_p = 0;
@@ -162,7 +162,7 @@ vfscanf (FILE *stream, char const *template, va_list ap)
                   if (*t == '-')
                     {
                       char end = *t++;
-                      for (char x=set[i-1] + 1; x < end; x++)
+                      for (char x = set[i - 1] + 1; x < end; x++)
                         set[i++] = x;
                     }
                   else
@@ -180,11 +180,11 @@ vfscanf (FILE *stream, char const *template, va_list ap)
                     *s++ = r;
                   r = fgetc (stream);
                 }
-                if (!skip_p)
-                  {
-                    count++;
-                    *s = 0;
-                  }
+              if (!skip_p)
+                {
+                  count++;
+                  *s = 0;
+                }
               break;
             }
           default:

@@ -23,7 +23,7 @@
 #if WITH_GLIBC
 #undef __MES_GRP_H
 #include_next <pwd.h>
-#else  // ! WITH_GLIBC
+#else // ! WITH_GLIBC
 
 struct group
 {
@@ -38,6 +38,6 @@ void setgrent (void);
 struct group *getgrgid (gid_t gid);
 struct group *getgrnam (char const *name);
 
-#endif  // ! WITH_GLIBC
+#endif // ! WITH_GLIBC
 
 #endif // __MES_GRP_H

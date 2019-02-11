@@ -23,7 +23,7 @@
 #if WITH_GLIBC
 #undef __MES_MATH_H
 #include_next <math.h>
-#else  // ! WITH_GLIBC
+#else // ! WITH_GLIBC
 
 double atan2 (double y, double x);
 double ceil (double x);
@@ -39,6 +39,6 @@ double pow (double base, double power);
 double sin (double x);
 double sqrt (double x);
 
-#endif  // ! WITH_GLIBC
+#endif // ! WITH_GLIBC
 
 #endif // __MES_MATH_H

@@ -30,7 +30,7 @@ struct foo13
   int b;
   int c;
   char d;
-} __attribute__ ((packed));
+} __attribute__((packed));
 
 struct foo13 tab14[3];
 

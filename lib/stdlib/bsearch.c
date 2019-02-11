@@ -22,9 +22,11 @@
 
 void *
 #if __MESC__
-bsearch (void const *key, void const *array, size_t count, size_t size, void (*compare) ())
+bsearch (void const *key, void const *array, size_t count, size_t size,
+         void (*compare) ())
 #else
-bsearch (void const *key, void const *array, size_t count, size_t size, comparison_fn_t compare)
+bsearch (void const *key, void const *array, size_t count, size_t size,
+         comparison_fn_t compare)
 #endif
 {
   static int stub = 0;

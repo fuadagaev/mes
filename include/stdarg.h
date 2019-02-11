@@ -31,15 +31,15 @@
 #define __FOO_VARARGS 1
 #endif
 
-typedef char* va_list;
+typedef char *va_list;
 #define va_start(ap, last) (void)((ap) = (char*)(&(last) + 1))
 #define va_arg(ap, type) (type)(((long*)((ap) = ((ap) + sizeof (void*))))[-1])
 #define va_end(ap) (void)((ap) = 0)
 #define va_copy(dest, src) dest = src
 
-int vfprintf (FILE *stream, char const *template, va_list ap);
-int vfscanf (FILE *stream, char const *template, va_list ap);
-int vprintf (char const* format, va_list ap);
+int vfprintf (FILE * stream, char const *template, va_list ap);
+int vfscanf (FILE * stream, char const *template, va_list ap);
+int vprintf (char const *format, va_list ap);
 int vsprintf (char *str, char const *format, va_list ap);
 int vsnprintf (char *str, size_t size, char const *format, va_list ap);
 int vsscanf (char const *s, char const *template, va_list ap);

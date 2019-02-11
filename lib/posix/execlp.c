@@ -31,7 +31,9 @@ execlp (char const *file_name, char const *arg, ...)
     file_name = search_path (file_name);
   if (__mes_debug () > 2)
     {
-      eputs ("execlp "); eputs (file_name ? file_name : "0"); eputs ("\n");
+      eputs ("execlp ");
+      eputs (file_name ? file_name : "0");
+      eputs ("\n");
     }
   if (!file_name)
     {

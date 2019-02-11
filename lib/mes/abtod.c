@@ -45,9 +45,9 @@ abtod (char const **p, int base)
   d = i + f / dbase;
   if (e < 0)
     while (e++)
-        d = d / dbase;
-    while (e--)
-        d = d * dbase;
+      d = d / dbase;
+  while (e--)
+    d = d * dbase;
   *p = s;
   return sign_p ? -d : d;
 }

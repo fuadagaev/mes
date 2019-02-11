@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 int
-ferror (FILE *stream)
+ferror (FILE * stream)
 {
   int fd = (int)stream;
   if (fd == -1)

@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 void
-rewind (FILE *stream)
+rewind (FILE * stream)
 {
   fseek (stream, 0, SEEK_SET);
 }

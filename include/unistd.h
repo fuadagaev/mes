@@ -83,9 +83,9 @@ ssize_t read (int fd, void *buffer, size_t size);
 ssize_t readlink (char const *file_name, char *buffer, size_t size);
 #if __SBRK_CHAR_PTRDIFF
 /* xmalloc in binutils <= 2.10.1 uses this old prototype */
-char * sbrk (ptrdiff_t delta);
+char *sbrk (ptrdiff_t delta);
 #else
-void * sbrk (intptr_t delta);
+void *sbrk (intptr_t delta);
 #endif
 int symlink (char const *old_name, char const *new_name);
 int unlink (char const *file_name);

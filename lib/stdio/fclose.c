@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 int
-fclose (FILE *stream)
+fclose (FILE * stream)
 {
   int fd = (int)stream;
   return close (fd);

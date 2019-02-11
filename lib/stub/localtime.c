@@ -30,6 +30,6 @@ localtime (time_t const *timep)
     eputs ("localtime stub\n");
   stub = 1;
   errno = 0;
-  static struct tm zero = {0};
+  static struct tm zero = { 0 };
   return &zero;
 }

@@ -31,7 +31,8 @@ typedef long int clockid_t;
 typedef long int time_t;
 #endif
 
-struct tm {
+struct tm
+{
   int tm_sec;
   int tm_min;
   int tm_hour;
@@ -61,7 +62,7 @@ struct tm *localtime (time_t const *timep);
 struct tm *gmtime (time_t const *time);
 int mktime (struct tm *broken_time);
 
-time_t time (time_t *tloc);
+time_t time (time_t * tloc);
 
 #endif // ! WITH_GLIBC
 

@@ -21,7 +21,7 @@
 #include <mes/lib.h>
 
 double
-atof (char const* string)
+atof (char const *string)
 {
   char const *p = string;
   return abtod (&p, 0);

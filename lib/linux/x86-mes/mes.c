@@ -67,7 +67,8 @@ __sys_call4 (int sys_call, int one, int two, int three, int four)
 }
 
 int
-__sys_call6 (int sys_call, int one, int two, int three, int four, int five, int six)
+__sys_call6 (int sys_call, int one, int two, int three, int four, int five,
+             int six)
 {
   asm ("mov____0x8(%ebp),%eax !0x08");
   asm ("mov____%ebp,%ebx");
@@ -146,7 +147,8 @@ _sys_call4 (int sys_call, int one, int two, int three, int four)
 }
 
 int
-_sys_call6 (int sys_call, int one, int two, int three, int four, int five, int six)
+_sys_call6 (int sys_call, int one, int two, int three, int four, int five,
+            int six)
 {
   return __sys_call6 (sys_call, one, two, three, four, five, six);
 }

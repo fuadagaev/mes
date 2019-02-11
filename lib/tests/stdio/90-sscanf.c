@@ -27,12 +27,19 @@ main ()
   char buf_abc[20];
   char buf_xxx[20];
   char buf_0_9[20];
-  int i = sscanf ("@abcxxx x0", "@%5[a-bc]%s%[^0-9]", &buf_abc, &buf_xxx, &buf_0_9);
+  int i =
+    sscanf ("@abcxxx x0", "@%5[a-bc]%s%[^0-9]", &buf_abc, &buf_xxx, &buf_0_9);
   if (i != 3)
     return 1;
-  eputs ("buf_abc="); eputs (buf_abc); eputs ("\n");
-  eputs ("buf_xxx="); eputs (buf_xxx); eputs ("\n");
-  eputs ("buf_0_9="); eputs (buf_0_9); eputs ("\n");
+  eputs ("buf_abc=");
+  eputs (buf_abc);
+  eputs ("\n");
+  eputs ("buf_xxx=");
+  eputs (buf_xxx);
+  eputs ("\n");
+  eputs ("buf_0_9=");
+  eputs (buf_0_9);
+  eputs ("\n");
   if (strcmp (buf_abc, "abc"))
     return 2;
   if (strcmp (buf_xxx, "xxx"))

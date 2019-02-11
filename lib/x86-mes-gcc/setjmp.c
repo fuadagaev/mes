@@ -24,13 +24,12 @@ void
 longjmp (jmp_buf env, int val)
 {
   val = val == 0 ? 1 : val;
-  asm ("mov    0x8(%ebp),%ebp\n\t"     // env*
-
-       "mov    0x4(%ebp),%ebx\n\t"     // env->__pc
-       "mov    0x8(%ebp),%esp\n\t"     // env->__sp
-       "mov    0x0(%ebp),%ebp\n\t"     // env->__bp
-       "jmp    *%ebx\n\t"              // jmp *PC
-       );
+  asm ("mov    0x8(%ebp),%ebp\n\t"      // env*
+       "mov    0x4(%ebp),%ebx\n\t"      // env->__pc
+       "mov    0x8(%ebp),%esp\n\t"      // env->__sp
+       "mov    0x0(%ebp),%ebp\n\t"      // env->__bp
+       "jmp    *%ebx\n\t"       // jmp *PC
+    );
   // not reached
   exit (42);
 }
@@ -38,7 +37,7 @@ longjmp (jmp_buf env, int val)
 int
 setjmp (jmp_buf env)
 {
-  long *p = (long*)&env;
+  long *p = (long *)&env;
   env[0].__bp = p[-2];
   env[0].__pc = p[-1];
   env[0].__sp = (long)&env;

@@ -27,8 +27,8 @@ getgrgid (gid_t gid)
   static int stub = 0;
   if (__mes_debug () && !stub)
     eputs ("getgrid stub\n");
-  static char *groups[2] = {"root", 0 };
-  static struct group root = {"root", 0, groups};
+  static char *groups[2] = { "root", 0 };
+  static struct group root = { "root", 0, groups };
   stub = 1;
   errno = 0;
   return &root;

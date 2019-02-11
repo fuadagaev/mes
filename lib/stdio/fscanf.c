@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 int
-fscanf (FILE *stream, char const *template, ...)
+fscanf (FILE * stream, char const *template, ...)
 {
   va_list ap;
   va_start (ap, template);

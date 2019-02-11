@@ -24,7 +24,7 @@
 #include <string.h>
 
 int
-vfprintf (FILE* f, char const* format, va_list ap)
+vfprintf (FILE * f, char const *format, va_list ap)
 {
   int fd = (long)f;
   char const *p = format;
@@ -118,9 +118,7 @@ vfprintf (FILE* f, char const* format, va_list ap)
           case 'X':
             {
               long d = va_arg (ap, long);
-              int base = c == 'o' ? 8
-                : c == 'x' || c == 'X' ? 16
-                : 10;
+              int base = c == 'o' ? 8 : c == 'x' || c == 'X' ? 16 : 10;
               char *s = ntoab (d, base, c != 'u' && c != 'x' && c != 'X');
               if (c == 'X')
                 strupr (s);
