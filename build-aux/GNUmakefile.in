@@ -304,6 +304,14 @@ endif
 tag:
 	git tag -s v$(VERSION) -m "GNU Mes $(VERSION)."
 
+WEB_IMAGES:=\
+ doc/images/gcc-mesboot-graph.eps\
+ doc/images/gcc-mesboot-graph.pdf\
+ doc/images/gcc-mesboot-graph.png
+
+web: info $(WEB_IMAGES)
+	GENDOCS_TEMPLATE_DIR=doc build-aux/gendocs.sh -I doc -s ${srcdest}doc/mes.texi -o doc/web/manual --email bug-mes@gnu.org mes "GNU Mes manual"
+
 # Release process
 #  0. doc: Release update, Release commit, test guix bootstrap
 #  1. make tag

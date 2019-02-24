@@ -28,6 +28,11 @@ compile () {
     fi
 }
 
+# FIXME
+tcompile () {
+    trace "CC         $1.c" $CC -c $CPPFLAGS $CFLAGS -o "$1".o "${srcdest}$1".c
+}
+
 archive () {
     archive=$1
     shift

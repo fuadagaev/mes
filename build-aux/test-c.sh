@@ -20,6 +20,10 @@
 
 set -e
 
+set -x
+echo test:$1
+pwd
+
 if test -z "$config_sh"; then
     . ./config.sh
 fi
@@ -54,7 +58,7 @@ fi
 
 if test $mes_libc = system; then
     crt1=
-    LIBS='-l mes'
+    LIBS='-L ../lib -l mes'
 else
     crt1=crt1.o
 fi
