@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -18,9 +18,21 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int
-main ()
+/** Commentary:
+    Inspired by implementation in GNU C Library:
+    _hurd_exit
+    Copyright (C) 1993-2016 Free Software Foundation, Inc.
+ */
+
+#include <gnu/hurd.h>
+#include <gnu/hurd-types.h>
+#include <gnu/syscall.h>
+#include <mach/mach-init.h>
+
+void
+_exit (int status)
 {
-  _exit (0);
-  return 1;
+  __proc_mark_exit (_hurd_startup_data.portarray[INIT_PORT_PROC], status, 0);
+  __task_terminate (__mach_task_self ());
+  while (1) {* (int *) 0 = 0;}
 }

@@ -25,6 +25,7 @@ set -u
 TESTS="
 lib/tests/scaffold/t.c
 lib/tests/scaffold/00-exit-0.c
+lib/tests/scaffold/00-exit-42.c
 lib/tests/scaffold/01-return-0.c
 lib/tests/scaffold/02-return-1.c
 lib/tests/scaffold/03-call.c

@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -18,9 +18,11 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int
-main ()
+#include <gnu/syscall.h>
+#include <sys/wait.h>
+
+kern_return_t
+__proc_mark_exit (mach_port_t process, int status, int signal)
 {
-  _exit (0);
-  return 1;
+  return __syscall2 (process, SYS__proc_mark_exit, W_EXITCODE (status, 0), signal);
 }

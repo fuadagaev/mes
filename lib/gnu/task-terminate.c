@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -18,9 +18,10 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int
-main ()
+#include <gnu/syscall.h>
+
+kern_return_t
+__task_terminate (mach_port_t task)
 {
-  _exit (0);
-  return 1;
+  return __syscall (task, SYS__task_terminate);
 }

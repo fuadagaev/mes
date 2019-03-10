@@ -69,9 +69,8 @@ _start ()
 
        "call    main\n\t"
 
-       "mov     %eax,%ebx\n\t"
-       "mov     $1,%eax\n\t"
-       "int     $0x80\n\t"
+       "push    %eax\n\t"
+       "call    _exit\n\t"
        "hlt     \n\t"
        );
 }

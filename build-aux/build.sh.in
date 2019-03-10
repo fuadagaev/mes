@@ -66,6 +66,7 @@ fi
 
 CPPFLAGS="
 -D HAVE_CONFIG_H=1
+-I ${srcdir}/../lib
 -I ../include
 -I ${srcdir}/../include
 -I ${srcdir}/../include/$mes_kernel/$mes_cpu
@@ -98,6 +99,7 @@ if test $compiler = gcc; then
         fi
         CPPFLAGS="
 -D HAVE_CONFIG_H=1
+-I ${srcdest}lib
 -I include
 -I ${srcdest}include
 -I ${srcdest}include/$mes_kernel/$mes_cpu
@@ -116,6 +118,7 @@ fi
 
     CPPFLAGS="
 -D HAVE_CONFIG_H=1
+-I ${srcdest}lib
 -I include
 -I ${srcdest}include
 -I ${srcdest}include/$mes_kernel/$mes_cpu
@@ -137,6 +140,7 @@ fi
     fi
         CPPFLAGS="
 -D HAVE_CONFIG_H=1
+-I ${srcdest}lib
 -I include
 -I ${srcdest}include
 -I ${srcdest}include/$mes_kernel/$mes_cpu

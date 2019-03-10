@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -18,9 +18,24 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int
-main ()
+#include <gnu/syscall.h>
+
+struct mach_msg_int32_vm_statistics_data
 {
-  _exit (0);
-  return 1;
+  mach_msg_header_t header;
+  mach_msg_type_t type_one; int one;
+  mach_msg_type_t type_two; vm_statistics_data_t two;
+};
+
+kern_return_t
+__vm_statistics (mach_port_t task, vm_statistics_data_t *vm_stats)
+{
+  struct mach_msg_int32_vm_statistics_data message = {0};
+  message.header.msgh_size = sizeof (struct mach_msg);
+  message.type_one = mach_msg_type_int32;
+  message.type_two = mach_msg_type_int32;
+  kern_return_t result = __syscall_get (task, SYS__vm_statistics,
+                                        &message.header, sizeof (message));
+  *vm_stats = message.two;
+  return result;
 }

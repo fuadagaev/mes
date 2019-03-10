@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -18,9 +18,20 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int
-main ()
+#include <gnu/syscall.h>
+
+kern_return_t
+__task_get_special_port (mach_port_t task, int which, mach_port_t *port)
 {
-  _exit (0);
-  return 1;
+  struct mach_msg_2 message = {0};
+  message.header.msgh_size = sizeof (struct mach_msg_1);
+  message.type_one = mach_msg_type_int32;
+  message.one = which;
+  message.type_two = mach_msg_type_int32;
+  message.two = 0;
+  kern_return_t result = __syscall_get (task, SYS__task_get_special_port,
+                                        &message.header, sizeof (message));
+  if (result == KERN_SUCCESS)
+    *port = message.two;
+  return result;
 }

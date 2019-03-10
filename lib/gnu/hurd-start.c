@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -18,9 +18,30 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int
-main ()
+/** Commentary:
+    Inspired by implementation in GNU C Library:
+    Initialization code run first thing by the ELF startup code.  For i386/Hurd.
+    Copyright (C) 1995-2016 Free Software Foundation, Inc.
+ */
+
+#include <gnu/hurd.h>
+#include <gnu/syscall.h>
+
+#include <mach/mach-init.h>
+#include <mach/mach_types.h>
+#include <mach/message.h>
+#include <mach/port.h>
+
+struct hurd_startup_data _hurd_startup_data;
+
+void __mach_init (void);
+
+void
+_hurd_start ()
 {
-  _exit (0);
-  return 1;
+  mach_port_t bootstrap;
+  __mach_init ();
+  __task_get_special_port (__mach_task_self (), TASK_BOOTSTRAP_PORT,
+                           &bootstrap);
+  __exec_startup_get_data (bootstrap, &_hurd_startup_data);
 }
