@@ -76,8 +76,9 @@ lib/tests/scaffold/23-global-pointer-ref.c
 lib/tests/scaffold/23-global-pointer-pointer-ref.c
 lib/tests/scaffold/23-pointer-sub.c
 lib/tests/scaffold/23-pointer.c
-lib/tests/mes/30-oputs.c
 lib/tests/string/30-strlen.c
+lib/tests/mes/30-oputs.c
+lib/tests/mes/30-eputs.c
 lib/tests/scaffold/32-call-wrap.c
 lib/tests/scaffold/32-compare.c
 lib/tests/scaffold/33-and-or.c
