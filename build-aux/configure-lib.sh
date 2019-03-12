@@ -143,7 +143,6 @@ lib/stdio/putc.c
 lib/stdio/putchar.c
 lib/stdio/ungetc.c
 lib/stdlib/free.c
-lib/stdlib/malloc.c
 lib/stdlib/realloc.c
 lib/string/memchr.c
 lib/string/memcmp.c
@@ -162,6 +161,8 @@ lib/gnu/_read.c
 lib/gnu/dir-lookup.c
 lib/gnu/fd-read.c
 lib/gnu/io-read.c
+lib/gnu/malloc.c
+lib/gnu/vm-allocate.c
 lib/stub/access.c
 lib/stub/brk.c
 lib/stub/chmod.c
@@ -199,6 +200,7 @@ lib/linux/time.c
 lib/linux/unlink.c
 lib/linux/waitpid.c
 lib/linux/$mes_cpu-mes-$compiler/syscall.c
+lib/unix/malloc.c
 "
 fi
 
