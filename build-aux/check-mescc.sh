@@ -267,6 +267,7 @@ lib/tests/mes/90-dtoab.c
 
     if test $mes_cpu = x86; then
         XFAIL_TESTS="$XFAIL_TESTS
+lib/tests/mes/90-dtoab.c
 "
     fi
 
