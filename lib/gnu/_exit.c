@@ -27,9 +27,7 @@
 #include <gnu/hurd.h>
 #include <gnu/hurd-types.h>
 #include <gnu/syscall.h>
-//#include <mach/mach-init.h>
-
-#warn "DUN"
+#include <mach/mach-init.h>
 
 void
 _exit (int status)

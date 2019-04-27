@@ -24,7 +24,6 @@
 #define _GNU_SOURCE 1
 #define __USE_GNU 1
 
-#include <mes/lib-mini.h>
 #include <errno.h>
 #include <sys/types.h>
 
@@ -35,45 +34,9 @@ typedef off64_t loff_t;
 #endif
 #endif
 
-#if __MESC__
-
-typedef unsigned int mach_msg_type_number_t;
-
-typedef int kern_error_t;
-typedef int kern_return_t;
-
-typedef int boolean_t;
-
-// vm
-typedef int integer_t;
-typedef unsigned int natural_t;
-typedef	natural_t vm_size_t;
-
-#if 0 // broken
-typedef	unsigned long vm_offset_t;
-typedef	vm_offset_t mach_port_t;
-//typedef mach_port_t io_t;
-//typedef mach_port_t task_t;
-typedef natural_t mach_port_seqno_t;
-typedef	vm_offset_t pointer_t;
-typedef	vm_offset_t vm_address_t;
-
-#else
-typedef	unsigned long vm_offset_t;
-typedef unsigned long mach_port_t;
-//typedef unsigned long io_t;
-//typedef unsigned long task_t;
-
-typedef unsigned int mach_port_seqno_t;
-typedef	unsigned long pointer_t;
-typedef	unsigned long vm_address_t;
-#endif
-
-#else
 #include <mach/mach_types.h>
 #include <mach/message.h>
 #include <mach/port.h>
-#endif
 
 struct hurd_startup_data
   {

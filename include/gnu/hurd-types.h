@@ -26,11 +26,8 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #endif
 
 #include <time.h>		/* For struct timespec.  */
-#if __MESC__
-#else
 #include <mach/std_types.h>	/* For mach_port_t et al. */
 #include <mach/message.h>	/* For mach_msg_id_t et al. */
-#endif
 #include <sys/types.h>		/* For pid_t and uid_t.  */
 
 /* A string identifying this release of the GNU Hurd.  Our
@@ -43,7 +40,6 @@ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /*   Simple type declarations   */
 
-#if 0
 /* These types identify certain kinds of ports used by the Hurd. */
 typedef mach_port_t file_t;
 typedef mach_port_t fsys_t;
@@ -59,22 +55,6 @@ typedef mach_port_t exec_startup_t;
 typedef mach_port_t interrupt_t;
 typedef mach_port_t proccoll_t;
 typedef mach_port_t ctty_t;
-#else
-typedef unsigned int file_t;
-typedef unsigned int fsys_t;
-typedef unsigned int io_t;
-typedef unsigned int process_t;
-typedef unsigned int auth_t;
-typedef unsigned int socket_t;
-typedef unsigned int pf_t;	/* Protocol family */
-typedef unsigned int addr_port_t;
-typedef unsigned int startup_t;
-typedef unsigned int fs_notify_t;
-typedef unsigned int exec_startup_t;
-typedef unsigned int interrupt_t;
-typedef unsigned int proccoll_t;
-typedef unsigned int ctty_t;
-#endif
 
 #include <errno.h>		/* Defines `error_t'.  */
 
@@ -154,8 +134,6 @@ enum retry_type
      */
 };
 typedef enum retry_type retry_type;
-
-#if __GNUC__
 
 /* Types for fs_notify.defs:dir_changed call: */
 enum dir_changed_type
@@ -293,13 +271,10 @@ enum file_storage_class
 
 /*   Data types   */
 
-#if __MESC__
-#else
 #include <mach/task_info.h>
 #include <mach/thread_info.h>
 #ifndef THREAD_SCHED_INFO
 #include <mach/policy.h>
-#endif
 #endif
 
 /* Flags sent in proc_getprocinfo request. */
@@ -414,7 +389,5 @@ enum
     INIT_TRACEMASK,
     INIT_INT_MAX,
   };
-
-#endif // __GNUC__
 
 #endif // _HURD_TYPES_H

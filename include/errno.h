@@ -30,11 +30,8 @@
 
 #ifndef __MES_ERRNO_T
 #define __MES_ERRNO_T 1
-#ifndef __error_t_defined
-#define __error_t_defined 1
 typedef int error_t;
 int errno;
-#endif // ! __error_t_defined
 #endif // !__MES_ERRNO_T
 
 int errno;
