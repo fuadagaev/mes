@@ -21,7 +21,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if BZERO_INT
 int
+#else
+void
+#endif
 bzero (void *block, size_t size)
 {
   return (int) (long) memset (block, 0, size);
