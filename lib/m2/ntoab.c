@@ -19,64 +19,51 @@
  */
 
 #include <mes/lib.h>
-#include <errno.h>
-#include <limits.h>
-#include <stdlib.h>
+#include <assert.h>
 #include <string.h>
-#include <sys/resource.h>
-#include <unistd.h>
 
-int errno;
-int *__ungetc_buf;
+char *__itoa_buf;
 
-int
-__ungetc_p (int filedes)
+char *
+ntoab (int x, int base, int signed_p)
 {
-  return __ungetc_buf[filedes] >= 0;
-}
+  if (__itoa_buf == 0)
+    __itoa_buf = malloc (20);
 
-void
-__ungetc_init ()
-{
-  if (__ungetc_buf == 0)
+  char *buf = __itoa_buf;
+  char *p = buf + 11;
+  p[0] = 0;
+  p = p - 1;
+  assert_msg (base > 0, "base  > 0");
+
+  int sign_p = 0;
+  unsigned u;
+  if (signed_p != 0 && x < 0)
     {
-      int save_errno = errno;
-      __ungetc_buf = malloc ((__FILEDES_MAX + 1) * sizeof (int));
-      errno = save_errno;
-      memset (__ungetc_buf, -1, (__FILEDES_MAX + 1) * sizeof (int));
+      sign_p = 1;
+      u = -x;
     }
-}
-
-void
-__ungetc_clear (int filedes)
-{
-  __ungetc_buf[filedes] = -1;
-}
-
-void
-__ungetc_set (int filedes, int c)
-{
-  __ungetc_buf[filedes] = c;
-}
-
-int
-fdgetc (int fd)
-{
-  __ungetc_init ();
-
-  char c;
-  int i = __ungetc_buf[fd];
-  if (i >= 0)
-    __ungetc_buf[fd] = -1;
   else
-    {
-      int r = read (fd, &c, 1);
-      if (r < 1)
-        return -1;
-      i = c;
-    }
-  if (i < 0)
-    i = i + 256;
+    u = x;
 
-  return i;
+  do
+    {
+      unsigned i;
+      i = u % base;
+      u = u / base;
+      if (i > 9)
+        p[0] = 'a' + i - 10;
+      else
+        p[0] = '0' + i;
+      p = p - 1;
+    }
+  while (u != 0);
+
+  if (sign_p && p[1] != '0')
+    {
+      p[0] = '-';
+      p = p - 1;
+    }
+
+  return p + 1;
 }
