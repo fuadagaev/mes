@@ -21,7 +21,6 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -41,7 +40,7 @@ alloc (long n)
   SCM x = g_free;
   g_free = g_free + n;
   if (g_free > ARENA_SIZE)
-    assert (!"alloc: out of memory");
+    assert_msg (0, "alloc: out of memory");
   return x;
 }
 
@@ -58,7 +57,7 @@ make_cell__ (long type, SCM car, SCM cdr)
 SCM
 make_cell_ (SCM type, SCM car, SCM cdr)
 {
-  assert (TYPE (type) == TNUMBER);
+  assert_msg (TYPE (type) == TNUMBER, "TYPE (type) == TNUMBER");
   long t = VALUE (type);
   if (t == TCHAR || t == TNUMBER)
     {
@@ -238,7 +237,7 @@ error (SCM key, SCM x)
   eputs (": ");
   write_error_ (x);
   eputs ("\n");
-  assert (0);
+  assert_msg (0, "0");
   exit (1);
 }
 
@@ -1113,7 +1112,7 @@ begin_expand:
               else if (TYPE (r1) == TPORT)
                 input = set_current_input_port (r1);
               else
-                assert (0);
+                assert_msg (0, "0");
 
               push_cc (input, r2, r0, cell_vm_return);
               x = read_input_file_env (r0);

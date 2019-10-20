@@ -21,7 +21,6 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#include <assert.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
@@ -122,7 +121,7 @@ gc_up_arena ()                  /*:((internal)) */
       eputs (":");
       eputs (itoa (ARENA_SIZE - g_free));
       eputs ("\n");
-      assert (0);
+      assert_msg (0, "0");
       exit (1);
     }
   g_cells = p;
@@ -321,7 +320,7 @@ SCM
 gc_push_frame ()                /*:((internal)) */
 {
   if (g_stack < 5)
-    assert (!"STACK FULL");
+    assert_msg (0, "STACK FULL");
   g_stack_array[g_stack - 1] = cell_f;
   g_stack_array[g_stack - 2] = r0;
   g_stack_array[g_stack - 3] = r1;
