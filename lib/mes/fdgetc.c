@@ -26,6 +26,7 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
+int errno;
 int *__ungetc_buf;
 
 int

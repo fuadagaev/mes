@@ -19,26 +19,36 @@
  */
 
 #include <mes/lib.h>
+#include <sys/ioctl.h>
+#include <stdlib.h>
 #include <string.h>
+#include <termio.h>
 
-char *
-_memcpy (char *dest, char const *src, size_t n)
+// CONSTANT TCGETS 0x5401
+#define TCGETS 0x5401
+
+// CONSTANT NCCS 19
+#define NCCS 19
+
+struct ktermios
 {
-  char *p = dest;
+  unsigned c_iflag;
+  unsigned c_oflag;
+  unsigned c_cflag;
+  unsigned c_lflag;
+  char c_line;
+  char c_cc[NCCS];
+  unsigned c_ispeed;
+  unsigned c_ospeed;
+};
 
-  while (n != 0)
-    {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
-    }
+struct ktermios *__isatty_kernel_termios;
 
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
+int
+isatty (int filedes)
 {
-  return _memcpy (dest, src, n);
+  if (__isatty_kernel_termios == 0)
+    __isatty_kernel_termios = malloc (sizeof (struct ktermios));
+  int r = ioctl (filedes, TCGETS, __isatty_kernel_termios);
+  return r == 0;
 }

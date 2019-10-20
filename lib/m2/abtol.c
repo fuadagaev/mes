@@ -19,26 +19,37 @@
  */
 
 #include <mes/lib.h>
-#include <string.h>
+#include <ctype.h>
 
-char *
-_memcpy (char *dest, char const *src, size_t n)
+long
+abtol (char **p, int base)
 {
-  char *p = dest;
-
-  while (n != 0)
+  char *s = p[0];
+  int i = 0;
+  int sign_p = 0;
+  if (base == 0)
+    base = 10;
+  while (isspace (s[0]) != 0)
+    s = s + 1;
+  if (s[0] != 0 && s[0] == '+')
+    s = s + 1;
+  if (s[0] != 0 && s[0] == '-')
     {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
+      sign_p = 1;
+      s = s + 1;
     }
+  while (isnumber (s[0], base) != 0)
+    {
+      i = i * base;
+      int m = '0';
+      if (s[0] > '9')
+        m = 'a' - 10;
+      i = i + s[0] - m;
+      s = s + 1;
+    }
+  p[0] = s;
+  if (sign_p != 0)
+    return -i;
 
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  return i;
 }

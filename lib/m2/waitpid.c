@@ -18,27 +18,21 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mes/lib.h>
-#include <string.h>
+#include <linux/syscall.h>
+#include <syscall.h>
+#include <sys/types.h>
 
-char *
-_memcpy (char *dest, char const *src, size_t n)
+int
+waitpid (int pid, int *status_ptr, int options)
 {
-  char *p = dest;
-
-  while (n != 0)
-    {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
-    }
-
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  long long_pid = pid;
+  long long_status_ptr = status_ptr;
+  long long_options = options;
+#if __i386__
+  return _sys_call3 (SYS_waitpid, long_pid, long_status_ptr, long_options);
+#elif __x86_64__
+  return _sys_call4 (SYS_wait4, long_pid, long_status_ptr, long_options, 0);
+#else
+#error arch not supported
+#endif
 }

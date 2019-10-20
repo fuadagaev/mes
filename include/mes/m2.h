@@ -37,7 +37,12 @@ void __ungetc_clear (int filedes);
 void __ungetc_init ();
 void __ungetc_set (int filedes, int c);
 
-/* Recieved SCM in program
+struct timezone
+{
+  int tz_minuteswest;
+  int tz_dsttime;
+};
+
 struct timespec
 {
   long tv_sec;
@@ -49,8 +54,6 @@ struct timeval
   long tv_sec;
   long tv_usec;
 };
-
-*/
 
 #define struct_size 12
 

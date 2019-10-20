@@ -18,27 +18,8 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mes/lib.h>
-#include <string.h>
-
-char *
-_memcpy (char *dest, char const *src, size_t n)
+int
+execv (char *file_name, char **argv)
 {
-  char *p = dest;
-
-  while (n != 0)
-    {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
-    }
-
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  return execve (file_name, argv, environ);
 }
