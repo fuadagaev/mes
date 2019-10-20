@@ -77,31 +77,33 @@ reader_read_identifier_or_number (int c)
   int i = 0;
   long n = 0;
   int negative_p = 0;
-  if (c == '+' && isdigit (peekchar ()))
+  if (c == '+' && isdigit (peekchar ()) != 0)
     c = readchar ();
-  else if (c == '-' && isdigit (peekchar ()))
+  else if (c == '-' && (isdigit (peekchar ()) != 0))
     {
       negative_p = 1;
       c = readchar ();
     }
-  while (isdigit (c))
+  while (isdigit (c) != 0)
     {
-      g_buf[i++] = c;
-      n *= 10;
-      n += c - '0';
+      g_buf[i] = c;
+      i = i + 1;
+      n = n * 10;
+      n = n + c - '0';
       c = readchar ();
     }
   if (reader_end_of_word_p (c))
     {
       unreadchar (c);
-      if (negative_p)
+      if (negative_p != 0)
         n = 0 - n;
       return MAKE_NUMBER (n);
     }
   /* Fallthrough: Note that `4a', `+1b' are identifiers */
-  while (!reader_end_of_word_p (c))
+  while (reader_end_of_word_p (c) == 0)
     {
-      g_buf[i++] = c;
+      g_buf[i] = c;
+      i = i + 1;
       c = readchar ();
     }
   unreadchar (c);
@@ -146,7 +148,7 @@ reset_reader:
     return cons (cell_symbol_quote, cons (reader_read_sexp_ (readchar (), a), cell_nil));
   if (c == '"')
     return reader_read_string ();
-  if (c == '.' && (!reader_identifier_p (peekchar ())))
+  if (c == '.' && (reader_identifier_p (peekchar ()) == 0))
     return cell_dot;
   return reader_read_identifier_or_number (c);
 }
@@ -154,7 +156,7 @@ reset_reader:
 int
 reader_eat_whitespace (int c)
 {
-  while (isspace (c))
+  while (isspace (c) != 0)
     c = readchar ();
   if (c == ';')
     return reader_eat_whitespace (reader_read_line_comment (c));
@@ -270,8 +272,8 @@ reader_read_character ()
       c = c - '0';
       while (p >= '0' && p <= '7')
         {
-          c <<= 3;
-          c += readchar () - '0';
+          c = c << 3;
+          c = c + readchar () - '0';
           p = peekchar ();
         }
     }
@@ -284,7 +286,7 @@ reader_read_character ()
     }
   else if (((c >= 'a' && c <= 'z') || c == '*') && ((p >= 'a' && p <= 'z') || p == '*'))
     {
-      char buf[10];
+      char *buf = __reader_read_char_buf;
       buf[i] = c;
       i = i + 1;
       while ((p >= 'a' && p <= 'z') || p == '*')
@@ -294,58 +296,57 @@ reader_read_character ()
           p = peekchar ();
         }
       buf[i] = 0;
-      if (!strcmp (buf, "*eof*"))
+      if (strcmp (buf, "*eof*") == 0)
         c = EOF;
-      else if (!strcmp (buf, "nul"))
+      else if (strcmp (buf, "nul") == 0)
         c = '\0';
-      else if (!strcmp (buf, "alarm"))
+      else if (strcmp (buf, "alarm") == 0)
         c = '\a';
-      else if (!strcmp (buf, "backspace"))
+      else if (strcmp (buf, "backspace") == 0)
         c = '\b';
-      else if (!strcmp (buf, "tab"))
+      else if (strcmp (buf, "tab") == 0)
         c = '\t';
-      else if (!strcmp (buf, "linefeed"))
+      else if (strcmp (buf, "linefeed") == 0)
         c = '\n';
-      else if (!strcmp (buf, "newline"))
+      else if (strcmp (buf, "newline") == 0)
         c = '\n';
-      else if (!strcmp (buf, "vtab"))
+      else if (strcmp (buf, "vtab") == 0)
         c = '\v';
-      else if (!strcmp (buf, "page"))
+      else if (strcmp (buf, "page") == 0)
         c = '\f';
 #if 1                           //__MESC__
       //Nyacc bug
-      else if (!strcmp (buf, "return"))
+      else if (strcmp (buf, "return") == 0)
         c = 13;
-      else if (!strcmp (buf, "esc"))
+      else if (strcmp (buf, "esc") == 0)
         c = 27;
 #else
-      else if (!strcmp (buf, "return"))
+      else if (strcmp (buf, "return") == 0)
         c = '\r';
-      //Nyacc crash else if (!strcmp (buf, "esc")) c = '\e';
+      //Nyacc crash else if (strcmp (buf, "esc") == 0) c = '\e';
 #endif
-      else if (!strcmp (buf, "space"))
+      else if (strcmp (buf, "space") == 0)
         c = ' ';
 
 #if 1                           // Nyacc uses old abbrevs
-      else if (!strcmp (buf, "bel"))
+      else if (strcmp (buf, "bel") == 0)
         c = '\a';
-      else if (!strcmp (buf, "bs"))
+      else if (strcmp (buf, "bs") == 0)
         c = '\b';
-      else if (!strcmp (buf, "ht"))
+      else if (strcmp (buf, "ht") == 0)
         c = '\t';
-      else if (!strcmp (buf, "vt"))
+      else if (strcmp (buf, "vt") == 0)
         c = '\v';
 
 #if 1                           //__MESC__
       //Nyacc bug
-      else if (!strcmp (buf, "cr"))
+      else if (strcmp (buf, "cr") == 0)
         c = 13;
 #else
-      else if (!strcmp (buf, "cr"))
+      else if (strcmp (buf, "cr") == 0)
         c = '\r';
 #endif
 #endif // Nyacc uses old abbrevs
-
       else
         {
           eputs ("char not supported: ");
@@ -376,7 +377,7 @@ reader_read_binary ()
       readchar ();
       c = peekchar ();
     }
-  if (negative_p)
+  if (negative_p != 0)
     n = 0 - n;
   return MAKE_NUMBER (n);
 }
@@ -400,7 +401,7 @@ reader_read_octal ()
       readchar ();
       c = peekchar ();
     }
-  if (negative_p)
+  if (negative_p != 0)
     n = 0 - n;
   return MAKE_NUMBER (n);
 }
@@ -429,7 +430,7 @@ reader_read_hex ()
       readchar ();
       c = peekchar ();
     }
-  if (negative_p)
+  if (negative_p != 0)
     n = 0 - n;
   return MAKE_NUMBER (n);
 }
@@ -450,7 +451,7 @@ reader_read_string ()
         {
           c = readchar ();
           if (c == '\\' || c == '"')
-            ;
+            0;
           else if (c == '0')
             c = '\0';
           else if (c == 'a')
@@ -476,7 +477,8 @@ reader_read_string ()
           else if (c == 'x')
             c = VALUE (reader_read_hex ());
         }
-      g_buf[i++] = c;
+      g_buf[i] = c;
+      i = i + 1;
     }
   while (1);
   g_buf[i] = 0;
