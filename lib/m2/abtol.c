@@ -19,64 +19,37 @@
  */
 
 #include <mes/lib.h>
-#include <errno.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/resource.h>
-#include <unistd.h>
+#include <ctype.h>
 
-int errno;
-int *__ungetc_buf;
-
-int
-__ungetc_p (int filedes)
+long
+abtol (char **p, int base)
 {
-  return __ungetc_buf[filedes] >= 0;
-}
-
-void
-__ungetc_init ()
-{
-  if (__ungetc_buf == 0)
+  char *s = p[0];
+  int i = 0;
+  int sign_p = 0;
+  if (base == 0)
+    base = 10;
+  while (isspace (s[0]) != 0)
+    s = s + 1;
+  if (s[0] != 0 && s[0] == '+')
+    s = s + 1;
+  if (s[0] != 0 && s[0] == '-')
     {
-      int save_errno = errno;
-      __ungetc_buf = malloc ((__FILEDES_MAX + 1) * sizeof (int));
-      errno = save_errno;
-      memset (__ungetc_buf, -1, (__FILEDES_MAX + 1) * sizeof (int));
+      sign_p = 1;
+      s = s + 1;
     }
-}
-
-void
-__ungetc_clear (int filedes)
-{
-  __ungetc_buf[filedes] = -1;
-}
-
-void
-__ungetc_set (int filedes, int c)
-{
-  __ungetc_buf[filedes] = c;
-}
-
-int
-fdgetc (int fd)
-{
-  __ungetc_init ();
-
-  char c;
-  int i = __ungetc_buf[fd];
-  if (i >= 0)
-    __ungetc_buf[fd] = -1;
-  else
+  while (isnumber (s[0], base) != 0)
     {
-      int r = read (fd, &c, 1);
-      if (r < 1)
-        return -1;
-      i = c;
+      i = i * base;
+      int m = '0';
+      if (s[0] > '9')
+        m = 'a' - 10;
+      i = i + s[0] - m;
+      s = s + 1;
     }
-  if (i < 0)
-    i = i + 256;
+  p[0] = s;
+  if (sign_p != 0)
+    return -i;
 
   return i;
 }

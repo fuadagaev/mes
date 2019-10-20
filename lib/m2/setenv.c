@@ -19,64 +19,34 @@
  */
 
 #include <mes/lib.h>
-#include <errno.h>
-#include <limits.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/resource.h>
-#include <unistd.h>
-
-int errno;
-int *__ungetc_buf;
+#include <stdlib.h>
 
 int
-__ungetc_p (int filedes)
+setenv (char *s, char *v, int overwrite_p)
 {
-  return __ungetc_buf[filedes] >= 0;
-}
+  char **p = environ;
+  int length = strlen (s);
 
-void
-__ungetc_init ()
-{
-  if (__ungetc_buf == 0)
+  while (p[0] != 0)
     {
-      int save_errno = errno;
-      __ungetc_buf = malloc ((__FILEDES_MAX + 1) * sizeof (int));
-      errno = save_errno;
-      memset (__ungetc_buf, -1, (__FILEDES_MAX + 1) * sizeof (int));
+      if (strncmp (s, p[0], length) == 0)
+        {
+          char *q = p[0] + length;
+          if (q[0] == '=')
+            break;
+        }
+      p = p + 1;
     }
-}
+  char *entry = malloc (length + strlen (v) + 2);
+  int end_p = p[0] == 0;
+  p[0] = entry;
+  strcpy (entry, s);
+  strcpy (entry + length, "=");
+  strcpy (entry + length + 1, v);
+  entry[length + strlen (v) + 2] = 0;
+  if (end_p)
+    p[1] = 0;
 
-void
-__ungetc_clear (int filedes)
-{
-  __ungetc_buf[filedes] = -1;
-}
-
-void
-__ungetc_set (int filedes, int c)
-{
-  __ungetc_buf[filedes] = c;
-}
-
-int
-fdgetc (int fd)
-{
-  __ungetc_init ();
-
-  char c;
-  int i = __ungetc_buf[fd];
-  if (i >= 0)
-    __ungetc_buf[fd] = -1;
-  else
-    {
-      int r = read (fd, &c, 1);
-      if (r < 1)
-        return -1;
-      i = c;
-    }
-  if (i < 0)
-    i = i + 256;
-
-  return i;
+  return 0;
 }
