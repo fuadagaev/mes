@@ -335,6 +335,7 @@ fi
 
 mes_SOURCES="
 src/builtins.c
+src/eval-apply.c
 src/gc.c
 src/hash.c
 src/lib.c
