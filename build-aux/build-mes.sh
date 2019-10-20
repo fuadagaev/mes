@@ -48,6 +48,7 @@ src/posix.c
 src/reader.c
 src/string.c
 src/struct.c
+src/symbols.c
 src/vector.c
 "
 
