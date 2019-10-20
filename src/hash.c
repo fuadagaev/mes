@@ -28,7 +28,7 @@ int
 hash_cstring (char const *s, long size)
 {
   int hash = s[0] * 37;
-  if (s[0] && s[1])
+  if (s[0] != 0 && s[1] != 0)
     hash = hash + s[1] * 43;
   assert (size);
   hash = hash % size;
@@ -183,7 +183,8 @@ hash_table_printer (SCM table)
   fdputc (' ', __stdout);
   SCM buckets = struct_ref_ (table, 4);
   fdputs ("buckets: ", __stdout);
-  for (int i = 0; i < LENGTH (buckets); i++)
+  int i;
+  for (i = 0; i < LENGTH (buckets); i = i + 1)
     {
       SCM e = vector_ref_ (buckets, i);
       if (e != cell_unspecified)
@@ -203,7 +204,7 @@ hash_table_printer (SCM table)
 }
 
 SCM
-make_hashq_type ()              ///((internal))
+make_hashq_type ()              /*:((internal)) */
 {
   SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
@@ -217,7 +218,7 @@ make_hashq_type ()              ///((internal))
 SCM
 make_hash_table_ (long size)
 {
-  if (!size)
+  if (size == 0)
     size = 100;
   SCM hashq_type = make_hashq_type ();
 
