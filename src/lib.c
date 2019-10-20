@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -37,7 +37,7 @@ display_helper (SCM x, int cont, char *sep, int fd, int write_p)
   int t = TYPE (x);
   if (t == TCHAR)
     {
-      if (!write_p)
+      if (write_p == 0)
         fdputc (VALUE (x), fd);
       else
         {
@@ -100,15 +100,16 @@ display_helper (SCM x, int cont, char *sep, int fd, int write_p)
     }
   else if (t == TPAIR)
     {
-      if (!cont)
+      if (cont == 0)
         fdputs ("(", fd);
       if (CAR (x) == cell_circular && CADR (x) != cell_closure)
         {
           fdputs ("(*circ* . ", fd);
           int i = 0;
           x = CDR (x);
-          while (x != cell_nil && i++ < 10)
+          while (x != cell_nil && i < 10)
             {
+              i = i + 1;
               fdisplay_ (CAAR (x), fd, write_p);
               fdputs (" ", fd);
               x = CDR (x);
@@ -128,7 +129,7 @@ display_helper (SCM x, int cont, char *sep, int fd, int write_p)
               fdisplay_ (CDR (x), fd, write_p);
             }
         }
-      if (!cont)
+      if (cont == 0)
         fdputs (")", fd);
     }
   else if (t == TKEYWORD || t == TPORT || t == TSPECIAL || t == TSTRING || t == TSYMBOL)
@@ -145,15 +146,13 @@ display_helper (SCM x, int cont, char *sep, int fd, int write_p)
       if ((write_p && t == TSTRING) || t == TPORT)
         fdputc ('"', fd);
       char const *s = CSTRING (x);
-#if 0
-      s += START (x);
-      size_t length = LEN (x);
-#else
       size_t length = LENGTH (x);
-#endif
-      for (size_t i = 0; i < length; i++)
+      size_t i;
+      for (i = 0; i < length; i = i + 1)
         {
-          long v = write_p ? s[i] : -1;
+          long v = -1;
+          if (write_p != 0)
+            v = s[i];
           if (v == '\0')
             fdputs ("\\0", fd);
           else if (v == '\a')
@@ -207,7 +206,8 @@ display_helper (SCM x, int cont, char *sep, int fd, int write_p)
           fdisplay_ (STRUCT (x), fd, write_p);
           SCM t = CAR (x);
           long size = LENGTH (x);
-          for (long i = 2; i < size; i++)
+          long i;
+          for (i = 2; i < size; i = i + 1)
             {
               fdputc (' ', fd);
               fdisplay_ (STRUCT (x) + i, fd, write_p);
@@ -219,9 +219,10 @@ display_helper (SCM x, int cont, char *sep, int fd, int write_p)
     {
       fdputs ("#(", fd);
       SCM t = CAR (x);
-      for (long i = 0; i < LENGTH (x); i++)
+      long i;
+      for (i = 0; i < LENGTH (x); i = i + 1)
         {
-          if (i)
+          if (i != 0)
             fdputc (' ', fd);
           fdisplay_ (VECTOR (x) + i, fd, write_p);
         }
@@ -281,14 +282,14 @@ write_port_ (SCM x, SCM p)
 }
 
 SCM
-fdisplay_ (SCM x, int fd, int write_p)  /**((internal))*/
+fdisplay_ (SCM x, int fd, int write_p)  /*:((internal)) */
 {
   g_depth = 5;
   return display_helper (x, 0, "", fd, write_p);
 }
 
 SCM
-exit_ (SCM x)                   /**((name . "exit"))*/
+exit_ (SCM x)                   /*:((name . "exit")) */
 {
   assert (TYPE (x) == TNUMBER);
   exit (VALUE (x));
@@ -306,7 +307,7 @@ frame_printer (SCM frame)
 }
 
 SCM
-make_frame_type ()              /**((internal))*/
+make_frame_type ()              /*:((internal)) */
 {
   SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
@@ -322,7 +323,7 @@ make_frame (SCM stack, long index)
   SCM frame_type = make_frame_type ();
   long array_index = (STACK_SIZE - (index * FRAME_SIZE));
   SCM procedure = g_stack_array[array_index + FRAME_PROCEDURE];
-  if (!procedure)
+  if (procedure == 0)
     procedure = cell_f;
   SCM values = cell_nil;
   values = cons (procedure, values);
@@ -331,7 +332,7 @@ make_frame (SCM stack, long index)
 }
 
 SCM
-make_stack_type ()              /**((internal))*/
+make_stack_type ()              /*:((internal)) */
 {
   SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
@@ -342,12 +343,13 @@ make_stack_type ()              /**((internal))*/
 }
 
 SCM
-make_stack (SCM stack)          /**((arity . n))*/
+make_stack (SCM stack)          /*:((arity . n)) */
 {
   SCM stack_type = make_stack_type ();
   long size = (STACK_SIZE - g_stack) / FRAME_SIZE;
   SCM frames = make_vector__ (size);
-  for (long i = 0; i < size; i++)
+  long i;
+  for (i = 0; i < size; i = i + 1)
     {
       SCM frame = make_frame (stack, i);
       vector_set_x_ (frames, i, frame);
@@ -373,11 +375,13 @@ stack_ref (SCM stack, SCM index)
 }
 
 SCM
-xassq (SCM x, SCM a)            ///for speed in core only
+xassq (SCM x, SCM a)            /* For speed in core. */
 {
   while (a != cell_nil && x != CDAR (a))
     a = CDR (a);
-  return a != cell_nil ? CAR (a) : cell_f;
+  if (a != cell_nil)
+    return CAR (a);
+  return cell_f;
 }
 
 SCM
@@ -398,7 +402,9 @@ memq (SCM x, SCM a)
   else
     while (a != cell_nil && x != CAR (a))
       a = CDR (a);
-  return a != cell_nil ? a : cell_f;
+  if (a != cell_nil)
+    return a;
+  return cell_f;
 }
 
 SCM
@@ -423,7 +429,8 @@ equal2:
     {
       if (LENGTH (a) != LENGTH (b))
         return cell_f;
-      for (long i = 0; i < LENGTH (a); i++)
+      long i;
+      for (i = 0; i < LENGTH (a); i = i + 1)
         {
           SCM ai = VECTOR (a) + i;
           SCM bi = VECTOR (b) + i;
@@ -450,5 +457,7 @@ last_pair (SCM x)
 SCM
 pair_p (SCM x)
 {
-  return TYPE (x) == TPAIR ? cell_t : cell_f;
+  if (TYPE (x) == TPAIR)
+    return cell_t;
+  return cell_f;
 }
