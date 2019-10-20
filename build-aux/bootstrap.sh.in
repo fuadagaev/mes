@@ -36,7 +36,7 @@ cd mescc-lib
 srcdest=../
 CPPFLAGS="-D HAVE_CONFIG_H=1 -I ${srcdest}include -I ${srcdest}include/$mes_kernel/$mes_cpu"
 
-mkdir $mes_cpu-mes
+mkdir -p $mes_cpu-mes
 $CC -c $CPPFLAGS $CFLAGS ${srcdest}lib/$mes_kernel/$mes_cpu-mes-$compiler/crt1.c
 cp crt1.o $mes_cpu-mes
 cp crt1.s $mes_cpu-mes
