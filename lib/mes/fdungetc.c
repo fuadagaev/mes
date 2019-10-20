@@ -19,7 +19,6 @@
  */
 
 #include <mes/lib.h>
-#include <assert.h>
 
 int
 fdungetc (int c, int fd)
@@ -32,7 +31,7 @@ fdungetc (int c, int fd)
       eputs (" ***MES C LIB*** fdungetc ungetc buffer overflow fd=");
       eputs (itoa (fd));
       eputs ("\n");
-      assert (0);
+      assert_msg (0, "0");
     }
   __ungetc_set (fd, c);
   return c;
