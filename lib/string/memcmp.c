@@ -23,8 +23,9 @@
 int
 memcmp (void const *s1, void const *s2, size_t size)
 {
-  if (!size)
+  if (size == 0)
     return 0;
+
   char const *a = s1;
   char const *b = s2;
 

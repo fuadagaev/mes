@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -19,26 +19,19 @@
  */
 
 #include <mes/lib.h>
-#include <string.h>
+#include <limits.h>
+#include <sys/types.h>
+#include <mes/lib.h>
+
+// CONSTANT PATH_MAX 1024
 
 char *
-_memcpy (char *dest, char const *src, size_t n)
+getcwd (char *buffer, int size)
 {
-  char *p = dest;
-
-  while (n != 0)
-    {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
-    }
-
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  if (__getcwd_buf == 0)
+    __getcwd_buf = malloc (PATH_MAX);
+  char *buf = __itoa_buf;
+  if (buffer != 0)
+    return _getcwd (buffer, size);
+  return _getcwd (buf, PATH_MAX);
 }

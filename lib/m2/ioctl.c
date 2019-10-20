@@ -18,27 +18,17 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mes/lib.h>
-#include <string.h>
+#include <linux/syscall.h>
+#include <syscall.h>
+#include <stdarg.h>
+#include <sys/ioctl.h>
 
-char *
-_memcpy (char *dest, char const *src, size_t n)
+int
+ioctl (int filedes, long command, int data)
 {
-  char *p = dest;
-
-  while (n != 0)
-    {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
-    }
-
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  long long_filedes = filedes;
+  long long_command = command;
+  long long_data = data;
+  int r = _sys_call3 (SYS_ioctl, long_filedes, long_command, long_data);
+  return r;
 }

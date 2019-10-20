@@ -18,27 +18,18 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mes/lib.h>
-#include <string.h>
-
-char *
-_memcpy (char *dest, char const *src, size_t n)
+int
+strncmp (char const *a, char const *b, size_t size)
 {
-  char *p = dest;
+  if (size == 0)
+    return 0;
 
-  while (n != 0)
+  while (a[0] != 0 && b[0] != 0 && a[0] == b[0] && size > 1)
     {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
+      size = size - 1;
+      a = a + 1;
+      b = b + 1;
     }
 
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  return a[0] - b[0];
 }

@@ -19,26 +19,51 @@
  */
 
 #include <mes/lib.h>
+#include <assert.h>
 #include <string.h>
 
-char *
-_memcpy (char *dest, char const *src, size_t n)
-{
-  char *p = dest;
+char *__itoa_buf;
 
-  while (n != 0)
+char *
+ntoab (long x, int base, int signed_p)
+{
+  if (__itoa_buf == 0)
+    __itoa_buf = malloc (20);
+
+  char *buf = __itoa_buf;
+  char *p = buf + 11;
+  p[0] = 0;
+  p = p - 1;
+  assert_msg (base > 0, "base  > 0");
+
+  int sign_p = 0;
+  unsigned u;
+  if (signed_p != 0 && x < 0)
     {
-      n = n - 1;
-      dest[0] = src[0];
-      dest = dest + 1;
-      src = src + 1;
+      sign_p = 1;
+      u = -x;
+    }
+  else
+    u = x;
+
+  do
+    {
+      unsigned i;
+      i = u % base;
+      u = u / base;
+      if (i > 9)
+        p[0] = 'a' + i - 10;
+      else
+        p[0] = '0' + i;
+      p = p - 1;
+    }
+  while (u != 0);
+
+  if (sign_p && p[1] != '0')
+    {
+      p[0] = '-';
+      p = p - 1;
     }
 
-  return p;
-}
-
-void *
-memcpy (void *dest, void const *src, size_t n)
-{
-  return _memcpy (dest, src, n);
+  return p + 1;
 }
