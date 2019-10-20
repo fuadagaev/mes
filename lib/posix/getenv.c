@@ -27,11 +27,17 @@ getenv (char const *s)
 {
   char **p = environ;
   int length = strlen (s);
-  while (*p)
+
+  while (p[0] != 0)
     {
-      if (!strncmp (s, *p, length) && *(*p + length) == '=')
-        return (*p + length + 1);
-      p++;
+      if (strncmp (s, p[0], length) == 0)
+        {
+          char *q = p[0] + length;
+          if (q[0] == '=')
+            return q + 1;
+        }
+      p = p + 1;
     }
+
   return 0;
 }
