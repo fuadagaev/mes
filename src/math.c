@@ -105,7 +105,7 @@ minus (SCM x)                   /*:((name . "-") (arity . n)) */
       n = n - VALUE (car (x));
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -118,7 +118,7 @@ plus (SCM x)                    /*:((name . "+") (arity . n)) */
       n = n + VALUE (car (x));
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -142,7 +142,7 @@ divide (SCM x)                  /*:((name . "/") (arity . n)) */
       n = n / y;
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -159,7 +159,7 @@ modulo (SCM a, SCM b)
   if (x != 0)
     x = x % y;
 
-  return MAKE_NUMBER (x);
+  return make_number (x);
 }
 
 SCM
@@ -172,7 +172,7 @@ multiply (SCM x)                /*:((name . "*") (arity . n)) */
       n = n * VALUE (car (x));
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -185,7 +185,7 @@ logand (SCM x)                  /*:((arity . n)) */
       n = n & VALUE (car (x));
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -198,7 +198,7 @@ logior (SCM x)                  /*:((arity . n)) */
       n = n | VALUE (car (x));
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -206,7 +206,7 @@ lognot (SCM x)
 {
   assert_number ("lognot", x);
   long n = ~VALUE (x);
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -219,7 +219,7 @@ logxor (SCM x)                  /*:((arity . n)) */
       n = n ^ VALUE (car (x));
       x = cdr (x);
     }
-  return MAKE_NUMBER (n);
+  return make_number (n);
 }
 
 SCM
@@ -234,5 +234,5 @@ ash (SCM n, SCM count)
     result = cn >> -ccount;
   else
     result = cn << ccount;
-  return MAKE_NUMBER (result);
+  return make_number (result);
 }
