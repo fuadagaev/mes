@@ -44,7 +44,7 @@ peekchar ()
   SCM port = current_input_port ();
   SCM string = STRING (port);
   size_t length = LENGTH (string);
-  if (!length)
+  if (length == 0)
     return -1;
   char const *p = CSTRING (string);
   return p[0];
@@ -58,10 +58,11 @@ readchar ()
   SCM port = current_input_port ();
   SCM string = STRING (port);
   size_t length = LENGTH (string);
-  if (!length)
+  if (length == 0)
     return -1;
   char const *p = CSTRING (string);
-  int c = *p++;
+  int c = p[0];
+  p = p + 1;
   STRING (port) = make_string (p, length - 1);
   return c;
 }
@@ -75,7 +76,7 @@ unreadchar (int c)
   SCM string = STRING (port);
   size_t length = LENGTH (string);
   char *p = CSTRING (string);
-  p--;
+  p = p - 1;
   string = make_string (p, length + 1);
   p = CSTRING (string);
   p[0] = c;
@@ -109,7 +110,7 @@ peek_char ()
 }
 
 SCM
-read_char (SCM port)            ///((arity . n))
+read_char (SCM port)            /*:((arity . n)) */
 {
   int fd = __stdin;
   if (TYPE (port) == TPAIR && TYPE (car (port)) == TNUMBER)
@@ -127,14 +128,14 @@ unread_char (SCM i)
 }
 
 SCM
-write_char (SCM i)              ///((arity . n))
+write_char (SCM i)              /*:((arity . n)) */
 {
   write_byte (i);
   return i;
 }
 
 SCM
-write_byte (SCM x)              ///((arity . n))
+write_byte (SCM x)              /*:((arity . n)) */
 {
   SCM c = car (x);
   SCM p = cdr (x);
@@ -144,7 +145,7 @@ write_byte (SCM x)              ///((arity . n))
   if (TYPE (p) == TPAIR && TYPE (car (p)) == TNUMBER && VALUE (CAR (p)) == 2)
     fd = __stderr;
   char cc = VALUE (c);
-  write (fd, (char *) &cc, 1);
+  write (fd, &cc, 1);
 #if !__MESC__
   assert (TYPE (c) == TNUMBER || TYPE (c) == TCHAR);
 #endif
@@ -152,17 +153,19 @@ write_byte (SCM x)              ///((arity . n))
 }
 
 SCM
-getenv_ (SCM s)                 ///((name . "getenv"))
+getenv_ (SCM s)                 /*:((name . "getenv")) */
 {
   char *p;
   p = getenv (CSTRING (s));
-  return p ? MAKE_STRING0 (p) : cell_f;
+  if (p != 0)
+    return MAKE_STRING0 (p);
+  return cell_f;
 }
 
 SCM
-setenv_ (SCM s, SCM v)          ///((name . "setenv"))
+setenv_ (SCM s, SCM v)          /*:((name . "setenv")) */
 {
-  char buf[1024];
+  char *buf = __setenv_buf;
   strcpy (buf, CSTRING (s));
   setenv (buf, CSTRING (v), 1);
   return cell_unspecified;
@@ -171,7 +174,9 @@ setenv_ (SCM s, SCM v)          ///((name . "setenv"))
 SCM
 access_p (SCM file_name, SCM mode)
 {
-  return access (CSTRING (file_name), VALUE (mode)) == 0 ? cell_t : cell_f;
+  if (access (CSTRING (file_name), VALUE (mode)) == 0)
+    return cell_t;
+  return cell_f;
 }
 
 SCM
@@ -204,7 +209,13 @@ set_current_input_port (SCM port)
 {
   SCM prev = current_input_port ();
   if (TYPE (port) == TNUMBER)
-    __stdin = VALUE (port) ? VALUE (port) : STDIN;
+    {
+      int p = VALUE (port);
+      if (p != 0)
+        __stdin = p;
+      else
+        __stdin = STDIN;
+    }
   else if (TYPE (port) == TPORT)
     __stdin = PORT (port);
   return prev;
@@ -223,7 +234,7 @@ current_error_port ()
 }
 
 SCM
-open_output_file (SCM x)        ///((arity . n))
+open_output_file (SCM x)        /*:((arity . n)) */
 {
   SCM file_name = car (x);
   x = cdr (x);
@@ -236,19 +247,25 @@ open_output_file (SCM x)        ///((arity . n))
 SCM
 set_current_output_port (SCM port)
 {
-  __stdout = VALUE (port) ? VALUE (port) : STDOUT;
+  if (VALUE (port) != 0)
+    __stdout = VALUE (port);
+  else
+    __stdout = STDOUT;
   return current_output_port ();
 }
 
 SCM
 set_current_error_port (SCM port)
 {
-  __stderr = VALUE (port) ? VALUE (port) : STDERR;
+  if (VALUE (port) != 0)
+    __stderr = VALUE (port);
+  else
+    __stderr = STDERR;
   return current_error_port ();
 }
 
 SCM
-chmod_ (SCM file_name, SCM mode)        ///((name . "chmod"))
+chmod_ (SCM file_name, SCM mode)        /*:((name . "chmod")) */
 {
   chmod (CSTRING (file_name), VALUE (mode));
   return cell_unspecified;
@@ -257,7 +274,9 @@ chmod_ (SCM file_name, SCM mode)        ///((name . "chmod"))
 SCM
 isatty_p (SCM port)
 {
-  return isatty (VALUE (port)) ? cell_t : cell_f;
+  if (isatty (VALUE (port)) != 0)
+    return cell_t;
+  return cell_f;
 }
 
 SCM
@@ -267,19 +286,21 @@ primitive_fork ()
 }
 
 SCM
-execl_ (SCM file_name, SCM args)        ///((name . "execl"))
+execl_ (SCM file_name, SCM args)        /*:((name . "execl")) */
 {
-  char *c_argv[1000];           // POSIX minimum 4096
+  char **c_argv = __execl_c_argv;
   int i = 0;
 
   if (length__ (args) > 1000)
     error (cell_symbol_system_error,
            cons (file_name, cons (MAKE_STRING0 ("too many arguments"), cons (file_name, args))));
-  c_argv[i++] = CSTRING (file_name);
+  c_argv[i] = CSTRING (file_name);
+  i = i + 1;
   while (args != cell_nil)
     {
       assert (TYPE (CAR (args)) == TSTRING);
-      c_argv[i++] = CSTRING (CAR (args));
+      c_argv[i] = CSTRING (CAR (args));
+      i = i + 1;
       args = CDR (args);
       if (g_debug > 2)
         {
@@ -310,9 +331,22 @@ waitpid_ (SCM pid, SCM options)
 #define TIME_UNITS_PER_SECOND 1000
 #endif
 
+#if __M2_PLANET
+struct timespec
+{
+  long tv_sec;
+  long tv_nsec;
+};
+struct timeval
+{
+  long tv_sec;
+  long tv_usec;
+};
+#endif
+
 struct timespec g_start_time;
 SCM
-init_time (SCM a)               ///((internal))
+init_time (SCM a)               /*:((internal)) */
 {
   clock_gettime (CLOCK_PROCESS_CPUTIME_ID, &g_start_time);
   a = acons (cell_symbol_internal_time_units_per_second, MAKE_NUMBER (TIME_UNITS_PER_SECOND), a);
@@ -325,11 +359,15 @@ current_time ()
 }
 
 SCM
-gettimeofday_ ()                ///((name . "gettimeofday"))
+gettimeofday_ ()                /*:((name . "gettimeofday")) */
 {
+#if __M2_PLANET__
+  return MAKE_NUMBER (0);
+#else
   struct timeval time;
   gettimeofday (&time, 0);
   return cons (MAKE_NUMBER (time.tv_sec), MAKE_NUMBER (time.tv_usec));
+#endif
 }
 
 long
@@ -341,28 +379,32 @@ seconds_and_nanoseconds_to_long (long s, long ns)
 SCM
 get_internal_run_time ()
 {
+#if __M2_PLANET__
+  return MAKE_NUMBER (0);
+#else
   struct timespec ts;
   clock_gettime (CLOCK_PROCESS_CPUTIME_ID, &ts);
   long time = seconds_and_nanoseconds_to_long (ts.tv_sec - g_start_time.tv_sec,
                                                ts.tv_nsec - g_start_time.tv_nsec);
   return MAKE_NUMBER (time);
+#endif
 }
 
 SCM
-getcwd_ ()                      ///((name . "getcwd"))
+getcwd_ ()                      /*:((name . "getcwd")) */
 {
-  char buf[PATH_MAX];
+  char *buf = __getcwd_buf;
   return MAKE_STRING0 (getcwd (buf, PATH_MAX));
 }
 
 SCM
-dup_ (SCM port)                 ///((name . "dup"))
+dup_ (SCM port)                 /*:((name . "dup")) */
 {
   return MAKE_NUMBER (dup (VALUE (port)));
 }
 
 SCM
-dup2_ (SCM old, SCM new)        ///((name . "dup2"))
+dup2_ (SCM old, SCM new)        /*:((name . "dup2")) */
 {
   dup2 (VALUE (old), VALUE (new));
   return cell_unspecified;
