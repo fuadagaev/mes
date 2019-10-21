@@ -24,7 +24,7 @@
 #include <assert.h>
 
 SCM
-make_module_type ()             ///(internal))
+make_module_type ()             /*:(internal)) */
 {
   SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
@@ -37,7 +37,7 @@ make_module_type ()             ///(internal))
 }
 
 SCM
-make_initial_module (SCM a)     ///((internal))
+make_initial_module (SCM a)     /*:((internal)) */
 {
   SCM module_type = make_module_type ();
   a = acons (cell_symbol_module, module_type, a);
