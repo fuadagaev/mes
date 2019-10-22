@@ -38,6 +38,18 @@ SCM *g_stack_array;
 struct scm *g_cells;
 struct scm *g_news;
 
+char *
+cell_bytes (SCM x)
+{
+  return &CDR (x);
+}
+
+char *
+news_bytes (SCM x)
+{
+  return &NCDR (x);
+}
+
 SCM
 gc_init ()                      /*:((internal)) */
 {
@@ -274,8 +286,8 @@ gc_copy (SCM old)               /*:((internal)) */
     }
   else if (NTYPE (new) == TBYTES)
     {
-      char const *src = CBYTES (old);
-      char *dest = NCBYTES (new);
+      char const *src = cell_bytes (old);
+      char *dest = news_bytes (new);
       size_t length = NLENGTH (new);
       memcpy (dest, src, length + 1);
       g_free = g_free + bytes_cells (length) - 1;
