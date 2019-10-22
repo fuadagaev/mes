@@ -21,15 +21,45 @@
 #ifndef __MES_MES_H
 #define __MES_MES_H
 
+#define POINTER_CELLS 0
+
 #include <sys/types.h>
 #include "mes/cc.h"
 
+#if POINTER_CELLS
+struct scm
+{
+  long type;
+  union
+  {
+    SCM car;
+    char *bytes;
+    long length;
+    SCM ref;
+    SCM variable;
+    SCM macro;
+    long port;
+  };
+  union
+  {
+    SCM cdr;
+    SCM closure;
+    SCM continuation;
+    char *name;
+    SCM string;
+    SCM structure;
+    long value;
+    SCM vector;
+  };
+};
+#else
 struct scm
 {
   long type;
   SCM car;
   SCM cdr;
 };
+#endif
 
 /* mes */
 char *g_datadir;
@@ -61,8 +91,16 @@ long JAM_SIZE;
 long GC_SAFETY;
 long MAX_STRING;
 char *g_arena;
+SCM cell_arena;
+
+#if POINTER_CELLS
+SCM g_free;
+long g_stack;
+#else
 long g_free;
 SCM g_stack;
+#endif
+
 SCM *g_stack_array;
 struct scm *g_cells;
 struct scm *g_news;
@@ -80,6 +118,7 @@ SCM apply_builtin (SCM fn, SCM x);
 SCM builtin_name (SCM builtin);
 SCM cstring_to_list (char const *s);
 SCM cstring_to_symbol (char const *s);
+SCM cell_ref (SCM cell, long index);
 SCM fdisplay_ (SCM, int, int);
 SCM gc_init ();
 SCM gc_peek_frame ();
@@ -118,6 +157,8 @@ long length__ (SCM x);
 size_t bytes_cells (size_t length);
 void assert_max_string (size_t i, char const *msg, char *string);
 void assert_msg (int check, char *msg);
+void copy_cell (SCM to, SCM from);
+void gc_stats_ (char const* where);
 
 #include "mes/builtins.h"
 #include "mes/constants.h"
