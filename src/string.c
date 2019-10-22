@@ -82,7 +82,7 @@ string_equal_p (SCM a, SCM b)   /*:((name . "string=?")) */
   if (a == b
       || STRING (a) == STRING (b)
       || (LENGTH (a) == 0 && LENGTH (b) == 0)
-      || (LENGTH (a) == LENGTH (b) && !memcmp (CSTRING (a), CSTRING (b), LENGTH (a))))
+      || (LENGTH (a) == LENGTH (b) && !memcmp (cell_bytes (STRING (a)), cell_bytes (STRING (b)), LENGTH (a))))
     return cell_t;
 
   return cell_f;
@@ -152,7 +152,7 @@ cstring_to_symbol (char const *s)
 SCM
 string_to_list (SCM string)
 {
-  return bytes_to_list (CSTRING (string), LENGTH (string));
+  return bytes_to_list (cell_bytes (STRING (string)), LENGTH (string));
 }
 
 SCM
@@ -194,7 +194,7 @@ string_append (SCM x)           /*:((arity . n)) */
     {
       SCM string = CAR (x);
       assert_msg (TYPE (string) == TSTRING, "TYPE (string) == TSTRING");
-      memcpy (p, CSTRING (string), LENGTH (string) + 1);
+      memcpy (p, cell_bytes (STRING (string)), LENGTH (string) + 1);
       p = p + LENGTH (string);
       size = size + LENGTH (string);
       if (size > MAX_STRING)
@@ -220,6 +220,6 @@ string_ref (SCM str, SCM k)
   size_t i = VALUE (k);
   if (i > size)
     error (cell_symbol_system_error, cons (make_string0 ("value out of range"), k));
-  char const *p = CSTRING (str);
+  char const *p = cell_bytes (STRING (str));
   return make_char (p[i]);
 }
