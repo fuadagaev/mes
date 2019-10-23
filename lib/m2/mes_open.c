@@ -18,34 +18,12 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <linux/syscall.h>
-#include <syscall.h>
-#include <mes/lib.h>
-#include <fcntl.h>
-
-ssize_t
-read (int filedes, void *buffer, size_t size)
+int
+mes_open (char *file_name, int flags, int mask)
 {
-  ssize_t bytes = _sys_call3 (SYS_read, filedes, buffer, size);
-  if (__mes_debug () > 4)
-    {
-      if (bytes == 1)
-        {
-          eputs ("read fd=");
-          eputs (itoa (filedes));
-          eputs (" c=");
-          char *s = buffer;
-          eputc (s[0]);
-          eputs ("\n");
-        }
-      else
-        {
-          eputs ("read fd=");
-          eputs (itoa (filedes));
-          eputs (" bytes=");
-          eputs (itoa (bytes));
-          eputs ("\n");
-        }
-    }
-  return bytes;
+  __ungetc_init ();
+  int filedes = open (file_name, flags, mask);
+  if (filedes > 2)
+    __ungetc_clear (filedes);
+  return filedes;
 }
