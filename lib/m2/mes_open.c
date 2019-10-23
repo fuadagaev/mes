@@ -1,7 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
  * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
- * Copyright © 2021 Danny Milosavljevic <dannym@scratchpost.org>
  *
  * This file is part of GNU Mes.
  *
@@ -19,34 +18,12 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mes/lib.h>
-#include <string.h>
-#include <stddef.h>
-#include <stdint.h>
-
-/* FIXME: We want bin/mes-mescc's x86-linux sha256sum to stay the same.
-   Therfore we cannot remove stdlib/malloc from libc_SOURCES, which is
-   what GNU suggests.
-
-   move stdlib/malloc.c to unix/malloc.c and move it from shared
-   libc_SOURCES to linux-specific list when the checksum of mes.c
-   changes. */
-
-#if !__GNU__
-char *__brk = 0;
-
-void *
-malloc (size_t size)
+int
+mes_open (char *file_name, int flags, int mask)
 {
-  if (!__brk)
-    __brk = brk (0);
-  /* align what we give back. */
-  __brk = (char*) (((uintptr_t) __brk
-                    + sizeof (max_align_t) - 1) & -sizeof (max_align_t));
-  if (brk (__brk + size) == -1)
-    return 0;
-  char *p = __brk;
-  __brk = __brk + size;
-  return p;
+  __ungetc_init ();
+  int filedes = open (file_name, flags, mask);
+  if (filedes > 2)
+    __ungetc_clear (filedes);
+  return filedes;
 }
-#endif /* !__GNU__ */
