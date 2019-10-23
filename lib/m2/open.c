@@ -19,28 +19,15 @@
  */
 
 #include <mes/lib.h>
-#include <string.h>
+#include <fcntl.h>
+#include <stdarg.h>
 
-/* FIXME: We want bin/mes-mescc's x86-linux sha256sum to stay the same.
-   Therfore we cannot remove stdlib/malloc from libc_SOURCES, which is
-   what GNU suggests.
-
-   move stdlib/malloc.c to unix/malloc.c and move it from shared
-   libc_SOURCES to linux-specific list when the checksum of mes.c
-   changes. */
-
-#if !__GNU__
-char *__brk = 0;
-
-void *
-malloc (size_t size)
+int
+open (char *file_name, int flags, int mask)
 {
-  if (!__brk)
-    __brk = brk (0);
-  if (brk (__brk + size) == -1)
-    return 0;
-  char *p = __brk;
-  __brk = __brk + size;
-  return p;
+  int r = _sys_call3 (SYS_open, file_name, flags, mask);
+  __ungetc_init ();
+  if (r > 2)
+    __ungetc_clear (r);
+  return r;
 }
-#endif /* !__GNU__ */
