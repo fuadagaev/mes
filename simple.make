@@ -220,6 +220,42 @@ bin/mes-m2.blood-elf.M1: bin/mes-m2.M1
 #	blood-elf --32 -f $< -o $@
 	blood-elf -f $< -o $@
 
+define M2_MISSING
+:FUNCTION_write
+C3
+:FUNCTION_assert_msg
+C3
+:FUNCTION_open
+C3
+:FUNCTION_read
+C3
+:FUNCTION_execve
+C3
+:FUNCTION_access
+C3
+:FUNCTION_chmod
+C3
+:FUNCTION_isatty
+C3
+:FUNCTION_fork
+C3
+:FUNCTION_waitpid
+C3
+:FUNCTION_clock_gettime
+C3
+:FUNCTION_time
+C3
+:FUNCTION_getcwd
+C3
+:FUNCTION_dup
+C3
+:FUNCTION_dup2
+C3
+:FUNCTION_unlink
+C3
+endef
+export M2_MISSING
+
 bin/mes-m2.hex2: bin/mes-m2.blood-elf.M1 $(M2_PLANET_PREFIX)
 	M1											\
 	    -f $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/$(M2_PLANET_ARCH)_defs.M1	\
@@ -229,6 +265,8 @@ bin/mes-m2.hex2: bin/mes-m2.blood-elf.M1 $(M2_PLANET_PREFIX)
 	    --LittleEndian									\
 	    --architecture $(M2_PLANET_ARCH)							\
 	    -o $@
+	echo "$$M2_MISSING" >>  $@
+
 bin/mes-m2: bin/mes-m2.hex2
 	hex2												\
 	    -f $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/ELF-$(M2_PLANET_FUBAR)-debug.hex2	\
@@ -238,6 +276,7 @@ bin/mes-m2: bin/mes-m2.hex2
 	    --BaseAddress 0x00600000									\
 	    --exec_enable										\
 	    -o $@
+
 # Clean up after ourselves
 .PHONY: clean
 clean:
