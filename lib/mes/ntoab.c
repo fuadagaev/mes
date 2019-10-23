@@ -34,7 +34,7 @@ ntoab (long x, int base, int signed_p)
   p = __itoa_buf + 11;
 #else
   static char buf[20];
-  char *p = buf + 11;
+  char *p = buf + 19;
 #endif
 
   p[0] = 0;
