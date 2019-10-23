@@ -67,8 +67,26 @@ MES_SOURCES =					\
  src/vector.c
 
 M2_SOURCES =					\
+ lib/linux/x86-mes-m2/crt1.c			\
+ lib/linux/x86-mes-m2/mini.c			\
+ lib/m2/exit.c					\
+ lib/m2/write.c					\
+ lib/linux/x86-mes-m2/syscall.c			\
+ lib/m2/brk.c					\
+ lib/m2/malloc.c				\
+ lib/m2/memset.c				\
+ lib/m2/read.c					\
+ lib/m2/fdgetc.c				\
+ lib/stdio/getchar.c				\
+ lib/m2/putchar.c				\
+ lib/m2/open.c					\
+ lib/m2/mes_open.c				\
  lib/m2/strlen.c				\
  lib/m2/eputs.c					\
+						\
+ lib/mes/__assert_fail.c			\
+ lib/mes/assert_msg.c				\
+						\
  lib/m2/fdputc.c				\
  lib/m2/strncmp.c				\
  lib/m2/getenv.c				\
@@ -81,12 +99,9 @@ M2_SOURCES =					\
  lib/m2/abtol.c					\
  lib/m2/atoi.c					\
  lib/m2/memcpy.c				\
+ lib/stdlib/free.c				\
  lib/stdlib/realloc.c				\
  lib/m2/strcpy.c				\
- lib/m2/open.c					\
- lib/m2/mes_open.c				\
- lib/m2/read.c					\
- lib/mes/fdgetc.c				\
  lib/mes/itoa.c					\
  lib/mes/fdungetc.c				\
  lib/m2/setenv.c				\
@@ -105,6 +120,7 @@ M2_SOURCES =					\
  lib/m2/unlink.c				\
  lib/m2/strcmp.c				\
  lib/m2/memcmp.c
+
 
 M2_TODO =					\
  lib/m2/file_print.c				\
@@ -150,14 +166,10 @@ M2_PLANET_INCLUDES =				\
  include/mes/m2.h				\
  include/mes/builtins.h				\
  include/mes/constants.h			\
- include/mes/symbols.h
-
-M2_PLANET_PREFIX = ../M2-Planet
+ include/mes/symbols.h				\
+ include/linux/$(M2_PLANET_ARCH)/syscall.h
 
 M2_PLANET_SOURCES =						\
- $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/functions/exit.c		\
- $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/functions/malloc.c	\
- $(M2_PLANET_PREFIX)/functions/calloc.c				\
  $(M2_PLANET_INCLUDES:%.h=%.h.m2)				\
  $(M2_SOURCES:%.c=%.c.m2)					\
  $(MES_SOURCES:%.c=%.c.m2)
@@ -220,61 +232,26 @@ bin/mes-m2.blood-elf.M1: bin/mes-m2.M1
 #	blood-elf --32 -f $< -o $@
 	blood-elf -f $< -o $@
 
-define M2_MISSING
-:FUNCTION_write
-C3
-:FUNCTION_assert_msg
-C3
-:FUNCTION_open
-C3
-:FUNCTION_read
-C3
-:FUNCTION_execve
-C3
-:FUNCTION_access
-C3
-:FUNCTION_chmod
-C3
-:FUNCTION_isatty
-C3
-:FUNCTION_fork
-C3
-:FUNCTION_waitpid
-C3
-:FUNCTION_clock_gettime
-C3
-:FUNCTION_time
-C3
-:FUNCTION_getcwd
-C3
-:FUNCTION_dup
-C3
-:FUNCTION_dup2
-C3
-:FUNCTION_unlink
-C3
-endef
-export M2_MISSING
-
-bin/mes-m2.hex2: bin/mes-m2.blood-elf.M1 $(M2_PLANET_PREFIX)
-	M1											\
-	    -f $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/$(M2_PLANET_ARCH)_defs.M1	\
-	    -f $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/libc-core.M1			\
-	    -f bin/mes-m2.M1									\
-	    -f bin/mes-m2.blood-elf.M1								\
-	    --LittleEndian									\
-	    --architecture $(M2_PLANET_ARCH)							\
+bin/mes-m2.hex2: bin/mes-m2.blood-elf.M1
+	M1					\
+	    --LittleEndian			\
+	    --architecture $(M2_PLANET_ARCH)	\
+	    -f lib/m2/x86/x86_defs.M1		\
+	    -f lib/x86-mes/x86.M1		\
+	    -f lib/linux/x86-mes-m2/crt1.M1	\
+	    -f bin/mes-m2.M1			\
+	    -f bin/mes-m2.blood-elf.M1		\
 	    -o $@
-	echo "$$M2_MISSING" >>  $@
 
 bin/mes-m2: bin/mes-m2.hex2
-	hex2												\
-	    -f $(M2_PLANET_PREFIX)/test/common_$(M2_PLANET_ARCH)/ELF-$(M2_PLANET_FUBAR)-debug.hex2	\
-	    -f bin/mes-m2.hex2										\
-	    --LittleEndian										\
-	    --architecture $(M2_PLANET_ARCH)								\
-	    --BaseAddress 0x00600000									\
-	    --exec_enable										\
+	hex2					\
+	    --LittleEndian			\
+	    --architecture $(M2_PLANET_ARCH)	\
+	    --BaseAddress 0x00600000		\
+	    --exec_enable			\
+	    -f lib/x86-mes/elf32-header.hex2	\
+	    -f bin/mes-m2.hex2			\
+	    -f lib/m2/missing.hex2		\
 	    -o $@
 
 # Clean up after ourselves
