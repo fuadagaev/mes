@@ -18,22 +18,11 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fcntl.h>
 #include <stdio.h>
-#include <stdlib.h>
-
-// CONSTANT EOF 0xffffffff
 
 int
-main (int argc, char **argv)
+putchar (int c)
 {
-  __stdin = open ("scaffold/read.data", 0, 0);
-  int c = getchar ();
-  if (c != 'm')
-    return c;
-  while (c != EOF)
-    {
-      putchar (c);
-      c = getchar ();
-    }
+  write (__stdout, &c, 1);
+  return 0;
 }
