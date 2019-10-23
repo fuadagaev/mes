@@ -18,8 +18,6 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int __stderr;
-
 int
 eputs (char *s)
 {
