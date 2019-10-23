@@ -18,14 +18,19 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <linux/syscall.h>
-#include <syscall.h>
 #include <mes/lib.h>
-#include <fcntl.h>
+#include <string.h>
 
-int
-read (int filedes, void *buffer, int size)
+char *__brk = 0;
+
+void *
+malloc (int size)
 {
-  int bytes = _sys_call3 (SYS_read, filedes, buffer, size);
-  return bytes;
+  if (!__brk)
+    __brk = brk (0);
+  if (brk (__brk + size) == -1)
+    return 0;
+  char *p = __brk;
+  __brk = __brk + size;
+  return p;
 }

@@ -19,15 +19,66 @@
  */
 
 #include <mes/lib.h>
-#include <fcntl.h>
-#include <stdarg.h>
+#include <errno.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/resource.h>
+#include <unistd.h>
+
+// CONSTANT __FILEDES_MAX 512
+
+int errno;
+int *__ungetc_buf;
 
 int
-open (char *file_name, int flags, int mask)
+__ungetc_p (int filedes)
 {
-  int r = _sys_call3 (SYS_open, file_name, flags, mask);
+  return __ungetc_buf[filedes] >= 0;
+}
+
+void
+__ungetc_init ()
+{
+  if (__ungetc_buf == 0)
+    {
+      int save_errno = errno;
+      __ungetc_buf = malloc ((__FILEDES_MAX + 1) * sizeof (int));
+      errno = save_errno;
+      memset (__ungetc_buf, -1, (__FILEDES_MAX + 1) * sizeof (int));
+    }
+}
+
+void
+__ungetc_clear (int filedes)
+{
+  __ungetc_buf[filedes] = -1;
+}
+
+void
+__ungetc_set (int filedes, int c)
+{
+  __ungetc_buf[filedes] = c;
+}
+
+int
+fdgetc (int fd)
+{
   __ungetc_init ();
-  if (r > 2)
-    __ungetc_clear (r);
-  return r;
+
+  char c;
+  int i = __ungetc_buf[fd];
+  if (i >= 0)
+    __ungetc_buf[fd] = -1;
+  else
+    {
+      int r = read (fd, &c, 1);
+      if (r < 1)
+        return -1;
+      i = c;
+    }
+  if (i < 0)
+    i = i + 256;
+
+  return i;
 }

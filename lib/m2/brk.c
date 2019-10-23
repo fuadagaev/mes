@@ -20,12 +20,9 @@
 
 #include <linux/syscall.h>
 #include <syscall.h>
-#include <mes/lib.h>
-#include <fcntl.h>
 
-int
-read (int filedes, void *buffer, int size)
+int /*long*/
+brk (void *addr)
 {
-  int bytes = _sys_call3 (SYS_read, filedes, buffer, size);
-  return bytes;
+  return _sys_call1 (SYS_brk, addr);
 }

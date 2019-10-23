@@ -22,13 +22,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// CONSTANT EOF 0xffffffff
+
 int
-main (int argc, char *argv[])
+main (int argc, char **argv)
 {
-  __stdin = open ("scaffold/read.data", 0);
+  __stdin = open ("scaffold/read.data", 0, 0);
   int c = getchar ();
   if (c != 'm')
-    return 1;
+    return c;
   while (c != EOF)
     {
       putchar (c);
