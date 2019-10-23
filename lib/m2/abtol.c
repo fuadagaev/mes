@@ -21,7 +21,7 @@
 #include <mes/lib.h>
 #include <ctype.h>
 
-long
+int
 abtol (char **p, int base)
 {
   char *s = p[0];

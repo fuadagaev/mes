@@ -25,7 +25,7 @@
 char *__itoa_buf;
 
 char *
-ntoab (long x, int base, int signed_p)
+ntoab (int x, int base, int signed_p)
 {
   if (! __itoa_buf)
     __itoa_buf = malloc (20);
