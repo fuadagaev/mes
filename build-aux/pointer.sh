@@ -7,6 +7,7 @@ ptr_once='s,([^N])(BYTES|CAR|CDR|CLOSURE|CONTINUATION|LENGTH|MACRO|NAME|PORT|REF
 ncbytes='s,NC(BYTES) \(([^()]*)\),news_\L\1 (\2),'
 cbytes='s,([^N])C(BYTES) \(([^()]*)\),\1cell_\L\2 (\3),'
 cstring='s,C(STRING) \(([^()]*)\),cell_bytes (STRING (\2)),'
+struct='s,SCM,struct scm*,g'
 
 sed -ri                                                 \
     -e "$ncbytes"                                       \
@@ -20,7 +21,8 @@ sed -ri                                                 \
     -e "$ptr_once"                                      \
     -e "$ptr_once"                                      \
     -e "$ptr_once"                                      \
-    -e 's,->struct,->structure,g'                       \
+    -e 's,->\<struct\>,->structure,g'                   \
+    -e "$struct"                                        \
                                                         \
     -e 's,CAAR \(([^()]*)\),\1->car->car,'              \
     -e 's,CADR \(([^()]*)\),\1->cdr->car,'              \
