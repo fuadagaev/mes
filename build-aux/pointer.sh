@@ -9,41 +9,47 @@ cbytes='s,([^N])C(BYTES) \(([^()]*)\),\1cell_\L\2 (\3),'
 cstring='s,C(STRING) \(([^()]*)\),cell_bytes (STRING (\2)),'
 struct='s,SCM,struct scm*,g'
 
-sed -ri                                                 \
-    -e "$ncbytes"                                       \
-    -e "$cbytes"                                        \
-    -e "$cstring"                                       \
-                                                        \
-    -e "$ncbytes"                                       \
-    -e "$cbytes"                                        \
-    -e "$cstring"                                       \
-                                                        \
-    -e "$ptr_once"                                      \
-    -e "$ptr_once"                                      \
-    -e "$ptr_once"                                      \
-    -e 's,->\<struct\>,->structure,g'                   \
-    -e "$struct"                                        \
-                                                        \
-    -e 's,CAAR \(([^()]*)\),\1->car->car,'              \
-    -e 's,CADR \(([^()]*)\),\1->cdr->car,'              \
-    -e 's,CDAR \(([^()]*)\),\1->car->cdr,'              \
-    -e 's,CDDR \(([^()]*)\),\1->cdr->cdr,'              \
-    -e 's,CADAR \(([^()]*)\),\1->car->cdr->car,'        \
-    -e 's,CDDDR \(([^()]*)\),\1->cdr->cdr->cdr,'        \
-    -e 's,CDADAR \(([^()]*)\),\1->cdr->car->cdr->car,'  \
-                                                        \
-    src/builtins.c                                      \
-    src/display.c                                       \
-    src/eval-apply.c                                    \
-    src/gc.c                                            \
-    src/hash.c                                          \
-    src/lib.c                                           \
-    src/math.c                                          \
-    src/mes.c                                           \
-    src/module.c                                        \
-    src/posix.c                                         \
-    src/reader.c                                        \
-    src/string.c                                        \
-    src/struct.c                                        \
-    src/symbols.c                                       \
+sed -ri                                                         \
+    -e 's,#define POINTER_CELLS 0,#define POINTER_CELLS 1',     \
+    -e "$ncbytes"                                               \
+    -e "$cbytes"                                                \
+    -e "$cstring"                                               \
+                                                                \
+    -e "$ncbytes"                                               \
+    -e "$cbytes"                                                \
+    -e "$cstring"                                               \
+                                                                \
+    -e "$ptr_once"                                              \
+    -e "$ptr_once"                                              \
+    -e "$ptr_once"                                              \
+    -e 's,->\<struct\>,->structure,g'                           \
+    -e "$struct"                                                \
+                                                                \
+    -e 's,CAAR \(([^()]*)\),\1->car->car,'                      \
+    -e 's,CADR \(([^()]*)\),\1->cdr->car,'                      \
+    -e 's,CDAR \(([^()]*)\),\1->car->cdr,'                      \
+    -e 's,CDDR \(([^()]*)\),\1->cdr->cdr,'                      \
+    -e 's,CADAR \(([^()]*)\),\1->car->cdr->car,'                \
+    -e 's,CDDDR \(([^()]*)\),\1->cdr->cdr->cdr,'                \
+    -e 's,CDADAR \(([^()]*)\),\1->cdr->car->cdr->car,'          \
+                                                                \
+    include/mes/builtins.h                                      \
+    include/mes/cc.h                                            \
+    include/mes/mes.h                                           \
+    include/mes/symbols.h                                       \
+    include/mes/builtins.h                                      \
+    src/builtins.c                                              \
+    src/display.c                                               \
+    src/eval-apply.c                                            \
+    src/gc.c                                                    \
+    src/hash.c                                                  \
+    src/lib.c                                                   \
+    src/math.c                                                  \
+    src/mes.c                                                   \
+    src/module.c                                                \
+    src/posix.c                                                 \
+    src/reader.c                                                \
+    src/string.c                                                \
+    src/struct.c                                                \
+    src/symbols.c                                               \
     src/vector.c
