@@ -1,0 +1,50 @@
+#!/bin/bash
+# Copyright (C) 2019 Jeremiah Orians <jeremiah@pdp10.guru>
+# This file is part of Gnu Mes
+#
+# Gnu Mes is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Gnu Mes is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Gnu Mes.  If not, see <http://www.gnu.org/licenses/>.
+
+# Usage:
+# kaem --verbose --strict --file scaffold/main.kaem
+# scaffold/main-m2
+
+M2-Planet                                       \
+    --debug                                     \
+    --architecture x86                          \
+    -f lib/linux/x86-mes-m2/crt1.c              \
+    -f scaffold/main.c                          \
+    -o scaffold/main.M1                         \
+
+blood-elf -f scaffold/main.M1 -o scaffold/main.blood-elf-M1
+
+M1                                              \
+    --LittleEndian                              \
+    --architecture x86                          \
+    -f lib/m2/x86/x86_defs.M1                   \
+    -f lib/x86-mes/x86.M1                       \
+    -f lib/linux/x86-mes-m2/crt1.M1             \
+    -f scaffold/main.M1                         \
+    -f scaffold/main.blood-elf-M1               \
+    -o scaffold/main.hex2
+
+hex2                                            \
+    --LittleEndian                              \
+    --architecture x86                          \
+    --BaseAddress 0x1000000                     \
+    --exec_enable                               \
+    -f lib/x86-mes/elf32-header.hex2            \
+    -f scaffold/main.hex2                       \
+    -o scaffold/main-m2
+
+echo Now run: scaffold/main-m2
