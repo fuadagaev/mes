@@ -1,0 +1,69 @@
+#! /bin/sh
+# Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+#
+# This file is part of GNU Mes.
+#
+# GNU Mes is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or (at
+# your option) any later version.
+#
+# GNU Mes is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
+
+# Usage:
+# kaem --verbose --strict --file scaffold/read.kaem
+# scaffold/read-m2
+
+M2-Planet                                       \
+    --debug                                     \
+    --architecture x86                          \
+    -f include/m2/lib.h                         \
+    -f lib/linux/x86-mes-m2/crt1.c              \
+    -f lib/linux/x86-mes-m2/mini.c              \
+    -f lib/linux/x86-mes-m2/syscall.c           \
+    -f include/linux/x86/syscall.h              \
+    -f lib/m2/cast.c                            \
+    -f lib/string/strlen.c                      \
+    -f lib/mes/mini-write.c                     \
+    -f lib/mes/eputs.c                          \
+    -f lib/linux/brk.c                          \
+    -f lib/m2/malloc.c                          \
+    -f lib/string/memset.c                      \
+    -f lib/m2/read.c                            \
+    -f lib/mes/fdgetc.c                         \
+    -f lib/stdio/getchar.c                      \
+    -f lib/stdio/putchar.c                      \
+    -f lib/m2/open.c                            \
+    -f lib/m2/mes_open.c                        \
+    -f scaffold/read.c                          \
+    -o scaffold/read.M1
+
+blood-elf -f scaffold/read.M1 -o scaffold/read.blood-elf-M1
+
+M1                                              \
+    --LittleEndian                              \
+    --architecture x86                          \
+    -f lib/m2/x86/x86_defs.M1                   \
+    -f lib/x86-mes/x86.M1                       \
+    -f lib/linux/x86-mes-m2/crt1.M1             \
+    -f scaffold/read.M1                         \
+    -f scaffold/read.blood-elf-M1               \
+    -o scaffold/read.hex2
+
+hex2                                            \
+    --LittleEndian                              \
+    --architecture x86                          \
+    --BaseAddress 0x1000000                     \
+    --exec_enable                               \
+    -f lib/m2/x86/ELF-i386-debug.hex2           \
+    -f scaffold/read.hex2                       \
+    -o scaffold/read-m2
+
+echo Now run: scaffold/read-m2
+./scaffold/read-m2
