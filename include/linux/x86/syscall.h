@@ -55,12 +55,17 @@
 #define SYS_fsync   0x76
 // CONSTANT SYS_getcwd 0xb7
 #define SYS_getcwd 0xb7
+// CONSTANT SYS_dup 0x29
+#define SYS_dup       0x29
+// CONSTANT SYS_dup2 0x3f
+#define SYS_dup2      0x3f
+// CONSTANT SYS_unlink 0x0a
+#define SYS_unlink 0x0a
 
 /* libc+tcc */
 #define SYS_close  0x06
 #define SYS_time   0x0d
 #define SYS_lseek  0x13
-#define SYS_unlink 0x0a
 #define SYS_rmdir  0x28
 #define SYS_gettimeofday 0x4e
 #define SYS_stat   0x6a
@@ -74,7 +79,6 @@
 #define SYS_kill      0x25
 #define SYS_rename    0x26
 #define SYS_mkdir     0x27
-#define SYS_dup       0x29
 #define SYS_pipe      0x2a
 #define SYS_getgid    0x2f
 #define SYS_signal    0x30
@@ -82,7 +86,6 @@
 #define SYS_rt_sigaction 0xae
 #define SYS_signal    0x30
 #define SYS_fcntl     0x37
-#define SYS_dup2      0x3f
 #define SYS_getrusage 0x4d
 #define SYS_lstat     0x6b
 #define SYS_setitimer 0x68

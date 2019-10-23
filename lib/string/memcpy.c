@@ -26,8 +26,13 @@ memcpy (void *dest, void const *src, size_t n)
 {
   char *p = dest;
 
-  while (n--)
-    *p++ = *q++;
+  while (n != 0)
+    {
+      n = n - 1;
+      dest[0] = src[0];
+      dest = dest + 1;
+      src = src + 1;
+    }
 
-  return dest;
+  return p;
 }

@@ -27,7 +27,8 @@ setenv (char const *s, char const *v, int overwrite_p)
 {
   char **p = environ;
   int length = strlen (s);
-  while (p[0])
+
+  while (p[0] != 0)
     {
       if (strncmp (s, p[0], length) == 0)
         {
@@ -44,7 +45,7 @@ setenv (char const *s, char const *v, int overwrite_p)
   strcpy (entry + length, "=");
   strcpy (entry + length + 1, v);
   entry[length + strlen (v) + 2] = 0;
-  if (end_p)
+  if (end_p != 0)
     p[1] = 0;
 
   return 0;

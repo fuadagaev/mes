@@ -70,43 +70,44 @@ M2_SOURCES =					\
  lib/linux/x86-mes-m2/crt1.c			\
  lib/linux/x86-mes-m2/mini.c			\
  lib/m2/exit.c					\
- lib/m2/write.c					\
+ lib/mes/write.c				\
  lib/linux/x86-mes-m2/syscall.c			\
- lib/m2/brk.c					\
- lib/m2/malloc.c				\
- lib/m2/memset.c				\
+ lib/linux/brk.c				\
+ lib/stdlib/malloc.c				\
+ lib/string/memset.c				\
+						\
  lib/m2/read.c					\
- lib/m2/fdgetc.c				\
+ lib/mes/fdgetc.c				\
  lib/stdio/getchar.c				\
- lib/m2/putchar.c				\
+ lib/stdio/putchar.c				\
  lib/m2/open.c					\
  lib/m2/mes_open.c				\
- lib/m2/strlen.c				\
- lib/m2/eputs.c					\
- lib/m2/fdputc.c				\
+ lib/string/strlen.c				\
+ lib/mes/eputs.c				\
+ lib/mes/fdputc.c				\
  lib/mes/eputc.c				\
 						\
  lib/mes/__assert_fail.c			\
  lib/mes/assert_msg.c				\
 						\
- lib/m2/fdputc.c				\
- lib/m2/strncmp.c				\
- lib/m2/getenv.c				\
+ lib/mes/fdputc.c				\
+ lib/string/strncmp.c				\
+ lib/posix/getenv.c				\
  lib/mes/fdputs.c				\
  lib/m2/ntoab.c					\
  lib/ctype/isdigit.c				\
  lib/ctype/isxdigit.c				\
  lib/ctype/isspace.c				\
  lib/ctype/isnumber.c				\
- lib/m2/abtol.c					\
- lib/m2/atoi.c					\
- lib/m2/memcpy.c				\
+ lib/mes/abtol.c				\
+ lib/stdlib/atoi.c				\
+ lib/string/memcpy.c				\
  lib/stdlib/free.c				\
  lib/stdlib/realloc.c				\
- lib/m2/strcpy.c				\
+ lib/string/strcpy.c				\
  lib/mes/itoa.c					\
  lib/mes/fdungetc.c				\
- lib/m2/setenv.c				\
+ lib/posix/setenv.c				\
  lib/m2/access.c				\
  lib/m2/chmod.c					\
  lib/m2/isatty.c				\
@@ -116,14 +117,13 @@ M2_SOURCES =					\
  lib/m2/waitpid.c				\
  lib/m2/clock_gettime.c				\
  lib/m2/time.c					\
- lib/m2/_getcwd.c				\
+ lib/linux/_getcwd.c				\
  lib/m2/getcwd.c				\
- lib/m2/dup.c					\
- lib/m2/dup2.c					\
- lib/m2/unlink.c				\
- lib/m2/strcmp.c				\
- lib/m2/memcmp.c
-
+ lib/linux/dup.c				\
+ lib/linux/dup2.c				\
+ lib/string/strcmp.c				\
+ lib/string/memcmp.c				\
+ lib/linux/unlink.c
 
 M2_TODO =					\
  lib/m2/file_print.c				\
@@ -165,6 +165,8 @@ bin/mes-gcc: simple.make $(GCC_SOURCES) $(INCLUDES) | bin
 	$(CC) $(CFLAGS) $(GCC_SOURCES) -o $@
 
 M2_PLANET_INCLUDES =				\
+ include/m2/lib.h				\
+ include/linux/x86/syscall.h			\
  include/mes/mes.h				\
  include/mes/m2.h				\
  include/mes/builtins.h				\

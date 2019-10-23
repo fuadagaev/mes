@@ -19,7 +19,7 @@
  */
 
 int
-strncmp (char *a, char *b, int size)
+strncmp (char const *a, char const *b, size_t size)
 {
   if (size == 0)
     return 0;
