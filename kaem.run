@@ -40,6 +40,8 @@ M2-Planet                                       \
     -f lib/m2/mes_open.c                        \
     -f lib/m2/strlen.c                          \
     -f lib/m2/eputs.c                           \
+    -f lib/m2/fdputc.c                          \
+    -f lib/mes/eputc.c                          \
                                                 \
     -f include/mes/mes.h.m2                     \
     -f include/mes/m2.h.m2                      \
@@ -61,28 +63,29 @@ M2-Planet                                       \
     -f lib/ctype/isnumber.c.m2                  \
     -f lib/m2/abtol.c                           \
     -f lib/m2/atoi.c                            \
-    -f lib/m2/memcpy.c.m2                       \
+    -f lib/m2/memcpy.c                          \
     -f lib/stdlib/free.c                        \
     -f lib/stdlib/realloc.c.m2                  \
-    -f lib/m2/strcpy.c.m2                       \
+    -f lib/m2/strcpy.c                          \
     -f lib/mes/itoa.c.m2                        \
     -f lib/mes/fdungetc.c.m2                    \
-    -f lib/m2/setenv.c.m2                       \
-    -f lib/m2/access.c.m2                       \
-    -f lib/m2/chmod.c.m2                        \
-    -f lib/m2/isatty.c.m2                       \
-    -f lib/m2/fork.c.m2                         \
-    -f lib/m2/execve.c.m2                       \
-    -f lib/m2/execv.c.m2                        \
-    -f lib/m2/waitpid.c.m2                      \
-    -f lib/m2/clock_gettime.c.m2                \
-    -f lib/m2/time.c.m2                         \
-    -f lib/m2/getcwd.c.m2                       \
-    -f lib/m2/dup.c.m2                          \
-    -f lib/m2/dup2.c.m2                         \
-    -f lib/m2/unlink.c.m2                       \
-    -f lib/m2/strcmp.c.m2                       \
-    -f lib/m2/memcmp.c.m2                       \
+    -f lib/m2/setenv.c                          \
+    -f lib/m2/access.c                          \
+    -f lib/m2/chmod.c                           \
+    -f lib/m2/isatty.c                          \
+    -f lib/m2/fork.c                            \
+    -f lib/m2/execve.c                          \
+    -f lib/m2/execv.c                           \
+    -f lib/m2/waitpid.c                         \
+    -f lib/m2/clock_gettime.c                   \
+    -f lib/m2/time.c                            \
+    -f lib/m2/_getcwd.c                         \
+    -f lib/m2/getcwd.c                          \
+    -f lib/m2/dup.c                             \
+    -f lib/m2/dup2.c                            \
+    -f lib/m2/unlink.c                          \
+    -f lib/m2/strcmp.c                          \
+    -f lib/m2/memcmp.c                          \
     -f src/builtins.c.m2                        \
     -f src/display.c.m2                         \
     -f src/eval-apply.c.m2                      \
