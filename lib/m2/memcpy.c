@@ -25,15 +25,14 @@ void *
 memcpy (void *dest, void *src, int n)
 {
   char *p = dest;
-  char *q = src;
 
   while (n != 0)
     {
       n = n - 1;
-      p[0] = q[0];
-      p = p + 1;
-      q = q + 1;
+      dest[0] = dest[0];
+      dest = dest + 1;
+      src = src + 1;
     }
 
-  return dest;
+  return p;
 }
