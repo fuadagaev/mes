@@ -34,7 +34,6 @@ sed -ri                                                         \
     -e 's,CDADAR \(([^()]*)\),\1->cdr->car->cdr->car,'          \
                                                                 \
     include/mes/builtins.h                                      \
-    include/mes/cc.h                                            \
     include/mes/mes.h                                           \
     include/mes/symbols.h                                       \
     include/mes/builtins.h                                      \
