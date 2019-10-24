@@ -83,6 +83,8 @@ M2_SOURCES =					\
  lib/m2/mes_open.c				\
  lib/m2/strlen.c				\
  lib/m2/eputs.c					\
+ lib/m2/fdputc.c				\
+ lib/mes/eputc.c				\
 						\
  lib/mes/__assert_fail.c			\
  lib/mes/assert_msg.c				\
@@ -114,6 +116,7 @@ M2_SOURCES =					\
  lib/m2/waitpid.c				\
  lib/m2/clock_gettime.c				\
  lib/m2/time.c					\
+ lib/m2/_getcwd.c				\
  lib/m2/getcwd.c				\
  lib/m2/dup.c					\
  lib/m2/dup2.c					\
