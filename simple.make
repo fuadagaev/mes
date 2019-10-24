@@ -247,7 +247,7 @@ bin/mes-m2: bin/mes-m2.hex2
 	hex2					\
 	    --LittleEndian			\
 	    --architecture $(M2_PLANET_ARCH)	\
-	    --BaseAddress 0x00600000		\
+	    --BaseAddress 0x1000000		\
 	    --exec_enable			\
 	    -f lib/x86-mes/elf32-header.hex2	\
 	    -f bin/mes-m2.hex2			\
