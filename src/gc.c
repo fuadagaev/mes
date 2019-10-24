@@ -236,12 +236,7 @@ make_bytes (char const *s, size_t length)
   SCM x = alloc (size);
   TYPE (x) = TBYTES;
   LENGTH (x) = length;
-#if __M2_PLANET__
-  char *p = &g_cells[x];
-  p = p + 2 * sizeof (SCM);
-#else
   char *p = &CDR (x);
-#endif
   if (length == 0)
     p[0] = 0;
   else
