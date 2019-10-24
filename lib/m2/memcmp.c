@@ -21,7 +21,7 @@
 #include <string.h>
 
 int
-memcmp (void *s1, void *s2, size_t size)
+memcmp (void *s1, void *s2, int size)
 {
   if (size == 0)
     return 0;

@@ -53,6 +53,8 @@
 #define SYS_ioctl   0x36
 // CONSTANT SYS_fsync 0x76
 #define SYS_fsync   0x76
+// CONSTANT SYS_getcwd 0xb7
+#define SYS_getcwd 0xb7
 
 /* libc+tcc */
 #define SYS_close  0x06
@@ -62,7 +64,6 @@
 #define SYS_rmdir  0x28
 #define SYS_gettimeofday 0x4e
 #define SYS_stat   0x6a
-#define SYS_getcwd 0xb7
 
 /* libc+gnu */
 

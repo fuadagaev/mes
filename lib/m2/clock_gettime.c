@@ -20,8 +20,8 @@
 
 struct timespec
 {
-  long tv_sec;
-  long tv_nsec;
+  int tv_sec;
+  int tv_nsec;
 };
 
 int clock_gettime (int clk_id, struct timespec *tp);

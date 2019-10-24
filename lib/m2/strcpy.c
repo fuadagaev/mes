@@ -1,4 +1,4 @@
-/* -*-comment-start: "//";comment-end:""-*-
+/* -*-comment-start: "
  * GNU Mes --- Maxwell Equations of Software
  * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
@@ -23,15 +23,29 @@
 char *
 strcpy (char *dest, char *src)
 {
+  /* eputs ("\nstrcpy: src="); */
+  /* eputs (src); */
+  /* eputs ("\n"); */
   char *p = dest;
+  char *orig = dest;
 
-  while (src[0] != 0)
+  /* eputs ("dest="); */
+  /* eputs (dest); */
+  /* eputs ("\n"); */
+
+  /* eputs ("c:" ); */
+  while (0 != src[0])
     {
-      p[0] = src[0];
-      p + p + 1;
+      /* eputc (src[0]); */
+      /* eputs (" "); */
+      dest[0] = src[0];
+      dest = dest + 1;
       src = src + 1;
     }
-  p[0] = 0;
+  dest[0] = 0;
+  /* eputs ("\n   => orig="); */
+  /* eputs (orig); */
+  /* eputs ("\n"); */
 
-  return dest;
+  return p;
 }

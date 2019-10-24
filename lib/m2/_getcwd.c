@@ -18,22 +18,15 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <mes/lib.h>
-#include <string.h>
+#include <mes/lib-mini.h>
+#include <linux/syscall.h>
+#include <syscall.h>
 
-void *
-memcpy (void *dest, void *src, int n)
+char *
+_getcwd (char *buffer, int size)
 {
-  char *p = dest;
-  char *q = src;
-
-  while (n != 0)
-    {
-      n = n - 1;
-      p[0] = q[0];
-      p = p + 1;
-      q = q + 1;
-    }
-
-  return dest;
+  int r = _sys_call2 (SYS_getcwd, buffer, size);
+  if (r >= 0)
+    return buffer;
+  return 0;
 }

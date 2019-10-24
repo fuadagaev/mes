@@ -18,4 +18,20 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-char *getcwd (char *buffer, size_t size);
+#include <mes/lib.h>
+#include <limits.h>
+#include <sys/types.h>
+#include <mes/lib.h>
+
+// CONSTANT PATH_MAX 1024
+
+char *
+getcwd (char *buffer, int size)
+{
+  if (! __itoa_buf)
+    __itoa_buf = malloc (20);
+  char *buf = __itoa_buf;
+  if (buffer)
+    return _getcwd (buffer, size);
+  return _getcwd (buf, PATH_MAX);
+}
