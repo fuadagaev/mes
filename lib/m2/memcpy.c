@@ -29,7 +29,7 @@ memcpy (void *dest, void *src, int n)
   while (n != 0)
     {
       n = n - 1;
-      dest[0] = dest[0];
+      dest[0] = src[0];
       dest = dest + 1;
       src = src + 1;
     }
