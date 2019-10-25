@@ -115,9 +115,9 @@ gc_init ()                      /*:((internal)) */
 
   long arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
 #if POINTER_CELLS
-  void *a = malloc (arena_bytes + STACK_SIZE * sizeof (SCM) * 2);
+  void *a = malloc (arena_bytes + (STACK_SIZE * sizeof (SCM) * 2));
 #else
-  void *a = malloc (arena_bytes + STACK_SIZE * sizeof (SCM));
+  void *a = malloc (arena_bytes + (STACK_SIZE * sizeof (SCM)));
 #endif
   g_cells = a;
   g_stack_array = a + arena_bytes;
@@ -170,7 +170,7 @@ SCM
 alloc (long n)
 {
   SCM x = g_free;
-  g_free = g_free + n * M2_CELL_SIZE;
+  g_free = g_free + (n * M2_CELL_SIZE);
 #if POINTER_CELLS
   long i = g_free - g_cells;
 #else
@@ -224,7 +224,7 @@ copy_stack (long index, SCM from)
 SCM
 cell_ref (SCM cell, long index)
 {
-  return cell + index * M2_CELL_SIZE;
+  return cell + (index * M2_CELL_SIZE);
 }
 
 SCM
@@ -338,7 +338,7 @@ gc_up_arena ()                  /*:((internal)) */
   else
     ARENA_SIZE = MAX_ARENA_SIZE - JAM_SIZE;
   long arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
-  void *p = realloc (g_cells - M2_CELL_SIZE, arena_bytes + STACK_SIZE * sizeof (SCM));
+  void *p = realloc (g_cells - M2_CELL_SIZE, (arena_bytes + STACK_SIZE) * sizeof (SCM));
   if (p == 0)
     {
       eputs ("realloc failed, g_free=");
@@ -408,7 +408,7 @@ gc_copy (SCM old)               /*:((internal)) */
       size_t length = NLENGTH (new);
 #endif
       memcpy (dest, src, length + 1);
-      g_free = g_free + (bytes_cells (length) - 1) * M2_CELL_SIZE;
+      g_free = g_free + ((bytes_cells (length) - 1) * M2_CELL_SIZE);
 
       if (g_debug > 4)
         {
@@ -468,7 +468,7 @@ gc_loop (SCM scan)              /*:((internal)) */
           gc_relocate_cdr (scan, cdr);
         }
       if (NTYPE (scan) == TBYTES)
-        scan = scan + (bytes_cells (NLENGTH (scan)) - 1) * M2_CELL_SIZE;
+        scan = scan + ((bytes_cells (NLENGTH (scan)) - 1) * M2_CELL_SIZE);
       scan = scan + M2_CELL_SIZE;
     }
   gc_flip ();
