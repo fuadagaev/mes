@@ -47,9 +47,11 @@ greater_p (SCM x)               /*:((name . ">") (arity . n)) */
   while (x != cell_nil)
     {
       assert_number ("greater_p", CAR (x));
-      if (VALUE (car (x)) >= n)
+      SCM i = car (x);
+      long v = VALUE (i);
+      if (v >= n)
         return cell_f;
-      n = VALUE (car (x));
+      n = v;
       x = cdr (x);
     }
   return cell_t;
@@ -66,9 +68,11 @@ less_p (SCM x)                  /*:((name . "<") (arity . n)) */
   while (x != cell_nil)
     {
       assert_number ("less_p", CAR (x));
-      if (VALUE (car (x)) <= n)
+      SCM i = car (x);
+      long v = VALUE (i);
+      if (v <= n)
         return cell_f;
-      n = VALUE (car (x));
+      n = v;
       x = cdr (x);
     }
   return cell_t;
@@ -84,7 +88,9 @@ is_p (SCM x)                    /*:((name . "=") (arity . n)) */
   x = cdr (x);
   while (x != cell_nil)
     {
-      if (VALUE (car (x)) != n)
+      SCM i = car (x);
+      long v = VALUE (i);
+      if (v != n)
         return cell_f;
       x = cdr (x);
     }
@@ -101,8 +107,10 @@ minus (SCM x)                   /*:((name . "-") (arity . n)) */
     n = -n;
   while (x != cell_nil)
     {
-      assert_number ("minus", CAR (x));
-      n = n - VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("minus", i);
+      long v = VALUE (i);
+      n = n - v;
       x = cdr (x);
     }
   return make_number (n);
@@ -114,8 +122,10 @@ plus (SCM x)                    /*:((name . "+") (arity . n)) */
   long n = 0;
   while (x != cell_nil)
     {
-      assert_number ("plus", CAR (x));
-      n = n + VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("plus", i);
+      long v = VALUE (i);
+      n = n + v;
       x = cdr (x);
     }
   return make_number (n);
@@ -127,19 +137,22 @@ divide (SCM x)                  /*:((name . "/") (arity . n)) */
   long n = 1;
   if (x != cell_nil)
     {
-      assert_number ("divide", CAR (x));
-      n = VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("divide", i);
+      long v = VALUE (i);
+      n = v;
       x = cdr (x);
     }
   while (x != cell_nil)
     {
-      assert_number ("divide", CAR (x));
-      long y = VALUE (CAR (x));
-      if (y == 0)
+      SCM i = car (x);
+      assert_number ("divide", i);
+      long v = VALUE (i);
+      if (v == 0)
         error (cstring_to_symbol ("divide-by-zero"), x);
       if (n == 0)
         break;
-      n = n / y;
+      n = n / v;
       x = cdr (x);
     }
   return make_number (n);
@@ -168,8 +181,10 @@ multiply (SCM x)                /*:((name . "*") (arity . n)) */
   long n = 1;
   while (x != cell_nil)
     {
-      assert_number ("multiply", CAR (x));
-      n = n * VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("multiply", i);
+      long v = VALUE (i);
+      n = n * v;
       x = cdr (x);
     }
   return make_number (n);
@@ -181,8 +196,10 @@ logand (SCM x)                  /*:((arity . n)) */
   long n = 0;
   while (x != cell_nil)
     {
-      assert_number ("multiply", CAR (x));
-      n = n & VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("multiply", i);
+      long v = VALUE (i);
+      n = n & v;
       x = cdr (x);
     }
   return make_number (n);
@@ -194,8 +211,10 @@ logior (SCM x)                  /*:((arity . n)) */
   long n = 0;
   while (x != cell_nil)
     {
-      assert_number ("logior", CAR (x));
-      n = n | VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("logior", i);
+      long v = VALUE (i);
+      n = n | v;
       x = cdr (x);
     }
   return make_number (n);
@@ -215,8 +234,10 @@ logxor (SCM x)                  /*:((arity . n)) */
   long n = 0;
   while (x != cell_nil)
     {
-      assert_number ("logxor", CAR (x));
-      n = n ^ VALUE (car (x));
+      SCM i = car (x);
+      assert_number ("logxor", i);
+      long v = VALUE (i);
+      n = n ^ v;
       x = cdr (x);
     }
   return make_number (n);
