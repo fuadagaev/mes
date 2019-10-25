@@ -36,8 +36,13 @@
 
 void init_symbols_ ();
 
+#if __M2_PLANET__
+#define M2_CELL_SIZE 12
 // CONSTANT M2_CELL_SIZE 12
+#else
 #define M2_CELL_SIZE 1
+// CONSTANT M2_CELL_SIZE 12
+#endif
 
 #if POINTER_CELLS
 long g_stack;
@@ -59,7 +64,12 @@ struct scm *g_news;
 char *
 cell_bytes (SCM x)
 {
+#if POINTER_CELLS
+  char *p = x;
+  return p + (2 * sizeof (long));
+#else
   return &CDR (x);
+#endif
 }
 
 char *
@@ -236,7 +246,7 @@ make_bytes (char const *s, size_t length)
   SCM x = alloc (size);
   TYPE (x) = TBYTES;
   LENGTH (x) = length;
-  char *p = &CDR (x);
+  char *p = cell_bytes (x);
   if (length == 0)
     p[0] = 0;
   else

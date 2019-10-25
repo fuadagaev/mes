@@ -23,6 +23,14 @@
 
 #include <string.h>
 
+#if __M2_PLANET__
+#define M2_CELL_SIZE 12
+// CONSTANT M2_CELL_SIZE 12
+#else
+#define M2_CELL_SIZE 1
+// CONSTANT M2_CELL_SIZE 12
+#endif
+
 #if POINTER_CELLS
 SCM g_symbol;
 #else
@@ -34,7 +42,7 @@ init_symbol (SCM x, long type, char const *name)
 {
   TYPE (x) = type;
   if (!g_symbols)
-    g_free = g_free + 1;
+    g_free = g_free + M2_CELL_SIZE;
   else
     {
       int length = strlen (name);
@@ -43,7 +51,7 @@ init_symbol (SCM x, long type, char const *name)
       CDR (x) = STRING (string);
       hash_set_x (g_symbols, string, x);
     }
-  g_symbol = g_symbol + 1;
+  g_symbol = g_symbol + M2_CELL_SIZE;
   return x;
 }
 
@@ -175,7 +183,7 @@ SCM
 init_symbols ()                  /*:((internal)) */
 {
 #if POINTER_CELLS
-  g_free = g_cells + 1;
+  g_free = g_cells + M2_CELL_SIZE;
 #else
   g_free = 1;
 #endif
