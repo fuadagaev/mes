@@ -183,7 +183,7 @@ M2_PLANET_SOURCES =						\
 	    -e 's@^(#include.*)@/* \1 */@'		\
 	    $<						\
 	| $(CC) -E -I include				\
-	    -D POINTER_CELLS=1				\
+	    -D POINTER_CELLS=0				\
 	    -D __M2_PLANET__=1				\
 	    -D 'MES_VERSION="git"'			\
 	    -D 'MES_PKGDATADIR="/usr/local/share/mes"'	\
@@ -209,7 +209,7 @@ M2_PLANET_SOURCES =						\
 	    -e 's@^(#include.*)@/* \1 */@'		\
 	    $<						\
 	| $(CC) -E -I include				\
-	    -D POINTER_CELLS=1				\
+	    -D POINTER_CELLS=0				\
 	    -D __M2_PLANET__=1				\
 	    -D 'MES_VERSION="git"'			\
 	    -D 'MES_PKGDATADIR="/usr/local/share/mes"'	\

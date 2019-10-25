@@ -67,6 +67,8 @@ cell_bytes (SCM x)
 #if POINTER_CELLS
   char *p = x;
   return p + (2 * sizeof (long));
+#elif __M2_PLANET__
+  CELL (x) + 8;
 #else
   return &CDR (x);
 #endif
