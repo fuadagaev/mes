@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -20,6 +20,8 @@
 
 #ifndef __MES_M2_H
 #define __MES_M2_H
+
+#if __M2_PLANET__
 
 char **environ;
 int __stdin;
@@ -52,58 +54,91 @@ struct timeval
 
 */
 
-#define struct_size 12
-
-#if POINTER_CELLS
-
-#define CELL(x) (x)
-
 #else
 
-#define CELL(x) ((x*struct_size)+g_cells)
-
-#define TYPE(x) ((x*struct_size)+g_cells)->type
-#define CAR(x) ((x*struct_size)+g_cells)->car
-#define CDR(x) ((x*struct_size)+g_cells)->cdr
-
-#define NTYPE(x) ((x*struct_size)+g_news)->type
-#define NCAR(x) ((x*struct_size)+g_news)->car
-#define NCDR(x) ((x*struct_size)+g_news)->cdr
-
-
-#define BYTES(x) ((x*struct_size)+g_cells)->car
-#define LENGTH(x) ((x*struct_size)+g_cells)->car
-#define MACRO(x) ((x*struct_size)+g_cells)->car
-#define PORT(x) ((x*struct_size)+g_cells)->car
-#define REF(x) ((x*struct_size)+g_cells)->car
-#define VARIABLE(x) ((x*struct_size)+g_cells)->car
-
-#define CLOSURE(x) ((x*struct_size)+g_cells)->cdr
-#define CONTINUATION(x) ((x*struct_size)+g_cells)->cdr
-
-#define CBYTES(x) (((x*struct_size)+g_cells) + 8)
-
-#define NAME(x) ((x*struct_size)+g_cells)->cdr
-#define STRING(x) ((x*struct_size)+g_cells)->cdr
-#define STRUCT(x) ((x*struct_size)+g_cells)->cdr
-#define VALUE(x) ((x*struct_size)+g_cells)->cdr
-#define VECTOR(x) ((x*struct_size)+g_cells)->cdr
-
-#define NLENGTH(x) ((x*struct_size)+g_news)->car
-
-#define NVALUE(x) ((x*struct_size)+g_news)->cdr
-#define NSTRING(x) ((x*struct_size)+g_news)->cdr
-#define NVECTOR(x) ((x*struct_size)+g_news)->cdr
-
-#define CAAR(x) CAR (CAR (x))
-#define CADR(x) CAR (CDR (x))
-#define CDAR(x) CDR (CAR (x))
-#define CDDR(x) CDR (CDR (x))
-#define CADAR(x) CAR (CDR (CAR (x)))
-#define CADDR(x) CAR (CDR (CDR (x)))
-#define CDADR(x) CDR (CAR (CDR (x)))
-#define CDDAR(x) CDR (CDR (CAR (x)))
+#include "mes/mes.h"
 
 #endif
+
+#define struct_size 12
+#define CELL(x) ((x*struct_size)+g_cells)
+
+SCM TYPE (SCM x);
+SCM *TYPE_PTR (SCM x);
+
+SCM CAR (SCM x);
+SCM *CAR_PTR (SCM x);
+
+SCM CDR (SCM x);
+SCM *CDR_PTR (SCM x);
+
+SCM NTYPE (SCM x);
+SCM *NTYPE_PTR (SCM x);
+
+SCM NCAR (SCM x);
+SCM *NCAR_PTR (SCM x);
+
+SCM NCDR (SCM x);
+SCM *NCDR_PTR (SCM x);
+
+SCM BYTES (SCM x);
+SCM *BYTES_PTR (SCM x);
+
+SCM LENGTH (SCM x);
+SCM *LENGTH_PTR (SCM x);
+
+SCM MACRO (SCM x);
+SCM *MACRO_PTR (SCM x);
+
+SCM PORT (SCM x);
+SCM *PORT_PTR (SCM x);
+
+SCM REF (SCM x);
+SCM *REF_PTR (SCM x);
+
+SCM VARIABLE (SCM x);
+SCM *VARIABLE_PTR (SCM x);
+
+SCM CLOSURE (SCM x);
+SCM *CLOSURE_PTR (SCM x);
+
+SCM CONTINUATION (SCM x);
+SCM *CONTINUATION_PTR (SCM x);
+
+SCM NAME (SCM x);
+SCM *NAME_PTR (SCM x);
+
+SCM STRING (SCM x);
+SCM *STRING_PTR (SCM x);
+
+SCM STRUCT (SCM x);
+SCM *STRUCT_PTR (SCM x);
+
+SCM VALUE (SCM x);
+SCM *VALUE_PTR (SCM x);
+
+SCM VECTOR (SCM x);
+SCM *VECTOR_PTR (SCM x);
+
+SCM NLENGTH (SCM x);
+SCM *NLENGTH_PTR (SCM x);
+
+SCM NVALUE (SCM x);
+SCM *NVALUE_PTR (SCM x);
+
+SCM NSTRING (SCM x);
+SCM *NSTRING_PTR (SCM x);
+
+SCM NVECTOR (SCM x);
+SCM *NVECTOR_PTR (SCM x);
+
+SCM CAAR (SCM x);
+SCM CADR (SCM x);
+SCM CDAR (SCM x);
+SCM CDDR (SCM x);
+SCM CADAR (SCM x);
+SCM CADDR (SCM x);
+SCM CDADR (SCM x);
+SCM CDDAR (SCM x);
 
 #endif /* __MES_M2_H */

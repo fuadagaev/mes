@@ -39,6 +39,7 @@ CFLAGS:=					\
  -D const=					\
  -ggdb						\
  -D SYSTEM_LIBC=1				\
+ -D M2_FUNCTIONS=1				\
  -D 'MES_VERSION="git"'				\
  -D 'MES_PKGDATADIR="/usr/local/share/mes"'	\
  -I include					\
@@ -172,9 +173,10 @@ M2_PLANET_INCLUDES =				\
  include/mes/symbols.h				\
  include/linux/$(M2_PLANET_ARCH)/syscall.h
 
-M2_PLANET_SOURCES =						\
- $(M2_PLANET_INCLUDES:%.h=%.h.m2)				\
- $(M2_SOURCES:%.c=%.c.m2)					\
+M2_PLANET_SOURCES =				\
+ $(M2_PLANET_INCLUDES:%.h=%.h.m2)		\
+ $(M2_SOURCES:%.c=%.c.m2)			\
+ src/m2.c.m2					\
  $(MES_SOURCES:%.c=%.c.m2)
 
 %.h.m2: %.h simple.make

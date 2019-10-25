@@ -21,6 +21,10 @@
 #ifndef __MES_MACROS_H
 #define __MES_MACROS_H
 
+#if M2_FUNCTIONS
+#include "mes/m2.h"
+#else
+
 #if POINTER_CELLS
 
 // #define TYPE(x) x->type
@@ -126,6 +130,24 @@
 
 #endif
 
+#define TYPE_PTR(x) &(TYPE (x))
+#define CAR_PTR(x) &(CAR (x))
+#define CDR_PTR(x) &(CDR (x))
+
+#define CONTINUATION_PTR(x) &(CONTINUATION (x))
+#define LENGTH_PTR(x) &(LENGTH (x))
+#define STRING_PTR(x) &(STRING (x))
+#define VALUE_PTR(x) &(VALUE (x))
+#define VECTOR_PTR(x) &(VECTOR (x))
+
+#define NTYPE_PTR(x) &(NTYPE (x))
+#define NCAR_PTR(x) &(NCAR (x))
+#define NCDR_PTR(x) &(NCDR (x))
+
+#define NLENGTH_PTR(x) &(NLENGTH (x))
+#define NVALUE_PTR(x) &(NVALUE (x))
+#define NVECTOR_PTR(x) &(NVECTOR (x))
+
 #define CAAR(x) CAR (CAR (x))
 #define CADR(x) CAR (CDR (x))
 #define CDAR(x) CDR (CAR (x))
@@ -134,5 +156,7 @@
 #define CADDR(x) CAR (CDR (CDR (x)))
 #define CDADR(x) CDR (CAR (CDR (x)))
 #define CDDAR(x) CDR (CDR (CAR (x)))
+
+#endif
 
 #endif //__MES_MACROS_H
