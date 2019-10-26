@@ -542,9 +542,9 @@ apply:
     {
       if (CAAR (R1) == cell_symbol_lambda)
         {
-          formals = CADR (CAR (R1));
+          formals = CADAR (R1);
           args = CDR (R1);
-          body = CDDR (CAR (R1));
+          body = CDDAR (R1);
           p = pairlis (formals, CDR (R1), R0);
           check_formals (R1, formals, args);
           call_lambda (body, p, p, R0);

@@ -132,5 +132,6 @@
 #define CDDR(x) CDR (CDR (x))
 #define CADAR(x) CAR (CDR (CAR (x)))
 #define CADDR(x) CAR (CDR (CDR (x)))
+#define CDDAR(x) CDR (CDR (CAR (x)))
 
 #endif //__MES_MACROS_H
