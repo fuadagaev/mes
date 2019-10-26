@@ -462,7 +462,8 @@ evlis3:
 
 apply:
   g_stack_array[g_stack + FRAME_PROCEDURE] = CAR (R1);
-  t = TYPE (CAR (R1));
+  a = CAR (R1);
+  t = TYPE (a);
   if (t == TSTRUCT && builtin_p (CAR (R1)) == cell_t)
     {
       check_formals (CAR (R1), builtin_arity (CAR (R1)), CDR (R1));
@@ -627,12 +628,19 @@ eval:
           if (TYPE (R1) == TPAIR)
             if (CAR (R1) == cell_symbol_define || CAR (R1) == cell_symbol_define_macro)
               {
-                global_p = CAAR (R0) != cell_closure;
-                macro_p = CAR (R1) == cell_symbol_define_macro;
+                // global_p = CAAR (R0) != cell_closure;
+                global_p = 0;
+                if (CAAR (R0) != cell_closure)
+                  global_p = 1;
+                // macro_p = CAR (R1) == cell_symbol_define_macro;
+                macro_p = 0;
+                if (CAR (R1) == cell_symbol_define_macro)
+                  macro_p = 1;
                 if (global_p != 0)
                   {
                     name = CADR (R1);
-                    if (TYPE (CADR (R1)) == TPAIR)
+                    aa = CADR (R1);
+                    if (TYPE (aa) == TPAIR)
                       name = CAR (name);
                     if (macro_p != 0)
                       {
@@ -648,7 +656,8 @@ eval:
                       }
                   }
                 R2 = R1;
-                if (TYPE (CADR (R1)) != TPAIR)
+                aa = CADR (R1);
+                if (TYPE (aa) != TPAIR)
                   {
                     push_cc (CADDR (R1), R2, cons (cons (CADR (R1), CADR (R1)), R0), cell_vm_eval_define);
                     goto eval;
@@ -656,7 +665,7 @@ eval:
                 else
                   {
                     p = pairlis (CADR (R1), CADR (R1), R0);
-                    formals = CDR (CADR (R1));
+                    formals = CDADR (R1);
                     body = CDDR (R1);
 
                     if (macro_p != 0 || global_p != 0)
@@ -667,7 +676,8 @@ eval:
                   }
               eval_define:
                 name = CADR (R2);
-                if (TYPE (CADR (R2)) == TPAIR)
+                aa = CADR (R2);
+                if (TYPE (aa) == TPAIR)
                   name = CAR (name);
                 if (macro_p != 0)
                   {
