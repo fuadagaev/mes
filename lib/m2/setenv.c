@@ -45,7 +45,7 @@ setenv (char *s, char *v, int overwrite_p)
   strcpy (entry + length, "=");
   strcpy (entry + length + 1, v);
   entry[length + strlen (v) + 2] = 0;
-  if (end_p)
+  if (end_p != 0)
     p[1] = 0;
 
   return 0;
