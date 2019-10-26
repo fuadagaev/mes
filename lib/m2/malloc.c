@@ -26,7 +26,7 @@ char *__brk = 0;
 void *
 malloc (int size)
 {
-  if (!__brk)
+  if (__brk == 0)
     __brk = brk (0);
   if (brk (__brk + size) == -1)
     return 0;
