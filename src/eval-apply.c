@@ -368,8 +368,10 @@ eval_apply ()
   SCM x;
   int global_p;
   int macro_p;
-  int t;
+  SCM a;
   SCM c;
+  SCM d;
+  int t;
 
 eval_apply:
   if (R3 == cell_vm_evlis2)
@@ -784,7 +786,8 @@ macro_expand:
 
   if (TYPE (R1) == TPAIR)
     {
-      if (TYPE (CAR (R1)) == TSYMBOL && CAR (R1) != cell_symbol_begin)
+      a = CAR (R1);
+      if (TYPE (a) == TSYMBOL && a != cell_symbol_begin)
         {
           macro = macro_get_handle (cell_symbol_portable_macro_expand);
           if (macro != cell_f)
@@ -845,11 +848,14 @@ begin:
         }
 
       if (TYPE (R1) == TPAIR)
-        if (TYPE (CAR (R1)) == TPAIR)
-          {
-            if (CAAR (R1) == cell_symbol_begin)
-              R1 = append2 (CDAR (R1), CDR (R1));
-          }
+        {
+          a = CAR (R1);
+          if (TYPE (a) == TPAIR)
+            {
+              if (CAR (a) == cell_symbol_begin)
+                R1 = append2 (CDR (a), CDR (R1));
+            }
+        }
       if (CDR (R1) == cell_nil)
         {
           R1 = CAR (R1);
@@ -873,7 +879,8 @@ begin_expand:
 
       if (TYPE (R1) == TPAIR)
         {
-          if (TYPE (CAR (R1)) == TPAIR)
+          a = CAR (R1);
+          if (TYPE (a) == TPAIR)
             if (CAAR (R1) == cell_symbol_begin)
               R1 = append2 (CDAR (R1), CDR (R1));
           if (CAAR (R1) == cell_symbol_primitive_load)
