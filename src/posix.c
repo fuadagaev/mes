@@ -252,8 +252,11 @@ open_output_file (SCM x)        /*:((arity . n)) */
   x = cdr (x);
   int mode = S_IRUSR | S_IWUSR;
   if (TYPE (x) == TPAIR)
-    if (TYPE (car (x)) == TNUMBER)
-      mode = VALUE (car (x));
+    {
+      SCM i = car (x);
+      if (TYPE (i) == TNUMBER)
+        mode = VALUE (i);
+    }
   return make_number (mes_open (cell_bytes (STRING (file_name)), O_WRONLY | O_CREAT | O_TRUNC, mode));
 }
 
