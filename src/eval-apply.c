@@ -288,7 +288,8 @@ expand_variable (SCM x, SCM formals)    /*:((internal)) */
 SCM
 apply_builtin (SCM fn, SCM x)   /*:((internal)) */
 {
-  int arity = VALUE (builtin_arity (fn));
+  SCM a = builtin_arity (fn);
+  int arity = VALUE (a);
   if ((arity > 0 || arity == -1) && x != cell_nil)
     if (TYPE (CAR (x)) == TVALUES)
       x = cons (CADAR (x), CDR (x));
