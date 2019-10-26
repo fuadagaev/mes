@@ -375,6 +375,7 @@ eval_apply ()
   SCM c;
   SCM d;
   int t;
+  long i;
 
 eval_apply:
   if (R3 == cell_vm_evlis2)
@@ -488,11 +489,12 @@ apply:
     }
   else if (t == TCONTINUATION)
     {
-      v = CONTINUATION (CAR (R1));
+      a = CAR (R1);
+      v = CONTINUATION (a);
       if (LENGTH (v) != 0)
         {
-          for (t = 0; t < LENGTH (v); t = t + 1)
-            g_stack_array[STACK_SIZE - LENGTH (v) + t] = vector_ref_ (v, t);
+          for (i = 0; i < LENGTH (v); i = i + 1)
+            g_stack_array[STACK_SIZE - LENGTH (v) + i] = vector_ref_ (v, i);
           g_stack = STACK_SIZE - LENGTH (v);
         }
       x = R1;
@@ -974,16 +976,16 @@ call_with_current_continuation:
   x = make_continuation (g_continuations);
   g_continuations = g_continuations + 1;
   v = make_vector__ (STACK_SIZE - g_stack);
-  for (t = g_stack; t < STACK_SIZE; t = t + 1)
-    vector_set_x_ (v, t - g_stack, g_stack_array[t]);
+  for (i = g_stack; i < STACK_SIZE; i = i + 1)
+    vector_set_x_ (v, i - g_stack, g_stack_array[i]);
   CONTINUATION (x) = v;
   gc_pop_frame ();
   push_cc (cons (CAR (R1), cons (x, cell_nil)), x, R0, cell_vm_call_with_current_continuation2);
   goto apply;
 call_with_current_continuation2:
   v = make_vector__ (STACK_SIZE - g_stack);
-  for (t = g_stack; t < STACK_SIZE; t = t + 1)
-    vector_set_x_ (v, t - g_stack, g_stack_array[t]);
+  for (i = g_stack; i < STACK_SIZE; i = i + 1)
+    vector_set_x_ (v, i - g_stack, g_stack_array[i]);
   CONTINUATION (R2) = v;
   goto vm_return;
 
