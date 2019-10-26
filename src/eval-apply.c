@@ -886,6 +886,7 @@ begin_expand:
   x = cell_unspecified;
   while (R1 != cell_nil)
     {
+    begin_expand_while:
       gc_check ();
 
       if (TYPE (R1) == TPAIR)
@@ -923,7 +924,8 @@ begin_expand:
               R1 = cons (cell_symbol_begin, R1);
               CAR (R2) = R1;
               R1 = R2;
-              continue;
+              goto begin_expand_while;
+              continue; /* FIXME: M2-PLanet */
             }
         }
 
@@ -934,7 +936,8 @@ begin_expand:
         {
           CAR (R2) = R1;
           R1 = R2;
-          continue;
+          goto begin_expand_while;
+          continue; /* FIXME: M2-PLanet */
         }
       R1 = R2;
       expand_variable (CAR (R1), cell_nil);
