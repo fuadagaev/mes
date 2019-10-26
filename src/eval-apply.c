@@ -229,30 +229,31 @@ expand_variable_ (SCM x, SCM formals, int top_p)        /*:((internal)) */
 {
   while (TYPE (x) == TPAIR)
     {
-      if (TYPE (CAR (x)) == TPAIR)
+      SCM c = CAR (x);
+      if (TYPE (c) == TPAIR)
         {
-          if (CAAR (x) == cell_symbol_lambda)
+          if (CAR (c) == cell_symbol_lambda)
             {
               SCM f = CAR (CDAR (x));
               formals = add_formals (formals, f);
             }
-          else if (CAAR (x) == cell_symbol_define || CAAR (x) == cell_symbol_define_macro)
+          else if (CAR (c) == cell_symbol_define || CAR (c) == cell_symbol_define_macro)
             {
               SCM f = CAR (CDAR (x));
               formals = add_formals (formals, f);
             }
-          if (CAAR (x) != cell_symbol_quote)
-            expand_variable_ (CAR (x), formals, 0);
+          if (CAR (c) != cell_symbol_quote)
+            expand_variable_ (c, formals, 0);
         }
       else
         {
-          if (CAR (x) == cell_symbol_lambda)
+          if (c == cell_symbol_lambda)
             {
               SCM f = CADR (x);
               formals = add_formals (formals, f);
               x = CDR (x);
             }
-          else if (CAR (x) == cell_symbol_define || CAR (x) == cell_symbol_define_macro)
+          else if (c == cell_symbol_define || c == cell_symbol_define_macro)
             {
               SCM f = CADR (x);
               if (top_p != 0 && TYPE (f) == TPAIR)
@@ -260,17 +261,17 @@ expand_variable_ (SCM x, SCM formals, int top_p)        /*:((internal)) */
               formals = add_formals (formals, f);
               x = CDR (x);
             }
-          else if (CAR (x) == cell_symbol_quote)
+          else if (c == cell_symbol_quote)
             return cell_unspecified;
-          else if (TYPE (CAR (x)) == TSYMBOL
-                   && CAR (x) != cell_symbol_boot_module
-                   && CAR (x) != cell_symbol_current_module
-                   && CAR (x) != cell_symbol_primitive_load
-                   && formal_p (CAR (x), formals) == 0)
+          else if (TYPE (c) == TSYMBOL
+                   && c != cell_symbol_boot_module
+                   && c != cell_symbol_current_module
+                   && c != cell_symbol_primitive_load
+                   && formal_p (c, formals) == 0)
             {
-              SCM v = module_variable (R0, CAR (x));
+              SCM v = module_variable (R0, c);
               if (v != cell_f)
-                CAR (x) = make_variable_ (v);
+                c = make_variable_ (v);
             }
         }
       x = CDR (x);
@@ -291,12 +292,19 @@ apply_builtin (SCM fn, SCM x)   /*:((internal)) */
   SCM a = builtin_arity (fn);
   int arity = VALUE (a);
   if ((arity > 0 || arity == -1) && x != cell_nil)
-    if (TYPE (CAR (x)) == TVALUES)
-      x = cons (CADAR (x), CDR (x));
+    {
+      SCM c = CAR (x);
+      if (TYPE (c) == TVALUES)
+        x = cons (CADR (c), CDR (x));
+    }
   if ((arity > 1 || arity == -1) && x != cell_nil)
-    if (TYPE (CDR (x)) == TPAIR)
-      if (TYPE (CADR (x)) == TVALUES)
-    x = cons (CAR (x), cons (CDADAR (x), CDR (x)));
+    {
+      SCM c = CAR (x);
+      SCM d = CDR (x);
+      if (TYPE (d) == TPAIR)
+        if (TYPE (CAR (d)) == TVALUES)
+          x = cons (c, cons (CADAR (d), d));
+    }
 
 #if __M2_PLANET__
   FUNCTION fp = builtin_function (fn);
@@ -307,7 +315,7 @@ apply_builtin (SCM fn, SCM x)   /*:((internal)) */
   else if (arity == 2)
     return fp (CAR (x), CADR (x));
   else if (arity == 3)
-    return fp (CAR (x), CADR (x), CAR (CDDR (x)));
+    return fp (CAR (x), CADR (x), CADDR (x));
   else if (arity == -1)
     return fp (x);
 #else // !__M2_PLANET__
