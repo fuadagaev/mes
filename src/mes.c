@@ -149,7 +149,7 @@ SCM
 values (SCM x)                  /*:((arity . n)) */
 {
   SCM v = cons (0, x);
-  *TYPE_PTR (v) = TVALUES;
+  TYPE_PTR (v)[0] = TVALUES;
   return v;
 }
 
@@ -235,7 +235,7 @@ reverse_x_ (SCM x, SCM t)
   while (x != cell_nil)
     {
       t = CDR (x);
-      *CDR_PTR (x) = r;
+      CDR_PTR (x)[0] = r;
       r = x;
       x = t;
     }

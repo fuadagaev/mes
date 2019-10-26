@@ -40,15 +40,15 @@ long g_symbol;
 SCM
 init_symbol (SCM x, long type, char const *name)
 {
-  *TYPE_PTR (x) = type;
+  TYPE_PTR (x)[0] = type;
   if (g_symbols == 0)
     g_free = g_free + M2_CELL_SIZE;
   else
     {
       int length = strlen (name);
       SCM string = make_string (name, length);
-      *CAR_PTR (x) = length;
-      *CDR_PTR (x) = STRING (string);
+      CAR_PTR (x)[0] = length;
+      CDR_PTR (x)[0] = STRING (string);
       hash_set_x (g_symbols, string, x);
     }
   g_symbol = g_symbol + M2_CELL_SIZE;

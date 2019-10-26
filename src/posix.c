@@ -62,7 +62,7 @@ readchar ()
   char const *p = cell_bytes (STRING (string));
   int c = p[0];
   p = p + 1;
-  *STRING_PTR (port) = make_string (p, length - 1);
+  STRING_PTR (port)[0] = make_string (p, length - 1);
   return c;
 }
 
@@ -79,7 +79,7 @@ unreadchar (int c)
   string = make_string (p, length + 1);
   p = cell_bytes (STRING (string));
   p[0] = c;
-  *STRING_PTR (port) = string;
+  STRING_PTR (port)[0] = string;
   return c;
 }
 

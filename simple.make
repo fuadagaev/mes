@@ -57,6 +57,7 @@ MES_SOURCES =					\
  src/gc.c					\
  src/hash.c					\
  src/lib.c					\
+ src/m2.c					\
  src/math.c					\
  src/mes.c					\
  src/module.c					\
@@ -187,6 +188,7 @@ M2_PLANET_SOURCES =				\
 	| $(CC) -E -I include				\
 	    -D POINTER_CELLS=0				\
 	    -D __M2_PLANET__=1				\
+	    -D M2_FUNCTIONS=1				\
 	    -D 'MES_VERSION="git"'			\
 	    -D 'MES_PKGDATADIR="/usr/local/share/mes"'	\
 	    -D FUNCTION0=FUNCTION			\
@@ -213,6 +215,7 @@ M2_PLANET_SOURCES =				\
 	| $(CC) -E -I include				\
 	    -D POINTER_CELLS=0				\
 	    -D __M2_PLANET__=1				\
+	    -D M2_FUNCTIONS=1				\
 	    -D 'MES_VERSION="git"'			\
 	    -D 'MES_PKGDATADIR="/usr/local/share/mes"'	\
 	    -D FUNCTION0=FUNCTION			\
