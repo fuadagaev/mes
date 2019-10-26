@@ -24,11 +24,11 @@ void *
 memset (void *s, int c, int n)
 {
   char *p = s;
-  while (n)
+  while (n != 0)
     {
-      n = n -1;
-      p[0] = c;
-      p = p + 1;
+      n = n - 1;
+      s[0] = c;
+      s = s + 1;
     }
-  return s;
+  return p;
 }
