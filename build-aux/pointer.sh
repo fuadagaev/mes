@@ -25,6 +25,10 @@ sed -ri                                                         \
     -e 's,->\<struct\>,->structure,g'                           \
     -e "$struct"                                                \
                                                                 \
+    -e 's,NTYPE \(([^()]*)\),\1->type,'                         \
+    -e 's,NCAR \(([^()]*)\),\1->car,'                           \
+    -e 's,NCDR \(([^()]*)\),\1->cdr,'                           \
+                                                                \
     -e 's,CAR \(([^()]*)\),\1->cdr,'                            \
     -e 's,CAAR \(([^()]*)\),\1->car->car,'                      \
     -e 's,CADR \(([^()]*)\),\1->cdr->car,'                      \
