@@ -4,7 +4,7 @@ set -x
 
 ptr_once='s,([^N])(MACRO|NAME|VALUE) \(([^()]*)\),\1\3->\L\2,'
 ptr_once='s,([^N])(BYTES|CAR|CDR|CLOSURE|CONTINUATION|LENGTH|MACRO|NAME|PORT|REF|STRING|STRUCT|TYPE|VALUE|VARIABLE|VECTOR) \(([^()]*)\),\1\3->\L\2,'
-n_once='s,N(TYPE|CAR|CDR|VECTOR) \(([^()]*)\),\2->\L\1,'
+n_once='s,N(TYPE|CAR|CDR|LENGTH|VECTOR) \(([^()]*)\),\2->\L\1,'
 ncbytes='s,NC(BYTES) \(([^()]*)\),news_\L\1 (\2),'
 cbytes='s,([^N])C(BYTES) \(([^()]*)\),\1cell_\L\2 (\3),'
 cstring='s,C(STRING) \(([^()]*)\),cell_bytes (STRING (\2)),'
