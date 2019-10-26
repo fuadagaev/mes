@@ -647,7 +647,7 @@ eval:
                     formals = CDR (CADR (R1));
                     body = CDDR (R1);
 
-                    if (macro_p || global_p)
+                    if (macro_p != 0 || global_p != 0)
                       expand_variable (body, formals);
                     R1 = cons (cell_symbol_lambda, cons (formals, body));
                     push_cc (R1, R2, p, cell_vm_eval_define);
