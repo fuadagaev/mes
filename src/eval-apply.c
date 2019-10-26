@@ -255,7 +255,7 @@ expand_variable_ (SCM x, SCM formals, int top_p)        /*:((internal)) */
           else if (CAR (x) == cell_symbol_define || CAR (x) == cell_symbol_define_macro)
             {
               SCM f = CADR (x);
-              if (top_p && TYPE (f) == TPAIR)
+              if (top_p != 0 && TYPE (f) == TPAIR)
                 f = CDR (f);
               formals = add_formals (formals, f);
               x = CDR (x);
@@ -265,7 +265,8 @@ expand_variable_ (SCM x, SCM formals, int top_p)        /*:((internal)) */
           else if (TYPE (CAR (x)) == TSYMBOL
                    && CAR (x) != cell_symbol_boot_module
                    && CAR (x) != cell_symbol_current_module
-                   && CAR (x) != cell_symbol_primitive_load && !formal_p (CAR (x), formals))
+                   && CAR (x) != cell_symbol_primitive_load
+                   && formal_p (CAR (x), formals) == 0)
             {
               SCM v = module_variable (R0, CAR (x));
               if (v != cell_f)
