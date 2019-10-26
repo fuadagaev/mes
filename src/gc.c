@@ -70,14 +70,14 @@ cell_bytes (SCM x)
 #elif __M2_PLANET__
   CELL (x) + 8;
 #else
-  return CDR_PTR (x);
+  return &CDR (x);
 #endif
 }
 
 char *
 news_bytes (SCM x)
 {
-  return NCDR_PTR (x);
+  return &NCDR (x);
 }
 
 SCM
@@ -131,12 +131,12 @@ gc_init ()                      /*:((internal)) */
   /* The vector that holds the arenea. */
   cell_arena = 0;
 #endif
-  *TYPE_PTR (cell_arena) = TVECTOR;
-  *LENGTH_PTR (cell_arena) = 1000;
-  *VECTOR_PTR (cell_arena) = 0;
+  TYPE (cell_arena) = TVECTOR;
+  LENGTH (cell_arena) = 1000;
+  VECTOR (cell_arena) = 0;
   g_cells = g_cells + M2_CELL_SIZE;
-  *TYPE_PTR (cell_arena) = TCHAR;
-  *VALUE_PTR (cell_arena) = 'c';
+  TYPE (cell_arena) = TCHAR;
+  VALUE (cell_arena) = 'c';
 
   // FIXME: remove MES_MAX_STRING, grow dynamically
   g_buf = malloc (MAX_STRING);
@@ -195,26 +195,26 @@ make_cell (long type, SCM car, SCM cdr)
 #endif
   if (i > ARENA_SIZE)
     assert_msg (0, "alloc: out of memory");
-  *TYPE_PTR (x) = type;
-  *CAR_PTR (x) = car;
-  *CDR_PTR (x) = cdr;
+  TYPE (x) = type;
+  CAR (x) = car;
+  CDR (x) = cdr;
   return x;
 }
 
 void
 copy_cell (SCM to, SCM from)
 {
-  *TYPE_PTR (to) = TYPE (from);
-  *CAR_PTR (to) = CAR (from);
-  *CDR_PTR (to) = CDR (from);
+  TYPE (to) = TYPE (from);
+  CAR (to) = CAR (from);
+  CDR (to) = CDR (from);
 }
 
 void
 copy_news (SCM to, SCM from)
 {
-  *NTYPE_PTR (to) = TYPE (from);
-  *NCAR_PTR (to) = CAR (from);
-  *NCDR_PTR (to) = CDR (from);
+  NTYPE (to) = TYPE (from);
+  NCAR (to) = CAR (from);
+  NCDR (to) = CDR (from);
 }
 
 void
@@ -246,8 +246,8 @@ make_bytes (char const *s, size_t length)
 {
   size_t size = bytes_cells (length);
   SCM x = alloc (size);
-  *TYPE_PTR (x) = TBYTES;
-  *LENGTH_PTR (x) = length;
+  TYPE (x) = TBYTES;
+  LENGTH (x) = length;
   char *p = cell_bytes (x);
   if (length == 0)
     p[0] = 0;
@@ -294,7 +294,7 @@ make_string (char const *s, size_t length)
     assert_max_string (length, "make_string", s);
   SCM x = make_cell (TSTRING, length, 0);
   SCM v = make_bytes (s, length);
-  *CDR_PTR (x) = v;
+  CDR (x) = v;
   return x;
 }
 
@@ -317,12 +317,12 @@ gc_init_news ()                 /*:((internal)) */
   g_news = g_free;
 #else
   g_news = g_cells + g_free;
-  *NTYPE_PTR (cell_arena) = TVECTOR;
-  *NLENGTH_PTR (cell_arena) = 1000;
-  *NVECTOR_PTR (cell_arena) = 0;
+  NTYPE (cell_arena) = TVECTOR;
+  NLENGTH (cell_arena) = 1000;
+  NVECTOR (cell_arena) = 0;
   g_news = g_news + 1;
-  *NTYPE_PTR (cell_arena) = TCHAR;
-  *NVALUE_PTR (cell_arena) = 'n';
+  NTYPE (cell_arena) = TCHAR;
+  NVALUE (cell_arena) = 'n';
 #endif
   return 0;
 }
@@ -392,7 +392,7 @@ gc_copy (SCM old)               /*:((internal)) */
   copy_news (new, old);
   if (NTYPE (new) == TSTRUCT || NTYPE (new) == TVECTOR)
     {
-      *NVECTOR_PTR (new) = g_free;
+      NVECTOR (new) = g_free;
       long i;
       for (i = 0; i < LENGTH (old); i = i + 1)
         {
@@ -428,22 +428,22 @@ gc_copy (SCM old)               /*:((internal)) */
           eputs ("\n");
         }
     }
-  *TYPE_PTR (old) = TBROKEN_HEART;
-  *CAR_PTR (old) = new;
+  TYPE (old) = TBROKEN_HEART;
+  CAR (old) = new;
   return new;
 }
 
 SCM
 gc_relocate_car (SCM new, SCM car)      /*:((internal)) */
 {
-  *NCAR_PTR (new) = car;
+  NCAR (new) = car;
   return cell_unspecified;
 }
 
 SCM
 gc_relocate_cdr (SCM new, SCM cdr)      /*:((internal)) */
 {
-  *NCDR_PTR (new) = cdr;
+  NCDR (new) = cdr;
   return cell_unspecified;
 }
 
