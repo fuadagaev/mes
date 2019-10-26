@@ -167,7 +167,10 @@ get_macro (SCM name)            /*:((internal)) */
 {
   SCM m = macro_get_handle (name);
   if (m != cell_f)
-    return MACRO (CDR (m));
+    {
+      SCM d = CDR (m);
+      return MACRO (d);
+    }
   return cell_f;
 }
 
@@ -229,31 +232,31 @@ expand_variable_ (SCM x, SCM formals, int top_p)        /*:((internal)) */
 {
   while (TYPE (x) == TPAIR)
     {
-      SCM c = CAR (x);
-      if (TYPE (c) == TPAIR)
+      SCM a = CAR (x);
+      if (TYPE (a) == TPAIR)
         {
-          if (CAR (c) == cell_symbol_lambda)
+          if (CAR (a) == cell_symbol_lambda)
             {
-              SCM f = CAR (CDAR (x));
+              SCM f = CADR (a);
               formals = add_formals (formals, f);
             }
-          else if (CAR (c) == cell_symbol_define || CAR (c) == cell_symbol_define_macro)
+          else if (CAR (a) == cell_symbol_define || CAR (a) == cell_symbol_define_macro)
             {
-              SCM f = CAR (CDAR (x));
+              SCM f = CADR (a);
               formals = add_formals (formals, f);
             }
-          if (CAR (c) != cell_symbol_quote)
-            expand_variable_ (c, formals, 0);
+          if (CAR (a) != cell_symbol_quote)
+            expand_variable_ (a, formals, 0);
         }
       else
         {
-          if (c == cell_symbol_lambda)
+          if (a == cell_symbol_lambda)
             {
               SCM f = CADR (x);
               formals = add_formals (formals, f);
               x = CDR (x);
             }
-          else if (c == cell_symbol_define || c == cell_symbol_define_macro)
+          else if (a == cell_symbol_define || a == cell_symbol_define_macro)
             {
               SCM f = CADR (x);
               if (top_p != 0 && TYPE (f) == TPAIR)
@@ -261,17 +264,17 @@ expand_variable_ (SCM x, SCM formals, int top_p)        /*:((internal)) */
               formals = add_formals (formals, f);
               x = CDR (x);
             }
-          else if (c == cell_symbol_quote)
+          else if (a == cell_symbol_quote)
             return cell_unspecified;
-          else if (TYPE (c) == TSYMBOL
-                   && c != cell_symbol_boot_module
-                   && c != cell_symbol_current_module
-                   && c != cell_symbol_primitive_load
-                   && formal_p (c, formals) == 0)
+          else if (TYPE (a) == TSYMBOL
+                   && a != cell_symbol_boot_module
+                   && a != cell_symbol_current_module
+                   && a != cell_symbol_primitive_load
+                   && formal_p (a, formals) == 0)
             {
-              SCM v = module_variable (R0, c);
+              SCM v = module_variable (R0, a);
               if (v != cell_f)
-                c = make_variable_ (v);
+                a = make_variable_ (v);
             }
         }
       x = CDR (x);
@@ -628,11 +631,9 @@ eval:
           if (TYPE (R1) == TPAIR)
             if (CAR (R1) == cell_symbol_define || CAR (R1) == cell_symbol_define_macro)
               {
-                // global_p = CAAR (R0) != cell_closure;
                 global_p = 0;
                 if (CAAR (R0) != cell_closure)
                   global_p = 1;
-                // macro_p = CAR (R1) == cell_symbol_define_macro;
                 macro_p = 0;
                 if (CAR (R1) == cell_symbol_define_macro)
                   macro_p = 1;
@@ -895,7 +896,7 @@ begin_expand:
               R1 = append2 (CDAR (R1), CDR (R1));
           if (CAAR (R1) == cell_symbol_primitive_load)
             {
-              push_cc (CADR (CAR (R1)), R1, R0, cell_vm_begin_expand_primitive_load);
+              push_cc (CADAR (R1), R1, R0, cell_vm_begin_expand_primitive_load);
               goto eval;
             begin_expand_primitive_load:
               if ((TYPE (R1) == TNUMBER) && VALUE (R1) == 0)
