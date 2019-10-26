@@ -293,17 +293,17 @@ apply_builtin (SCM fn, SCM x)   /*:((internal)) */
   int arity = VALUE (a);
   if ((arity > 0 || arity == -1) && x != cell_nil)
     {
-      SCM c = CAR (x);
-      if (TYPE (c) == TVALUES)
-        x = cons (CADR (c), CDR (x));
+      SCM a = CAR (x);
+      if (TYPE (a) == TVALUES)
+        x = cons (CADR (a), CDR (x));
     }
   if ((arity > 1 || arity == -1) && x != cell_nil)
     {
-      SCM c = CAR (x);
+      SCM a = CAR (x);
       SCM d = CDR (x);
       if (TYPE (d) == TPAIR)
         if (TYPE (CAR (d)) == TVALUES)
-          x = cons (c, cons (CADAR (d), d));
+          x = cons (a, cons (CADAR (d), d));
     }
 
 #if __M2_PLANET__
