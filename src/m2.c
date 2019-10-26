@@ -21,14 +21,6 @@
 //#include "mes/mes.h"
 #include "mes/m2.h"
 
-#if __M2_PLANET__
-#define M2_CELL_SIZE 12
-// CONSTANT M2_CELL_SIZE 12
-#else
-#define M2_CELL_SIZE 1
-// CONSTANT M2_CELL_SIZE 12
-#endif
-
 #if M2_FUNCTIONS
 
 SCM
@@ -41,8 +33,8 @@ TYPE (SCM x)
 SCM *
 TYPE_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p;
+  struct scm *s = &g_cells[x];
+  return &s->type;
 }
 
 SCM
@@ -55,8 +47,8 @@ CAR (SCM x)
 SCM *
 CAR_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->car;
 }
 
 SCM
@@ -69,8 +61,8 @@ CDR (SCM x)
 SCM *
 CDR_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p + sizeof (long) + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->cdr;
 }
 
 SCM
@@ -83,8 +75,8 @@ NTYPE (SCM x)
 SCM *
 NTYPE_PTR (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p;
+  struct scm *s = &g_news[x];
+  return &s->type;
 }
 
 SCM
@@ -97,8 +89,8 @@ NCAR (SCM x)
 SCM *
 NCAR_PTR (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p + sizeof (long);
+  struct scm *s = &g_news[x];
+  return &s->car;
 }
 
 SCM
@@ -111,8 +103,8 @@ NCDR (SCM x)
 SCM *
 NCDR_PTR (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p + sizeof (long) + sizeof (long);
+  struct scm *s = &g_news[x];
+  return &s->cdr;
 }
 
 SCM
@@ -132,8 +124,8 @@ LENGTH (SCM x)
 SCM *
 LENGTH_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->car;
 }
 
 SCM
@@ -167,8 +159,8 @@ CONTINUATION (SCM x)
 SCM *
 CONTINUATION_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p  + sizeof (long) + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->cdr;
 }
 
 SCM
@@ -202,8 +194,8 @@ STRING (SCM x)
 SCM *
 STRING_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p  + sizeof (long) + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->cdr;
 }
 
 SCM
@@ -223,8 +215,8 @@ VALUE (SCM x)
 SCM *
 VALUE_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p  + sizeof (long) + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->cdr;
 }
 
 SCM
@@ -237,8 +229,8 @@ VECTOR (SCM x)
 SCM *
 VECTOR_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p  + sizeof (long) + sizeof (long);
+  struct scm *s = &g_cells[x];
+  return &s->cdr;
 }
 
 SCM
@@ -251,42 +243,43 @@ NLENGTH (SCM x)
 SCM *
 NLENGTH_PTR (SCM x)
 {
-  char *p = g_cells + (x * M2_CELL_SIZE);
-  return p  + sizeof (long);
+  struct scm *s = &g_news[x];
+  return &s->car;
 }
 
 SCM
 NVALUE (SCM x)
 {
-  return (x * M2_CELL_SIZE) + g_news + sizeof (long) + sizeof (long);
+  struct scm *s = &g_news[x];
+  return s->cdr;
 }
 
 SCM *
 NVALUE_PTR (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p + sizeof (long) + sizeof (long);
+  struct scm *s = &g_news[x];
+  return &s->cdr;
 }
 
 SCM
 NSTRING (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p + sizeof (long) + sizeof (long);
+  struct scm *s = &g_news[x];
+  return s->cdr;
 }
 
 SCM
 NVECTOR (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p + sizeof (long) + sizeof (long);
+  struct scm *s = &g_news[x];
+  return s->cdr;
 }
 
 SCM *
 NVECTOR_PTR (SCM x)
 {
-  char *p = g_news + (x * M2_CELL_SIZE);
-  return p + sizeof (long) + sizeof (long);
+  struct scm *s = &g_news[x];
+  return &s->cdr;
 }
 
 SCM

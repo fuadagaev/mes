@@ -107,7 +107,7 @@ set_car_x (SCM x, SCM e)
 {
   if (TYPE (x) != TPAIR)
     error (cell_symbol_not_a_pair, cons (x, cstring_to_symbol ("set-car!")));
-  CAR_PTR (x)[0] = e;
+  *CAR_PTR (x) = e;
   return cell_unspecified;
 }
 
@@ -116,7 +116,7 @@ set_cdr_x (SCM x, SCM e)
 {
   if (TYPE (x) != TPAIR)
     error (cell_symbol_not_a_pair, cons (x, cstring_to_symbol ("set-cdr!")));
-  CDR_PTR (x)[0] = e;
+  *CDR_PTR (x) = e;
   return cell_unspecified;
 }
 
@@ -754,7 +754,7 @@ macro_expand:
       push_cc (CDDR (R1), R1, R0, cell_vm_macro_expand_lambda);
       goto macro_expand;
     macro_expand_lambda:
-      CDR_PTR (CDR (R2))[0] = R1;
+      *CDR_PTR (CDR (R2)) = R1;
       R1 = R2;
       goto vm_return;
     }
@@ -775,7 +775,7 @@ macro_expand:
       push_cc (CDDR (R1), R1, R0, cell_vm_macro_expand_define);
       goto macro_expand;
     macro_expand_define:
-      CDR_PTR (CDR (R2))[0] = R1;
+      *CDR_PTR (CDR (R2)) = R1;
       R1 = R2;
       if (CAR (R1) == cell_symbol_define_macro)
         {
@@ -792,7 +792,7 @@ macro_expand:
       push_cc (CDDR (R1), R1, R0, cell_vm_macro_expand_set_x);
       goto macro_expand;
     macro_expand_set_x:
-      CDR_PTR (CDR (R2))[0] = R1;
+      *CDR_PTR (CDR (R2)) = R1;
       R1 = R2;
       goto vm_return;
     }
@@ -828,7 +828,7 @@ macro_expand:
   goto macro_expand;
 
 macro_expand_car:
-  CAR_PTR (R2)[0] = R1;
+  *CAR_PTR (R2) = R1;
   R1 = R2;
   if (CDR (R1) == cell_nil)
     goto vm_return;
@@ -837,7 +837,7 @@ macro_expand_car:
   goto macro_expand;
 
 macro_expand_cdr:
-  CDR_PTR (R2)[0] = R1;
+  *CDR_PTR (R2) = R1;
   R1 = R2;
 
   goto vm_return;
@@ -855,7 +855,7 @@ begin:
               push_cc (program, R1, R0, cell_vm_begin_primitive_load);
               goto begin_expand;
             begin_primitive_load:
-              CAR_PTR (R2)[0] = R1;
+              *CAR_PTR (R2) = R1;
               R1 = R2;
             }
         }
@@ -924,7 +924,7 @@ begin_expand:
               R1 = x;
               set_current_input_port (input);
               R1 = cons (cell_symbol_begin, R1);
-              CAR_PTR (R2)[0] = R1;
+              *CAR_PTR (R2) = R1;
               R1 = R2;
               goto begin_expand_while;
               continue; /* FIXME: M2-PLanet */
@@ -936,7 +936,7 @@ begin_expand:
     begin_expand_macro:
       if (R1 != CAR (R2))
         {
-          CAR_PTR (R2)[0] = R1;
+          *CAR_PTR (R2) = R1;
           R1 = R2;
           goto begin_expand_while;
           continue; /* FIXME: M2-PLanet */
@@ -978,7 +978,7 @@ call_with_current_continuation:
   v = make_vector__ (STACK_SIZE - g_stack);
   for (i = g_stack; i < STACK_SIZE; i = i + 1)
     vector_set_x_ (v, i - g_stack, g_stack_array[i]);
-  CONTINUATION_PTR (x)[0] = v;
+  *CONTINUATION_PTR (x) = v;
   gc_pop_frame ();
   push_cc (cons (CAR (R1), cons (x, cell_nil)), x, R0, cell_vm_call_with_current_continuation2);
   goto apply;
@@ -986,7 +986,7 @@ call_with_current_continuation2:
   v = make_vector__ (STACK_SIZE - g_stack);
   for (i = g_stack; i < STACK_SIZE; i = i + 1)
     vector_set_x_ (v, i - g_stack, g_stack_array[i]);
-  CONTINUATION_PTR (R2)[0] = v;
+  *CONTINUATION_PTR (R2) = v;
   goto vm_return;
 
 call_with_values:
