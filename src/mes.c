@@ -378,11 +378,11 @@ open_boot ()
       eputs (MES_PKGDATADIR);
       eputs ("\n");
     }
-  if (getenv ("MES_BOOT"))
+  if (getenv ("MES_BOOT") != 0)
     strcpy (boot, getenv ("MES_BOOT"));
   else
     strcpy (boot, "boot-0.scm");
-  if (getenv ("MES_PREFIX"))
+  if (getenv ("MES_PREFIX") != 0)
     {
       strcpy (g_datadir, getenv ("MES_PREFIX"));
       strcpy (g_datadir + strlen (g_datadir), "/mes");
@@ -408,7 +408,7 @@ open_boot ()
   if (__stdin < 0)
     {
       g_datadir[0] = 0;
-      if (getenv ("srcdest"))
+      if (getenv ("srcdest") != 0)
         strcpy (g_datadir, getenv ("srcdest"));
       strcpy (g_datadir + strlen (g_datadir), "mes");
       strcpy (file_name, g_datadir);
