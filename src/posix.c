@@ -195,8 +195,9 @@ current_input_port ()
   SCM x = g_ports;
   while (x != 0)
     {
-      if (PORT (CAR (x)) == __stdin)
-        return CAR (x);
+      SCM a = CAR (x);
+      if (PORT (a) == __stdin)
+        return a;
       x = CDR (x);
     }
   return CAR (x);
