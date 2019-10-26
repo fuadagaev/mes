@@ -604,7 +604,7 @@ eval:
         }
       else if (c == cell_symbol_set_x)
         {
-          push_cc (CAR (CDDR (R1)), R1, R0, cell_vm_eval_set_x);
+          push_cc (CADDR (R1), R1, R0, cell_vm_eval_set_x);
           goto eval;
         eval_set_x:
           R1 = set_env_x (CADR (R2), R1, R0);
@@ -648,7 +648,7 @@ eval:
                 R2 = R1;
                 if (TYPE (CADR (R1)) != TPAIR)
                   {
-                    push_cc (CAR (CDDR (R1)), R2, cons (cons (CADR (R1), CADR (R1)), R0), cell_vm_eval_define);
+                    push_cc (CADDR (R1), R2, cons (cons (CADR (R1), CADR (R1)), R0), cell_vm_eval_define);
                     goto eval;
                   }
                 else
@@ -717,7 +717,8 @@ eval:
     }
   else if (t == TVARIABLE)
     {
-      R1 = CDR (VARIABLE (R1));
+      x = VARIABLE (R1);
+      R1 = CDR (x);
       goto vm_return;
     }
   else if (t == TBROKEN_HEART)
