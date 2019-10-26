@@ -25,11 +25,13 @@ sed -ri                                                         \
     -e 's,->\<struct\>,->structure,g'                           \
     -e "$struct"                                                \
                                                                 \
+    -e 's,CAR \(([^()]*)\),\1->cdr,'                            \
     -e 's,CAAR \(([^()]*)\),\1->car->car,'                      \
     -e 's,CADR \(([^()]*)\),\1->cdr->car,'                      \
     -e 's,CDAR \(([^()]*)\),\1->car->cdr,'                      \
     -e 's,CDDR \(([^()]*)\),\1->cdr->cdr,'                      \
     -e 's,CADAR \(([^()]*)\),\1->car->cdr->car,'                \
+    -e 's,CADDR \(([^()]*)\),\1->cdr->cdr->car,'                \
     -e 's,CDDDR \(([^()]*)\),\1->cdr->cdr->cdr,'                \
     -e 's,CDADAR \(([^()]*)\),\1->cdr->car->cdr->car,'          \
                                                                 \
