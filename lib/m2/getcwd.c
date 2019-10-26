@@ -28,10 +28,10 @@
 char *
 getcwd (char *buffer, int size)
 {
-  if (! __itoa_buf)
-    __itoa_buf = malloc (20);
+  if (__getcwd_buf == 0)
+    __getcwd_buf = malloc (PATH_MAX);
   char *buf = __itoa_buf;
-  if (buffer)
+  if (buffer != 0)
     return _getcwd (buffer, size);
   return _getcwd (buf, PATH_MAX);
 }
