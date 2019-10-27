@@ -123,6 +123,8 @@ test_list ()
 int
 main (int argc, char **argv, char **envp)
 {
+  setenv ("MES_ARENA", "100", 1);
+  setenv ("MES_MAX_ARENA", "100", 1);
   gc_init ();
 #if POINTER_CELLS
   cell_zero = g_cells;
