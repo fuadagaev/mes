@@ -58,5 +58,5 @@ sed -ri                                                         \
     src/stack.c                                                 \
     src/string.c                                                \
     src/struct.c                                                \
-    src/symbols.c                                               \
+    src/symbol.c                                                \
     src/vector.c
