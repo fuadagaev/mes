@@ -61,4 +61,5 @@ sed -ri                                                         \
     src/struct.c                                                \
     src/symbol.c                                                \
     src/vector.c                                                \
-    simple.make
+    src/test/gc.c                                               \
+    simple.make                                                 \
