@@ -116,6 +116,7 @@ M2_SOURCES =					\
  lib/stdlib/realloc.c				\
  lib/string/strcpy.c				\
  lib/mes/itoa.c					\
+ lib/mes/ltoa.c					\
  lib/mes/fdungetc.c				\
  lib/posix/setenv.c				\
  lib/linux/access.c				\
@@ -167,6 +168,7 @@ GCC_SOURCES =					\
  lib/mes/mes_open.c				\
  lib/mes/ntoab.c				\
  lib/mes/itoa.c					\
+ lib/mes/ltoa.c					\
  lib/mes/assert_msg.c
 
 mes-gcc: bin/mes-gcc
