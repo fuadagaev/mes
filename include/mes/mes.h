@@ -120,6 +120,7 @@ SCM cstring_to_list (char const *s);
 SCM cstring_to_symbol (char const *s);
 SCM cell_ref (SCM cell, long index);
 SCM fdisplay_ (SCM, int, int);
+SCM gc_ ();
 SCM gc_init ();
 SCM gc_peek_frame ();
 SCM gc_pop_frame ();

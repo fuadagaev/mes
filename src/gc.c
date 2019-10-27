@@ -138,6 +138,17 @@ gc_init ()                      /*:((internal)) */
   TYPE (cell_arena) = TCHAR;
   VALUE (cell_arena) = 'c';
 
+#if POINTER_CELLS
+  g_free = g_cells + M2_CELL_SIZE;
+#else
+  g_free = 1;
+#endif
+  g_symbols = 0;
+  g_symbol_max = 0;
+  g_macros = 0;
+  g_ports = 0;
+  g_symbol_max = 0;
+
   // FIXME: remove MES_MAX_STRING, grow dynamically
   g_buf = malloc (MAX_STRING);
 
@@ -318,7 +329,7 @@ gc_init_news ()                 /*:((internal)) */
 #else
   g_news = g_cells + g_free;
   NTYPE (cell_arena) = TVECTOR;
-  NLENGTH (cell_arena) = 1000;
+  NLENGTH (cell_arena) = LENGTH (cell_arena - 1);
   NVECTOR (cell_arena) = 0;
   g_news = g_news + 1;
   NTYPE (cell_arena) = TCHAR;
