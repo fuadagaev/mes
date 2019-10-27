@@ -93,6 +93,7 @@ long GC_SAFETY;
 long MAX_STRING;
 char *g_arena;
 SCM cell_arena;
+SCM cell_zero;
 
 #if POINTER_CELLS
 SCM g_free;
@@ -150,6 +151,7 @@ char *news_bytes (SCM x);
 int peekchar ();
 int readchar ();
 int unreadchar ();
+long gc_free ();
 long length__ (SCM x);
 size_t bytes_cells (size_t length);
 void assert_max_string (size_t i, char const *msg, char *string);
