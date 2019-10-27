@@ -55,6 +55,7 @@ sed -ri                                                         \
     src/module.c                                                \
     src/posix.c                                                 \
     src/reader.c                                                \
+    src/stack.c                                                 \
     src/string.c                                                \
     src/struct.c                                                \
     src/symbols.c                                               \
