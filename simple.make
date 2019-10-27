@@ -46,6 +46,7 @@ CFLAGS:=					\
 
 MES_SOURCES =					\
  src/builtins.c					\
+ src/core.c					\
  src/display.c					\
  src/eval-apply.c				\
  src/gc.c					\

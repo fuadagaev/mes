@@ -36,6 +36,7 @@ trap 'test -f .log && cat .log' EXIT
 srcdest=${srcdest-}
 mes_sources="
 src/builtins.c
+src/core.c
 src/display.c
 src/eval-apply.c
 src/gc.c
