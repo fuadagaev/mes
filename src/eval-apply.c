@@ -448,7 +448,7 @@ eval_apply:
   else if (R3 == cell_unspecified)
     return R1;
   else
-    error (cell_symbol_system_error, make_string0 ("eval/apply unknown continuation"));
+    assert_msg (0, "eval/apply unknown continuation");
 
 evlis:
   if (R1 == cell_nil)
