@@ -25,6 +25,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* DUMP */
+#include <fcntl.h>
+int dump_fd;
+#define ltoa(x) ntoab(x, 10, 0)
+#define oputc(x) fdputc(x, dump_fd)
+#define oputs(x) fdputs(x, dump_fd)
+
 // CONSTANT FRAME_SIZE 5
 #define FRAME_SIZE 5
 
@@ -794,4 +801,157 @@ gc_pop_frame ()
 {
   gc_peek_frame ();
   g_stack = g_stack + FRAME_SIZE;
+}
+
+void
+gc_dump_register (char const* n, SCM r)
+{
+  oputs (n); oputs (": ");
+#if !POINTER_CELLS
+  long i = r;
+#else
+  long i = r;
+  long a = g_arena;
+  i = i - a;
+  i = i / M2_CELL_SIZE;
+#endif
+  oputs (ltoa (i));
+  oputs ("\n");
+}
+
+void
+gc_dump_state ()
+{
+  if (!dump_fd)
+    dump_fd = mes_open ("dump.mo", O_CREAT|O_WRONLY, 0644);
+  gc_dump_register ("R0", R0);
+  gc_dump_register ("R1", R1);
+  gc_dump_register ("R2", R2);
+  gc_dump_register ("R3", R3);
+  gc_dump_register ("M0", M0);
+  gc_dump_register ("g_symbols", g_symbols);
+  gc_dump_register ("g_symbol_max", g_symbol_max);
+  gc_dump_register ("g_macros", g_macros);
+  gc_dump_register ("g_ports", g_ports);
+  gc_dump_register ("cell_zero", cell_zero);
+  gc_dump_register ("cell_nil", cell_nil);
+}
+
+void
+gc_dump_stack ()
+{
+  long i = g_stack;
+  while (i < STACK_SIZE)
+    {
+      gc_dump_register (itoa (i), g_stack_array[i]);
+      i = i + 1;
+    }
+}
+
+void
+gc_dump_arena (struct scm *cells, long size)
+{
+#if !POINTER_CELLS
+  struct scm *dist = 0;
+#else
+  struct scm *dist = cells;
+#endif
+  if (!dump_fd)
+    dump_fd = mes_open ("dump.mo", O_CREAT|O_WRONLY, 0644);
+  oputs ("stack="); oputs (ltoa (g_stack)); oputc ('\n');
+  oputs ("size="); oputs (ltoa (size)); oputc ('\n');
+  gc_dump_state ();
+  gc_dump_stack ();
+  while (cells[size].type == 0 && cells[size].car == 0 && cells[size].cdr == 0)
+    size = size - 1;
+  while (size > 0)
+    {
+      int i;
+      for (i=0; i < 16; i = i + 1)
+        {
+          long t = cells->type;
+          long a = cells->car;
+          long d = cells->cdr;
+          if (size == 0)
+            oputs ("0 0 0");
+          else
+            {
+              oputs (ltoa (t));
+              oputc (' ');
+#if POINTER_CELLS
+              if (t == TMACRO
+                  || t == TPAIR
+                  || t == TREF
+                  || t == TVARIABLE)
+                {
+                  oputs (ltoa ((cells->car - dist) / M2_CELL_SIZE));
+                  /* oputs ("["); oputs (ltoa (a)); oputs ("]"); */
+                }
+              else
+#endif
+                oputs (ltoa (a));
+              oputc (' ');
+              if (t != TBYTES)
+                {
+#if POINTER_CELLS
+                  if (t == TCLOSURE
+                      || t == TCONTINUATION
+                      || t == TKEYWORD
+                      || t == TMACRO
+                      || t == TPAIR
+                      || t == TPORT
+                      || t == TSPECIAL
+                      || t == TSTRING
+                      || t == TSTRUCT
+                      || t == TSYMBOL
+                      || t == TVALUES
+                      || t == TVECTOR)
+                    {
+                      oputs (ltoa ((cells->cdr - dist) / M2_CELL_SIZE));
+                      /* oputs ("["); oputs (ltoa (d)); oputs ("]"); */
+                    }
+                  else
+#endif
+                    if (t == TNUMBER && d > 1000)
+                      oputs (ltoa (1001));
+                    else
+                      oputs (ltoa (d));
+                }
+              if (t == TBYTES)
+                {
+                  int c = bytes_cells (a);
+                  char *p = &cells->cdr;
+                  size = size - c;
+                  oputc ('"');
+                  while (a > 0)
+                    {
+                      if (p[0] != 0)
+                        oputc (p[0]);
+                      p = p + 1;
+                      a = a - 1;
+                    }
+                  oputc ('"');
+                  cells = cells + c * M2_CELL_SIZE;
+                  size = size - c;
+                }
+#if 0
+              else if (t == TSTRUCT)
+                {
+                  cells = cells + (a + 1) * M2_CELL_SIZE;
+                  size = size - a - 1;
+                }
+#endif
+              else
+                {
+                  cells = cells + M2_CELL_SIZE;
+                  size = size - 1;
+                }
+            }
+          if (i != 15)
+            oputs ("  ");
+          else
+            oputc ('\n');
+        }
+      oputc ('\n');
+    }
 }
