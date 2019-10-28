@@ -172,6 +172,7 @@ void copy_cell (SCM to, SCM from);
 void gc_ ();
 void gc_stats_ (char const* where);
 void init_symbols_ ();
+void gc_dump_arena (struct scm *cells, long size);
 
 #include "mes/builtins.h"
 #include "mes/constants.h"
