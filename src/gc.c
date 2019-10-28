@@ -33,6 +33,10 @@ long GC_SAFETY;
 long MAX_STRING;
 char *g_arena;
 long g_free;
+
+// CONSTANT FRAME_SIZE 5
+#define FRAME_SIZE 5
+
 SCM g_stack;
 SCM *g_stack_array;
 struct scm *g_cells;
@@ -449,34 +453,32 @@ gc ()
   return cell_unspecified;
 }
 
-SCM
-gc_push_frame ()                /*:((internal)) */
+void
+gc_push_frame ()
 {
-  if (g_stack < 5)
+  if (g_stack < FRAME_SIZE)
     assert_msg (0, "STACK FULL");
   g_stack_array[g_stack - 1] = cell_f;
   g_stack_array[g_stack - 2] = R0;
   g_stack_array[g_stack - 3] = R1;
   g_stack_array[g_stack - 4] = R2;
   g_stack_array[g_stack - 5] = R3;
-  g_stack = g_stack - 5;
-  return g_stack;
+  g_stack = g_stack - FRAME_SIZE;
 }
 
-SCM
-gc_peek_frame ()                /*:((internal)) */
+void
+gc_peek_frame ()
 {
   R3 = g_stack_array[g_stack];
   R2 = g_stack_array[g_stack + 1];
   R1 = g_stack_array[g_stack + 2];
   R0 = g_stack_array[g_stack + 3];
-  return g_stack_array[g_stack + FRAME_PROCEDURE];
+  g_stack_array[g_stack + FRAME_PROCEDURE];
 }
 
-SCM
-gc_pop_frame ()                 /*:((internal)) */
+void
+gc_pop_frame ()
 {
-  SCM x = gc_peek_frame ();
-  g_stack = g_stack + 5;
-  return x;
+  gc_peek_frame ();
+  g_stack = g_stack + FRAME_SIZE;
 }
