@@ -25,16 +25,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-// long ARENA_SIZE;
-// long MAX_ARENA_SIZE;
-// long STACK_SIZE;
-// long JAM_SIZE;
-// long GC_SAFETY;
-// long MAX_STRING;
-// char *g_arena;
-// long g_free;
-
-void init_symbols_ ();
+// CONSTANT FRAME_SIZE 5
+#define FRAME_SIZE 5
 
 #if __M2_PLANET__
 #define M2_CELL_SIZE 12
@@ -594,14 +586,14 @@ gc ()
 SCM
 gc_push_frame ()                /*:((internal)) */
 {
-  if (g_stack < 5)
+  if (g_stack < FRAME_SIZE)
     assert_msg (0, "STACK FULL");
   g_stack_array[g_stack - 1] = cell_f;
   g_stack_array[g_stack - 2] = R0;
   g_stack_array[g_stack - 3] = R1;
   g_stack_array[g_stack - 4] = R2;
   g_stack_array[g_stack - 5] = R3;
-  g_stack = g_stack - 5;
+  g_stack = g_stack - FRAME_SIZE;
   return g_stack;
 }
 
@@ -619,6 +611,6 @@ SCM
 gc_pop_frame ()                 /*:((internal)) */
 {
   SCM x = gc_peek_frame ();
-  g_stack = g_stack + 5;
+  g_stack = g_stack + FRAME_SIZE;
   return x;
 }
