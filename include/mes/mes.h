@@ -121,7 +121,6 @@ SCM cstring_to_list (char const *s);
 SCM cstring_to_symbol (char const *s);
 SCM cell_ref (SCM cell, long index);
 SCM fdisplay_ (SCM, int, int);
-SCM gc_ ();
 SCM gc_init ();
 SCM gc_peek_frame ();
 SCM gc_pop_frame ();
@@ -161,6 +160,7 @@ void assert_max_string (size_t i, char const *msg, char *string);
 void assert_msg (int check, char *msg);
 void assert_number (char const *name, SCM x);
 void copy_cell (SCM to, SCM from);
+void gc_ ();
 void gc_stats_ (char const* where);
 
 #include "mes/builtins.h"

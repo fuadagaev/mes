@@ -139,7 +139,6 @@ gc_init ()                      /*:((internal)) */
   g_symbol_max = 0;
   g_macros = 0;
   g_ports = 0;
-  g_symbol_max = 0;
 
   // FIXME: remove MES_MAX_STRING, grow dynamically
   g_buf = malloc (MAX_STRING);
@@ -167,7 +166,7 @@ gc_stats_ (char const* where)
 #endif
   eputs (where);
   eputs (": [");
-  eputs (itoa (i));
+  eputs (ntoab (i, 10, 0));
   eputs ("]\n");
 }
 
@@ -241,7 +240,7 @@ cons (SCM x, SCM y)
 size_t
 bytes_cells (size_t length)
 {
-  return (1 + sizeof (long) + sizeof (long) + length + sizeof (SCM)) / sizeof (SCM);
+  return (sizeof (long) + sizeof (long) + length - 1 + sizeof (SCM)) / sizeof (SCM);
 }
 
 SCM
@@ -255,7 +254,7 @@ make_bytes (char const *s, size_t length)
   if (length == 0)
     p[0] = 0;
   else
-    memcpy (p, s, length + 1);
+    memcpy (p, s, length);
 
   return x;
 }
@@ -296,7 +295,7 @@ make_string (char const *s, size_t length)
   if (length > MAX_STRING)
     assert_max_string (length, "make_string", s);
   SCM x = make_cell (TSTRING, length, 0);
-  SCM v = make_bytes (s, length);
+  SCM v = make_bytes (s, length + 1);
   CDR (x) = v;
   return x;
 }
@@ -412,7 +411,7 @@ gc_copy (SCM old)               /*:((internal)) */
 #else
       size_t length = NLENGTH (new);
 #endif
-      memcpy (dest, src, length + 1);
+      memcpy (dest, src, length);
       g_free = g_free + ((bytes_cells (length) - 1) * M2_CELL_SIZE);
 
       if (g_debug > 4)
@@ -457,24 +456,39 @@ gc_loop (SCM scan)              /*:((internal)) */
   SCM cdr;
   while (scan < g_free)
     {
-      if (NTYPE (scan) == TBROKEN_HEART)
-        error (cell_symbol_system_error, cstring_to_symbol ("gc"));
-      if (NTYPE (scan) == TMACRO || NTYPE (scan) == TPAIR || NTYPE (scan) == TREF /* || scan == 1 //cell_nil */
-          || NTYPE (scan) == TVARIABLE)
+      long t = NTYPE (scan);
+      if (t == TBROKEN_HEART)
+        assert_msg (0, "broken heart");
+      if (t == TMACRO
+          || t == TPAIR
+          || t == TREF
+          || t == TVARIABLE)
         {
           car = gc_copy (NCAR (scan));
           gc_relocate_car (scan, car);
         }
-      if ((NTYPE (scan) == TCLOSURE || NTYPE (scan) == TCONTINUATION || NTYPE (scan) == TKEYWORD || NTYPE (scan) == TMACRO || NTYPE (scan) == TPAIR || NTYPE (scan) == TPORT || NTYPE (scan) == TSPECIAL || NTYPE (scan) == TSTRING || NTYPE (scan) == TSYMBOL /* || scan == 1 //cell_nil */
-           || NTYPE (scan) == TVALUES)
+      if ((t == TCLOSURE
+           || t == TCONTINUATION
+           || t == TKEYWORD
+           || t == TMACRO
+           || t == TPAIR
+           || t == TPORT
+           || t == TSPECIAL
+           || t == TSTRING
+           /*|| t == TSTRUCT handled by gc_copy */
+           || t == TSYMBOL
+           || t == TVALUES
+           /*|| t == TVECTOR handled by gc_copy */
+           )
           && NCDR (scan))   // allow for 0 terminated list of symbols
         {
           cdr = gc_copy (NCDR (scan));
           gc_relocate_cdr (scan, cdr);
         }
-      if (NTYPE (scan) == TBYTES)
-        scan = scan + ((bytes_cells (NLENGTH (scan)) - 1) * M2_CELL_SIZE);
-      scan = scan + M2_CELL_SIZE;
+      if (t == TBYTES)
+        scan = scan + (bytes_cells (NLENGTH (scan)) * M2_CELL_SIZE);
+      else
+        scan = scan + M2_CELL_SIZE;
     }
   gc_flip ();
 }
@@ -491,8 +505,8 @@ gc_check ()
   return cell_unspecified;
 }
 
-SCM
-gc_ ()                          /*:((internal)) */
+void
+gc_ ()
 {
   gc_init_news ();
   if (g_debug == 2)
@@ -581,6 +595,7 @@ gc ()
       write_error_ (R0);
       eputs ("\n");
     }
+  return cell_unspecified;
 }
 
 SCM
