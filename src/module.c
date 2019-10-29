@@ -24,14 +24,13 @@
 SCM
 make_module_type ()             /*:(internal)) */
 {
-  SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
   fields = cons (cstring_to_symbol ("globals"), fields);
   fields = cons (cstring_to_symbol ("locals"), fields);
   fields = cons (cstring_to_symbol ("name"), fields);
   fields = cons (fields, cell_nil);
   fields = cons (cell_symbol_module, fields);
-  return make_struct (record_type, fields, cell_unspecified);
+  return make_struct (cell_symbol_record_type, fields, cell_unspecified);
 }
 
 SCM
@@ -69,7 +68,6 @@ make_initial_module (SCM a)     /*:((internal)) */
 SCM
 module_printer (SCM module)
 {
-  //module = M0;
   fdputs ("#<", __stdout);
   display_ (struct_ref_ (module, 2));
   fdputc (' ', __stdout);
@@ -88,7 +86,7 @@ module_printer (SCM module)
 SCM
 module_variable (SCM module, SCM name)
 {
-  //SCM locals = struct_ref_ (module, 3);
+  /*SCM locals = struct_ref_ (module, 3);*/
   SCM locals = module;
   SCM x = assq (name, locals);
   if (x == cell_f)
