@@ -27,16 +27,11 @@
 #include <string.h>
 #include <string.h>
 
-char *g_datadir;
-int g_debug;
-char *g_buf;
-SCM g_continuations;
-SCM g_symbols;
+// char const *MES_PKGDATADIR = "mes";
 
 SCM
 mes_g_stack (SCM a)             /*:((internal)) */
 {
-  //g_stack = g_free + ARENA_SIZE;
   g_stack = STACK_SIZE;
   R0 = a;
   R1 = make_char (0);
