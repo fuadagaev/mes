@@ -181,7 +181,6 @@ reader_read_list (int c, SCM a)
     return cell_nil;
   if (c == EOF)
     error (cell_symbol_not_a_pair, make_string0 ("EOF in list"));
-  //return cell_nil;
   SCM s = reader_read_sexp_ (c, a);
   if (s == cell_dot)
     {
@@ -323,21 +322,15 @@ reader_read_character ()
         c = '\v';
       else if (strcmp (buf, "page") == 0)
         c = '\f';
-#if 1                           //__MESC__
-      //Nyacc bug
       else if (strcmp (buf, "return") == 0)
+        /* Nyacc bug
+           c = '\r'; */
         c = 13;
       else if (strcmp (buf, "esc") == 0)
         c = 27;
-#else
-      else if (strcmp (buf, "return") == 0)
-        c = '\r';
-      //Nyacc crash else if (strcmp (buf, "esc") == 0) c = '\e';
-#endif
       else if (strcmp (buf, "space") == 0)
         c = ' ';
-
-#if 1                           // Nyacc uses old abbrevs
+      /* Nyacc uses old abbrevs */
       else if (strcmp (buf, "bel") == 0)
         c = '\a';
       else if (strcmp (buf, "bs") == 0)
@@ -346,16 +339,10 @@ reader_read_character ()
         c = '\t';
       else if (strcmp (buf, "vt") == 0)
         c = '\v';
-
-#if 1                           //__MESC__
-      //Nyacc bug
       else if (strcmp (buf, "cr") == 0)
+        /* Nyacc bug
+           c = '\r'; */
         c = 13;
-#else
-      else if (strcmp (buf, "cr") == 0)
-        c = '\r';
-#endif
-#endif // Nyacc uses old abbrevs
       else
         {
           eputs ("char not supported: ");
@@ -476,12 +463,12 @@ reader_read_string ()
           else if (c == 'f')
             c = '\f';
           else if (c == 'r')
-            // Nyacc bug
-            // c = '\r';
+            /* Nyacc bug
+               c = '\r'; */
             c = 13;
           else if (c == 'e')
-            // Nyacc bug
-            // c = '\e';
+            /* Nyacc bug
+               c = '\e'; */
             c = 27;
           else if (c == 'x')
             {
