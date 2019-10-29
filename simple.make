@@ -38,7 +38,7 @@ CFLAGS:=					\
  -D _GNU_SOURCE					\
  -D const=					\
  -ggdb						\
- -D POINTER_CELLS=0				\
+ -D POINTER_CELLS=1				\
  -D SYSTEM_LIBC=1				\
  -D 'MES_VERSION="git"'				\
  -D 'MES_PKGDATADIR="/usr/local/share/mes"'	\
