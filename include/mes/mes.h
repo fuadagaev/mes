@@ -26,7 +26,6 @@
 #include <sys/types.h>
 #include "mes/cc.h"
 
-#if POINTER_CELLS
 struct scm
 {
   long type;
@@ -52,14 +51,6 @@ struct scm
     SCM vector;
   };
 };
-#else
-struct scm
-{
-  long type;
-  SCM car;
-  SCM cdr;
-};
-#endif
 
 /* mes */
 char *g_datadir;
