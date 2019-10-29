@@ -36,23 +36,6 @@
 // CONSTANT M2_CELL_SIZE 12
 #endif
 
-#if !POINTER_CELLS
-SCM g_stack;
-#else
-long g_stack;
-#endif
-
-#if !POINTER_CELLS
-long g_symbol;
-#else
-SCM g_symbol;
-#endif
-
-SCM *g_stack_array;
-
-struct scm *g_cells;
-struct scm *g_news;
-
 char *
 cell_bytes (SCM x)
 {
