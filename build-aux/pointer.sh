@@ -36,7 +36,9 @@ sed -ri                                                         \
     -e 's,CDDR \(([^()]*)\),\1->cdr->cdr,'                      \
     -e 's,CADAR \(([^()]*)\),\1->car->cdr->car,'                \
     -e 's,CADDR \(([^()]*)\),\1->cdr->cdr->car,'                \
+    -e 's,CDADR \(([^()]*)\),\1->cdr->car->cdr,'                \
     -e 's,CDDDR \(([^()]*)\),\1->cdr->cdr->cdr,'                \
+    -e 's,CDDAR \(([^()]*)\),\1->car->cdr->cdr,'                \
     -e 's,CDADAR \(([^()]*)\),\1->cdr->car->cdr->car,'          \
                                                                 \
     include/mes/builtins.h                                      \
