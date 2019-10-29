@@ -39,7 +39,7 @@ int
 hashq_ (SCM x, long size)
 {
   if (TYPE (x) == TSPECIAL || TYPE (x) == TSYMBOL)
-    return hash_cstring (cell_bytes (STRING (x)), size);    // FIXME: hash x directly
+    return hash_cstring (cell_bytes (STRING (x)), size);    /* FIXME: hash x directly */
   error (cell_symbol_system_error, cons (make_string0 ("hashq_: not a symbol"), x));
 }
 
@@ -178,13 +178,12 @@ hash_table_printer (SCM table)
 SCM
 make_hashq_type ()              /*:((internal)) */
 {
-  SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
   fields = cons (cell_symbol_buckets, fields);
   fields = cons (cell_symbol_size, fields);
   fields = cons (fields, cell_nil);
   fields = cons (cell_symbol_hashq_table, fields);
-  return make_struct (record_type, fields, cell_unspecified);
+  return make_struct (cell_symbol_record_type, fields, cell_unspecified);
 }
 
 SCM
@@ -199,7 +198,8 @@ make_hash_table_ (long size)
   values = cons (buckets, values);
   values = cons (make_number (size), values);
   values = cons (cell_symbol_hashq_table, values);
-  //FIXME: symbol/printer return make_struct (hashq_type, values, cstring_to_symbol ("hash-table-printer");
+  /*FIXME: symbol/printer
+    return make_struct (hashq_type, values, cstring_to_symbol ("hash-table-printer");*/
   return make_struct (hashq_type, values, cell_unspecified);
 }
 
