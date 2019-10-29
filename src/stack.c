@@ -37,12 +37,11 @@ frame_printer (SCM frame)
 SCM
 make_frame_type ()              /*:((internal)) */
 {
-  SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
   fields = cons (cell_symbol_procedure, fields);
   fields = cons (fields, cell_nil);
   fields = cons (cell_symbol_frame, fields);
-  return make_struct (record_type, fields, cell_unspecified);
+  return make_struct (cell_symbol_record_type, fields, cell_unspecified);
 }
 
 SCM
@@ -62,12 +61,11 @@ make_frame (SCM stack, long index)
 SCM
 make_stack_type ()              /*:((internal)) */
 {
-  SCM record_type = cell_symbol_record_type;    // FIXME
   SCM fields = cell_nil;
   fields = cons (cstring_to_symbol ("frames"), fields);
   fields = cons (fields, cell_nil);
   fields = cons (cell_symbol_stack, fields);
-  return make_struct (record_type, fields, cell_unspecified);
+  return make_struct (cell_symbol_record_type, fields, cell_unspecified);
 }
 
 SCM
