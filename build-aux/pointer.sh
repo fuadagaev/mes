@@ -11,6 +11,7 @@ cstring='s,C(STRING) \(([^()]*)\),cell_bytes (STRING (\2)),'
 struct='s,SCM,struct scm*,g'
 
 sed -ri                                                         \
+    -e 's,POINTER_CELLS=0,POINTER_CELLS=1',                     \
     -e 's,#define POINTER_CELLS 0,#define POINTER_CELLS 1',     \
     -e "$ncbytes"                                               \
     -e "$cbytes"                                                \
@@ -66,4 +67,5 @@ sed -ri                                                         \
     src/struct.c                                                \
     src/symbol.c                                                \
     src/vector.c                                                \
-    src/test/gc.c
+    src/test/gc.c                                               \
+    simple.make
