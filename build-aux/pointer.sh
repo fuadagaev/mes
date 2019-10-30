@@ -10,9 +10,11 @@ cbytes='s,([^N])C(BYTES) \(([^()]*)\),\1cell_\L\2 (\3),'
 cstring='s,C(STRING) \(([^()]*)\),cell_bytes (STRING (\2)),'
 struct='s,SCM,struct scm*,g'
 
+sed -i -e 's,MES_ARENA=,#MES_ARENA=,' tests/gc.test
+
 sed -ri                                                         \
-    -e 's,POINTER_CELLS=0,POINTER_CELLS=1',                     \
-    -e 's,#define POINTER_CELLS 0,#define POINTER_CELLS 1',     \
+    -e 's,POINTER_CELLS=0,POINTER_CELLS=1,'                     \
+    -e 's,#define POINTER_CELLS 0,#define POINTER_CELLS 1,'     \
     -e "$ncbytes"                                               \
     -e "$cbytes"                                                \
     -e "$cstring"                                               \
@@ -42,30 +44,31 @@ sed -ri                                                         \
     -e 's,CDDAR \(([^()]*)\),\1->car->cdr->cdr,'                \
     -e 's,CDADAR \(([^()]*)\),\1->cdr->car->cdr->car,'          \
                                                                 \
-    include/mes/builtins.h                                      \
-    include/mes/mes.h                                           \
-    include/mes/symbols.h                                       \
-    include/mes/builtins.h                                      \
-    include/m2/lib.h                                            \
-    include/mes/m2.h                                            \
-    src/builtins.c                                              \
-    src/cc.c                                                    \
-    src/core.c                                                  \
-    src/display.c                                               \
-    src/eval-apply.c                                            \
-    src/gc.c                                                    \
-    src/hash.c                                                  \
-    src/lib.c                                                   \
-    src/m2.c                                                    \
-    src/math.c                                                  \
-    src/mes.c                                                   \
-    src/module.c                                                \
-    src/posix.c                                                 \
-    src/reader.c                                                \
-    src/stack.c                                                 \
-    src/string.c                                                \
-    src/struct.c                                                \
-    src/symbol.c                                                \
-    src/vector.c                                                \
-    src/test/gc.c                                               \
-    simple.make
+    $(find .                                    \
+       -name builtins.h                         \
+    -o -name mes.h                              \
+    -o -name mes.h                              \
+    -o -name symbols.h                          \
+    -o -name builtins.h                         \
+    -o -name m2.h                               \
+    -o -name builtins.c                         \
+    -o -name cc.c                             \
+    -o -name core.c                             \
+    -o -name display.c                          \
+    -o -name eval-apply.c                       \
+    -o -name gc.c                               \
+    -o -name hash.c                             \
+    -o -name lib.c                              \
+    -o -name m2.c                             \
+    -o -name math.c                             \
+    -o -name mes.c                              \
+    -o -name module.c                           \
+    -o -name posix.c                            \
+    -o -name reader.c                           \
+    -o -name stack.c                            \
+    -o -name string.c                           \
+    -o -name struct.c                           \
+    -o -name symbol.c                           \
+    -o -name vector.c                           \
+    -o -name gc.c                          \
+    -o -name simple.make)
