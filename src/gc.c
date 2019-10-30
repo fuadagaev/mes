@@ -50,8 +50,8 @@ news_bytes (SCM x)
   return &NCDR (x);
 }
 
-SCM
-gc_init ()                      /*:((internal)) */
+void
+gc_init ()
 {
 #if SYSTEM_LIBC
   ARENA_SIZE = 100000000;       /* 2.3GiB */
@@ -95,8 +95,6 @@ gc_init ()                      /*:((internal)) */
 
   /* FIXME: remove MES_MAX_STRING, grow dynamically */
   g_buf = malloc (MAX_STRING);
-
-  return 0;
 }
 
 SCM
@@ -221,8 +219,8 @@ make_string_port (SCM x)        /*:((internal)) */
   return make_cell (TPORT, -length__ (g_ports) - 2, x);
 }
 
-SCM
-gc_up_arena ()                  /*:((internal)) */
+void
+gc_up_arena ()
 {
   long old_arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
   if (ARENA_SIZE >> 1 < MAX_ARENA_SIZE >> 2)
@@ -248,12 +246,10 @@ gc_up_arena ()                  /*:((internal)) */
   g_cells = p;
   memcpy (p + arena_bytes, p + old_arena_bytes, STACK_SIZE * sizeof (SCM));
   g_cells = g_cells + 1;
-
-  return 0;
 }
 
 void
-gc_flip ()                      /*:((internal)) */
+gc_flip ()
 {
   if (g_debug > 2)
     {
