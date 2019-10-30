@@ -39,7 +39,7 @@ SCM
 car_ (SCM x)
 {
   SCM a = CAR (x);
-  if (TYPE (a) == TPAIR)
+  if (TYPE (x) == TPAIR)
     return a;
   return make_number (a);
 }
@@ -48,7 +48,7 @@ SCM
 cdr_ (SCM x)
 {
   SCM d = CDR (x);
-  if (TYPE (d) == TPAIR)
+  if (TYPE (x) == TPAIR || TYPE (x) == TCLOSURE)
     return d;
   return make_number (d);
 }
@@ -125,8 +125,8 @@ equal2:
       long i;
       for (i = 0; i < LENGTH (a); i = i + 1)
         {
-          SCM ai = VECTOR (a) + i;
-          SCM bi = VECTOR (b) + i;
+          SCM ai = cell_ref (VECTOR (a), i);
+          SCM bi = cell_ref (VECTOR (b), i);
           if (TYPE (ai) == TREF)
             ai = REF (ai);
           if (TYPE (bi) == TREF)
