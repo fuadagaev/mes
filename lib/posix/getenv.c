@@ -28,22 +28,22 @@
 char *
 getenv (char const *s)
 {
-  eputs ("\ngetenv s="); eputs (s); eputs ("\n");
+  /* eputs ("\ngetenv s="); eputs (s); eputs ("\n"); */
   char **p = environ;
   int length = strlen (s);
 
   while (p[0] != 0)
     {
-      eputs ("getenv p[0]="); eputs (p[0]); eputs ("\n");
+      /* eputs ("getenv p[0]="); eputs (p[0]); eputs ("\n"); */
       if (strncmp (s, p[0], length) == 0)
         {
-          eputs ("found!\n");
+          /* eputs ("found!\n"); */
           char *q = p[0] + length;
           if (q[0] == '=')
             return q + 1;
         }
-      else
-        eputs ("not found!\n");
+      /* else */
+      /*   eputs ("not found!\n"); */
       p = p + M2_PTR_SIZE;
     }
 
