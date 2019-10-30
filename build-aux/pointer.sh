@@ -43,13 +43,17 @@ sed -ri                                                         \
     include/mes/mes.h                                           \
     include/mes/symbols.h                                       \
     include/mes/builtins.h                                      \
+    include/m2/lib.h                                            \
+    include/mes/m2.h                                            \
     src/builtins.c                                              \
+    src/cc.c                                                    \
     src/core.c                                                  \
     src/display.c                                               \
     src/eval-apply.c                                            \
     src/gc.c                                                    \
     src/hash.c                                                  \
     src/lib.c                                                   \
+    src/m2.c                                                    \
     src/math.c                                                  \
     src/mes.c                                                   \
     src/module.c                                                \
