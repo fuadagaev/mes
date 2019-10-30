@@ -170,10 +170,15 @@ write_byte (struct scm* x)              /*:((arity . n)) */
 struct scm*
 getenv_ (struct scm* s)                 /*:((name . "getenv")) */
 {
-  char *p;
-  p = getenv (cell_bytes (s->string));
+  char *p = cell_bytes (s->string);
+  eputs ("getenv p="); eputs (p); eputs ("\n");
+  p = getenv (p);
   if (p != 0)
-    return make_string0 (p);
+    {
+      eputs ("  => p="); eputs (p); eputs ("\n");
+        return make_string0 (p);
+    }
+  eputs ("  p == 0\n");
   return cell_f;
 }
 
