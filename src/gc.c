@@ -439,15 +439,6 @@ gc_flip ()
 struct scm*
 gc_copy (struct scm* old)               /*:((internal)) */
 {
-  if (g_debug > 4)
-    {
-      eputs ("gc copy t[");
-      eputs (itoa (old));
-      eputs ("]: gc copy t= ");
-      eputs (itoa (old->type));
-      eputs ("\n");
-    }
-
   if (old->type == TBROKEN_HEART)
     return old->car;
   struct scm* new = g_free;
@@ -467,23 +458,13 @@ gc_copy (struct scm* old)               /*:((internal)) */
     {
       char const *src = cell_bytes (old);
       char *dest = news_bytes (new);
-      eputs ("20\n");
 #if !POINTER_CELLS
       size_t length = new->length;
-      eputs ("21\n");
 #else
       size_t length = old->length;
-      eputs ("22\n");
 #endif
-      eputs ("old="); eputs (itoa (old)); eputs ("\n");
-      eputs ("src="); eputs (itoa (src)); eputs ("\n");
-      eputs ("new="); eputs (ntoab (new, 10, 0)); eputs ("\n");
-      eputs ("dest="); eputs (ntoab (dest, 10, 0)); eputs ("\n");
-      eputs ("len="); eputs (itoa (length)); eputs ("\n");
       memcpy (dest, src, length);
-      eputs ("23\n");
       g_free = g_free + ((bytes_cells (length) - 1) * M2_CELL_SIZE);
-      eputs ("24\n");
 
       if (g_debug > 4)
         {
@@ -500,13 +481,9 @@ gc_copy (struct scm* old)               /*:((internal)) */
           eputs (dest);
           eputs ("\n");
         }
-      eputs ("25\n");
     }
-  eputs ("26\n");
   old->type = TBROKEN_HEART;
-  eputs ("27\n");
   old->car = new;
-  eputs ("28\n");
   return new;
 }
 
@@ -532,7 +509,6 @@ gc_loop (struct scm* scan)              /*:((internal)) */
   while (scan < g_free)
     {
       long t = scan->type;
-      eputs ("gc_loop t="); eputs (itoa (t)); eputs ("\n");
       if (t == TBROKEN_HEART)
         assert_msg (0, "broken heart");
       if (t == TMACRO
@@ -540,7 +516,6 @@ gc_loop (struct scm* scan)              /*:((internal)) */
           || t == TREF
           || t == TVARIABLE)
         {
-          eputs ("gc_loop car\n");
           car = gc_copy (scan->car);
           gc_relocate_car (scan, car);
         }
@@ -558,16 +533,11 @@ gc_loop (struct scm* scan)              /*:((internal)) */
           /*|| t == TVECTOR handled by gc_copy */
           )
         {
-          eputs ("gc_loop cdr\n");
           cdr = gc_copy (scan->cdr);
           gc_relocate_cdr (scan, cdr);
         }
       if (t == TBYTES)
-        {
-          eputs ("gc_loop tbytes\n");
-          scan = scan + (bytes_cells (scan->length) * M2_CELL_SIZE);
-          eputs ("   dun tbytes\n");
-        }
+        scan = scan + (bytes_cells (scan->length) * M2_CELL_SIZE);
       else
         scan = scan + M2_CELL_SIZE;
     }
@@ -625,23 +595,13 @@ gc_ ()
       gc_up_arena ();
     }
 
-  eputs ("gc_ nil="); eputs (itoa (cell_nil)); eputs ("\n");
-  eputs ("gc_ f="); eputs (itoa (cell_f)); eputs ("\n");
-  eputs ("gc_ t="); eputs (itoa (cell_t)); eputs ("\n");
-  eputs ("gc_ g_symbol_max="); eputs (itoa (g_symbol_max)); eputs ("\n");
-
 #if POINTER_CELLS
   struct scm* save_gfree = g_free;
 #endif
   struct scm* s;
   for (s = cell_nil; s < g_symbol_max; s = s + M2_CELL_SIZE)
-    {
-      eputs ("s:"); eputs (itoa (s)); eputs ("\n");
-      gc_copy (s);
-      eputs ("91\n");
-    }
+    gc_copy (s);
 
-  eputs ("gc_ 100\n");
 #if POINTER_CELLS
 #if GC_TEST
   cell_nil = save_gfree;
@@ -650,33 +610,20 @@ gc_ ()
   cell_nil = save_gfree;
   g_symbols = 0;
   g_free = save_gfree;
-  eputs ("gc_ 110\n");
   init_symbols_ ();
-  eputs ("gc_ 120\n");
   g_symbol_max = g_symbol;
   g_symbols = save_gsymbols;
 #endif
 #endif
 
-  eputs ("gc_ 130\n");
   g_symbols = gc_copy (g_symbols);
-  eputs ("gc_ 140\n");
   g_macros = gc_copy (g_macros);
-  eputs ("gc_ 150\n");
   g_ports = gc_copy (g_ports);
-  eputs ("gc_ 160\n");
   M0 = gc_copy (M0);
-  eputs ("gc_ 200\n");
   long i;
   for (i = g_stack; i < STACK_SIZE; i = i + 1)
-    {
-      eputs ("i:"); eputs (itoa (i)); eputs ("\n");
-      copy_stack (i, gc_copy (g_stack_array[i]));
-    }
+    copy_stack (i, gc_copy (g_stack_array[i]));
 
-  eputs ("gc_ 200\n");
-  eputs ("gc_ cell_nil="); eputs (itoa (cell_nil)); eputs ("\n");
-  eputs ("gc_ cell_nil - news ="); eputs (itoa (cell_nil - g_news)); eputs ("\n");
   gc_loop (cell_nil);
 }
 
