@@ -131,5 +131,6 @@ hex2                                            \
     -o bin/mes-m2
 
 echo Running mes-m2
-./bin/mes-m2 --boot scaffold/boot/14-exit.scm
-#./bin/mes-m2 --boot scaffold/boot/15-display.scm
+./bin/mes-m2 --help
+MES_BOOT=scaffold/boot/15-display.scm
+./bin/mes-m2
