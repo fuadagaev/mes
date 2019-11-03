@@ -71,6 +71,8 @@ fi
 GUILE=${GUILE-$(command -v guile)} || true
 HEX2=${HEX2-$(command -v hex2)}
 M1=${M1-$(command -v M1)}
+M2_PLANET=${M1-$(command -v M2-Planet)}
+KAEM=${KAEM-$(command -v kaem)}
 MES_FOR_BUILD=${MES_FOR_BUILD-$(command -v mes || command -v guile || echo mes)}
 GIT=${GIT-$(command -v git)} || true
 PERL=${PERL-$(command -v perl)} || true
@@ -154,6 +156,8 @@ subst () {
     -e s,"@HEX2FLAGS@,$HEX2FLAGS,"\
     -e s,"@M1@,$M1,"\
     -e s,"@M1FLAGS@,$M1FLAGS,"\
+    -e s,"@M2_PLANET@,$M2_PLANET,"\
+    -e s,"@KAEM@,$KAEM,"\
     -e s,"@MES_FOR_BUILD@,$MES_FOR_BUILD,"\
     -e s,"@MES_SEED@,$MES_SEED,"\
     -e s,"@MES_SEED@,$MES_SEED,"\

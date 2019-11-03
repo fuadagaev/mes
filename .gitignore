@@ -69,8 +69,6 @@
 /scaffold/read-m2
 /scaffold/tiny-mes-m2
 
-/src/mes
-
 /.config
 /.config.make
 /.store
