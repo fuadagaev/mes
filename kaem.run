@@ -19,12 +19,6 @@
 # Usage:
 # kaem --verbose --strict
 
-./build-aux/pointer.sh
-./build-aux/pointer.sh
-./build-aux/pointer.sh
-./build-aux/pointer.sh
-./build-aux/pointer.sh
-
 M2-Planet                                       \
     --debug                                     \
     --architecture x86                          \
@@ -50,7 +44,6 @@ M2-Planet                                       \
     -f lib/mes/eputc.c                          \
                                                 \
     -f include/mes/mes.h                        \
-    -f include/mes/m2.h                         \
     -f include/mes/builtins.h                   \
     -f include/mes/constants.h                  \
     -f include/mes/symbols.h                    \
