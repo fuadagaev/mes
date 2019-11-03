@@ -26,6 +26,7 @@ M2-Planet                                       \
     -f lib/linux/x86-mes-m2/crt1.c              \
     -f lib/linux/x86-mes-m2/mini.c              \
     -f lib/mes/globals.c                        \
+    -f lib/m2/cast.c                            \
     -f lib/m2/exit.c                            \
     -f lib/mes/mini-write.c                     \
     -f lib/linux/x86-mes-m2/syscall.c           \
