@@ -114,20 +114,11 @@ gc_init ()
     MAX_STRING = atoi (p);
 
   long arena_bytes = (ARENA_SIZE + JAM_SIZE) * sizeof (struct scm);
-#if !POINTER_CELLS || GC_NOFLIP
   long alloc_bytes = arena_bytes + (STACK_SIZE * sizeof (struct scm));
-#else
-  long alloc_bytes = (arena_bytes * 2) + (STACK_SIZE * sizeof (struct scm*));
-#endif
 
   g_arena = malloc (alloc_bytes);
   g_cells = g_arena;
-
-#if !POINTER_CELLS || GC_NOFLIP
   g_stack_array = g_arena + arena_bytes;
-#else
-  g_stack_array = g_arena + (arena_bytes * 2);
-#endif
 
 #if !POINTER_CELLS
   /* The vector that holds the arenea. */
@@ -335,17 +326,7 @@ gc_init_news ()
   g_news = g_cells + g_free;
   SCM ncell_arena = cell_arena;
 #else
-
-#if GC_NOFLIP
   g_news = g_free;
-#else
-  char* p = g_cells - M2_CELL_SIZE;
-  if (p == g_arena)
-    g_news = g_free;
-  else
-    g_news = g_arena;
-#endif
-
   SCM ncell_arena = g_news;
 #endif
 
@@ -447,22 +428,24 @@ gc_cellcpy (struct scm *dest, struct scm *src, size_t n)
         dest->cdr = d;
       if (t == TBYTES)
         {
-#if GC_TEST
-          eputs ("copying bytes[");
-          eputs (ntoab (&src->cdr, 16, 0));
-          eputs (", ");
-          eputs (ntoab (a, 10, 0));
-          eputs ("]: ");
-          eputs (&src->cdr);
-          eputs ("\n to [");
-          eputs (ntoab (&dest->cdr, 16, 0));
-#endif
+          if (g_debug > 5)
+            {
+              eputs ("copying bytes[");
+              eputs (ntoab (&src->cdr, 16, 0));
+              eputs (", ");
+              eputs (ntoab (a, 10, 0));
+              eputs ("]: ");
+              eputs (&src->cdr);
+              eputs ("\n to [");
+              eputs (ntoab (&dest->cdr, 16, 0));
+            }
           memcpy (&dest->cdr, &src->cdr, a);
-#if GC_TEST
-          eputs ("]: ");
-          eputs (&dest->cdr);
-          eputs ("\n");
-#endif
+          if (g_debug > 5)
+            {
+              eputs ("]: ");
+              eputs (&dest->cdr);
+              eputs ("\n");
+            }
           int i = bytes_cells (a);
           n = n - i;
           int c = i * M2_CELL_SIZE;
@@ -485,8 +468,7 @@ gc_flip ()
   if (g_free - g_news > JAM_SIZE)
     JAM_SIZE = (g_free - g_news) + ((g_free - g_news) / 2);
 
-#if GC_NOFLIP
-  cell_arena = g_cells - M2_CELL_SIZE; /* FIXME? */
+  cell_arena = g_cells - M2_CELL_SIZE; /* For debugging. */
   gc_cellcpy (g_cells, g_news, (g_free - g_news) / M2_CELL_SIZE);
 
   void *p = g_news;
@@ -496,7 +478,6 @@ gc_flip ()
   long i;
   i = g_free;
   g_free = i - dist;
-#if !GC_TEST
   i = g_symbols;
   g_symbols = i - dist;
   i = g_macros;
@@ -505,22 +486,12 @@ gc_flip ()
   g_ports = i - dist;
   i = M0;
   M0 = i - dist;
-#endif
 
   for (i = g_stack; i < STACK_SIZE; i = i + 1)
     {
       long s = g_stack_array[i];
-      /* copy_stack (i, gc_copy (g_stack_array[i])); */
       g_stack_array[i] = s - dist;
     }
-
-#else
-
-  g_cells = g_news;
-  cell_arena = g_news - M2_CELL_SIZE;
-  cell_zero = cell_arena + M2_CELL_SIZE;
-  cell_nil = cell_zero + M2_CELL_SIZE;
-#endif
 #endif
 
   if (g_debug > 2)
@@ -700,25 +671,6 @@ gc_ ()
   for (s = cell_nil; s < g_symbol_max; s = s + M2_CELL_SIZE)
     gc_copy (s);
 
-#if POINTER_CELLS && !GC_NOFLIP
-  cell_nil = new_cell_nil;
-  cell_arena = g_news - M2_CELL_SIZE; /* for debugging */
-
-#if GC_TEST
-  cell_zero = cell_nil - M2_CELL_SIZE;
-  g_symbol_max = g_free;
-#else
-  long save_gsymbols = g_symbols;
-  g_symbols = 0;
-  g_free = new_cell_nil;
-  init_symbols_ ();
-  g_symbol_max = g_symbol;
-  g_symbols = save_gsymbols;
-#endif
-
-#endif
-
-#if !GC_TEST
   g_symbols = gc_copy (g_symbols);
   g_macros = gc_copy (g_macros);
   g_ports = gc_copy (g_ports);
@@ -727,7 +679,6 @@ gc_ ()
   long i;
   for (i = g_stack; i < STACK_SIZE; i = i + 1)
     copy_stack (i, gc_copy (g_stack_array[i]));
-#endif
 
   gc_loop (new_cell_nil);
 }
@@ -748,9 +699,6 @@ gc ()
     }
   gc_push_frame ();
   gc_ ();
-#if POINTER_CELLS && !GC_NOFLIP
-  gc_ ();
-#endif
   gc_pop_frame ();
   if (g_debug > 5)
     {
