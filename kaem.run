@@ -19,6 +19,8 @@
 # Usage:
 # kaem --verbose --strict
 
+mkdir -p m2
+
 M2-Planet                                       \
     --debug                                     \
     --architecture x86                          \
@@ -108,9 +110,9 @@ M2-Planet                                       \
     -f src/struct.c                             \
     -f src/symbol.c                             \
     -f src/vector.c                             \
-    -o bin/mes.M1
+    -o m2/mes.M1
 
-blood-elf -f bin/mes.M1 -o bin/mes.blood-elf-M1
+blood-elf -f m2/mes.M1 -o m2/mes.blood-elf-M1
 
 M1                                              \
     --LittleEndian                              \
@@ -118,18 +120,20 @@ M1                                              \
     -f lib/m2/x86/x86_defs.M1                   \
     -f lib/x86-mes/x86.M1                       \
     -f lib/linux/x86-mes-m2/crt1.M1             \
-    -f bin/mes.M1                               \
-    -f bin/mes.blood-elf-M1                     \
-    -o bin/mes.hex2
+    -f m2/mes.M1                                \
+    -f m2/mes.blood-elf-M1                      \
+    -o m2/mes.hex2
 
+mkdir -p bin
 hex2                                            \
     --LittleEndian                              \
     --architecture x86                          \
     --BaseAddress 0x1000000                     \
     --exec_enable                               \
     -f lib/m2/x86/ELF-i386-debug.hex2           \
-    -f bin/mes.hex2                             \
+    -f m2/mes.hex2                              \
     -o bin/mes-m2
 
 echo Running mes-m2
 ./bin/mes-m2 -c "(display 'Hello,M2-mes!) (newline)"
+cp bin/mes-m2 bin/mes
