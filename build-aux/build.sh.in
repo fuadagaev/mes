@@ -42,7 +42,9 @@ if $courageous; then
     set +e
 fi
 
-${SHELL} ${srcdest}build-aux/build-scaffold.sh
+if test "$compiler" != bootstrap; then
+    ${SHELL} ${srcdest}build-aux/build-scaffold.sh
+fi
 
 if test -n "$GUILE" -a "$GUILE" != true; then
     ${SHELL} ${srcdest}build-aux/build-guile.sh
@@ -108,6 +110,7 @@ export LIBS
     compiler=gcc ${SHELL} ${srcdest}build-aux/build-source-lib.sh
 )
 
+
 (
     if test $compiler = gcc; then
         LDFLAGS="$LDFLAGS
@@ -121,8 +124,21 @@ export LIBS
 -I ${srcdest}include
 -I ${srcdest}include/$mes_kernel/$mes_cpu
 "
-    ${SHELL} ${srcdest}build-aux/build-mes.sh
+    if test "$compiler" != bootstrap; then
+        ${SHELL} ${srcdest}build-aux/build-mes.sh
+    fi
 )
+
+if test -n "$M2_PLANET"; then
+    (
+        . ${srcdest}build-aux/trace.sh
+        if [ -z "$V" -o "$V" = 0 ]; then
+            trace "KAEM       kaem.run" kaem --strict
+        else
+            trace "KAEM       kaem.run" kaem --strict --verbose
+        fi
+    )
+fi
 
 (
     mkdir -p mescc-lib
