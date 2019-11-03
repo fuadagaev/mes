@@ -364,7 +364,6 @@ Some influential environment variables:
   GUILE             guile command
   GUILD             guild command
   MES_FOR_BUILD     build system MES [can be mes or guile]
-  MES_SEED          location of mes-seed
 " PACKAGE VERSION (getenv "prefix")))
 
 (define (main args)
@@ -417,12 +416,7 @@ Some influential environment variables:
     (when %verbose?
       (stderr "configure args=~s\n" args))
     (for-each (lambda (v) (apply setenv (string-split v #\=))) vars)
-    (let* ((mes-seed (or (getenv "MES_SEED")
-                         (string-append srcdest "../mes-seed")))
-           (mes-seed (and mes-seed
-                          (file-exists? (string-append mes-seed "/x86-mes/mes.S"))
-                          mes-seed))
-           (tinycc-prefix (or (getenv "TINYCC_PREFIX")
+    (let* ((tinycc-prefix (or (getenv "TINYCC_PREFIX")
                               (string-append srcdest "../tinycc-prefix")))
            (gcc (or (getenv "CC") "gcc"))
            (tcc (or (getenv "TCC") "tcc"))
@@ -430,7 +424,9 @@ Some influential environment variables:
            (deps (fold (lambda (program results)
                          (cons (check-program-version program) results))
                        '()
-                       (list (make-dep "hex2" #:version '(0 6))
+                       (list (make-dep "kaem" #:version '(0 6) #:optional? #t)
+                             (make-dep "M2-Planet" #:version '(0 1 3) #:optional? #t)
+                             (make-dep "hex2" #:version '(0 6))
                              (make-dep "M1" #:version '(0 6))
                              (make-dep "blood-elf" #:version '(0 6))
                              (make-dep "diff" #:optional? #t)
@@ -479,7 +475,7 @@ Some influential environment variables:
 "))
                            deps)
                      deps))
-           (mesc? (file-name "cc is Mes C" deps))
+           (mescc? (file-name "cc is Mes C" deps))
            (deps (if cc
                      (cons (check-compile-c cc (make-dep "cc is Tiny CC" #:data "#if !defined (__TINYCC__)
 #error no tinycc
@@ -508,7 +504,11 @@ Some influential environment variables:
                                   (equal? "linux" (car kernel-list))) "linux")
                              ((equal? '( "gnu") kernel-list) "gnu")
                              (else "unknown")))
-           (compiler (if gcc? "gcc" "mescc"))
+           (m2-planet (file-name "M2-Planet" deps))
+           (compiler (or (and gcc? "gcc")
+                         (and tcc? "tcc")
+                         (and mescc? "mescc")
+                         "bootstrap"))
            (mes-system (string-join (list mes-cpu mes-kernel "mes") "-")))
 
       (define* (substitute file-name pairs
@@ -594,10 +594,11 @@ See \"Porting GNU Mes\" in the manual, or try --with-courage\n" mes-system)
                      ("@GUILE@" . ,guile)
                      ("@GUIX@" . ,(or (file-name "guix" deps) ""))
                      ("@HELP2MAN@" . ,(or (file-name "help2man" deps) ""))
+                     ("@KAEM@" . ,(or (file-name "kaem" deps) ""))
+                     ("@M2_PLANET@" . ,(or (file-name "M2-Planet" deps) ""))
                      ("@MAKEINFO@" . ,(or (file-name "makeinfo" deps) ""))
                      ("@MES_FOR_BUILD@" . ,(or (file-name "mes" deps)
                                                guile))
-                     ("@MES_SEED@" . ,(or mes-seed ""))
                      ("@PERL@" . ,(or (file-name "perl" deps) ""))
                      ("#SCHEME=\"@SCHEME@\"" . ,(if with-cheating? (string-append "\nSCHEME=\"" guile "\"") ""))
                      ("@SCHEME@" . ,(if with-cheating? guile ""))
@@ -615,8 +616,8 @@ See \"Porting GNU Mes\" in the manual, or try --with-courage\n" mes-system)
                         deps))))
 
         (when (and (not cc)
-                   (not mes-seed))
-          (format (current-error-port) "must supply C compiler or MES_SEED/x86-mes/mes.S\n")
+                   (not m2-planet))
+          (format (current-error-port) "must supply C compiler or M2-Planet\n")
           (exit 2))
         (for-each (lambda (o)
                     (let* ((src (string-append srcdest o))

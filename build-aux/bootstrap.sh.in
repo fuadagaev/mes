@@ -27,6 +27,10 @@ MES_STACK=${MES_STACK-5000000}
 export MES_STACK
 MES_PREFIX=${MES_PREFIX-$PWD}
 
+if test -n "@M2_PLANET@"; then
+    kaem --strict --verbose
+fi
+
 . build-aux/configure-lib.sh
 
 CPPFLAGS="-D HAVE_CONFIG_H=1 -I include"
@@ -83,8 +87,9 @@ for c in $mes_SOURCES; do
     o=$(basename $c .c).o
     objects="$objects $o"
 done
-echo "CCLD       src/mes"
-$CC -nostdlib -o src/mes -L mescc-lib mescc-lib/crt1.o $objects -lc
+echo "CCLD       bin/mes-mescc"
+$CC -nostdlib -o bin/mes-mescc -L mescc-lib mescc-lib/crt1.o $objects -lc
+cp bin/mes-mescc bin/mes
 
 (
     mkdir -p gcc-lib
