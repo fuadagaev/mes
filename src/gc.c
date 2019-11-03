@@ -745,6 +745,8 @@ gc_ ()
 SCM
 gc ()
 {
+  if (getenv ("MES_DUMP") != 0)
+    gc_dump_arena (g_cells, gc_free ());
   if (g_debug > 5)
     {
       eputs ("symbols: ");
@@ -756,6 +758,9 @@ gc ()
     }
   gc_push_frame ();
   gc_ ();
+#if POINTER_CELLS && !GC_NOFLIP
+  gc_ ();
+#endif
   gc_pop_frame ();
   if (g_debug > 5)
     {
@@ -766,6 +771,8 @@ gc ()
       write_error_ (R0);
       eputs ("\n");
     }
+  if (getenv ("MES_DUMP") != 0)
+    gc_dump_arena (g_cells, gc_free ());
   return cell_unspecified;
 }
 
