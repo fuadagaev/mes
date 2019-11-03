@@ -44,14 +44,14 @@ int dump_fd;
 #endif
 
 char *
-cell_bytes (SCM x)
+cell_bytes (struct scm* x)
 {
   char *p = x;
   return p + (2 * sizeof (long));
 }
 
 char *
-news_bytes (SCM x)
+news_bytes (struct scm* x)
 {
   char *p = x;
   return p + (2 * sizeof (long));
@@ -111,12 +111,12 @@ gc_init ()
 
   g_cells = g_cells + M2_CELL_SIZE; /* Hmm? */
 
-  TYPE (cell_arena) = TVECTOR;
-  LENGTH (cell_arena) = 1000;
-  VECTOR (cell_arena) = cell_zero;
+  cell_arena->type = TVECTOR;
+  cell_arena->length = 1000;
+  cell_arena->vector = cell_zero;
 
-  TYPE (cell_zero) = TCHAR;
-  VALUE (cell_zero) = 'c';
+  cell_zero->type = TCHAR;
+  cell_zero->value = 'c';
 
   g_free = g_cells + M2_CELL_SIZE;
 
@@ -141,10 +141,10 @@ gc_stats_ (char const* where)
   eputs ("]\n");
 }
 
-SCM
+struct scm*
 alloc (long n)
 {
-  SCM x = g_free;
+  struct scm* x = g_free;
   g_free = g_free + (n * M2_CELL_SIZE);
   long i = g_free - g_cells;
   i = i / M2_CELL_SIZE;
@@ -154,51 +154,51 @@ alloc (long n)
   return x;
 }
 
-SCM
-make_cell (long type, SCM car, SCM cdr)
+struct scm*
+make_cell (long type, struct scm* car, struct scm* cdr)
 {
-  SCM x = g_free;
+  struct scm* x = g_free;
   g_free = g_free + M2_CELL_SIZE;
   long i = g_free - g_cells;
   i = i / M2_CELL_SIZE;
   if (i > ARENA_SIZE)
     assert_msg (0, "alloc: out of memory");
-  TYPE (x) = type;
-  CAR (x) = car;
-  CDR (x) = cdr;
+  x->type = type;
+  x->car = car;
+  x->cdr = cdr;
   return x;
 }
 
 void
-copy_cell (SCM to, SCM from)
+copy_cell (struct scm* to, struct scm* from)
 {
-  TYPE (to) = TYPE (from);
-  CAR (to) = CAR (from);
-  CDR (to) = CDR (from);
+  to->type = from->type;
+  to->car = from->car;
+  to->cdr = from->cdr;
 }
 
 void
-copy_news (SCM to, SCM from)
+copy_news (struct scm* to, struct scm* from)
 {
-  NTYPE (to) = TYPE (from);
-  NCAR (to) = CAR (from);
-  NCDR (to) = CDR (from);
+  to->type = from->type;
+  to->car = from->car;
+  to->cdr = from->cdr;
 }
 
 void
-copy_stack (long index, SCM from)
+copy_stack (long index, struct scm* from)
 {
   g_stack_array[index] = from;
 }
 
-SCM
-cell_ref (SCM cell, long index)
+struct scm*
+cell_ref (struct scm* cell, long index)
 {
   return cell + (index * M2_CELL_SIZE);
 }
 
-SCM
-cons (SCM x, SCM y)
+struct scm*
+cons (struct scm* x, struct scm* y)
 {
   return make_cell (TPAIR, x, y);
 }
@@ -206,16 +206,16 @@ cons (SCM x, SCM y)
 size_t
 bytes_cells (size_t length)
 {
-  return (sizeof (long) + sizeof (long) + length - 1 + sizeof (SCM)) / sizeof (SCM);
+  return (sizeof (long) + sizeof (long) + length - 1 + sizeof (struct scm*)) / sizeof (struct scm*);
 }
 
-SCM
+struct scm*
 make_bytes (char const *s, size_t length)
 {
   size_t size = bytes_cells (length);
-  SCM x = alloc (size);
-  TYPE (x) = TBYTES;
-  LENGTH (x) = length;
+  struct scm* x = alloc (size);
+  x->type = TBYTES;
+  x->length = length;
   char *p = cell_bytes (x);
   if (length == 0)
     p[0] = 0;
@@ -225,55 +225,55 @@ make_bytes (char const *s, size_t length)
   return x;
 }
 
-SCM
+struct scm*
 make_char (int n)
 {
   return make_cell (TCHAR, 0, n);
 }
 
-SCM
+struct scm*
 make_continuation (long n)
 {
   return make_cell (TCONTINUATION, n, g_stack);
 }
 
-SCM
-make_macro (SCM name, SCM x)    /*:((internal)) */
+struct scm*
+make_macro (struct scm* name, struct scm* x)    /*:((internal)) */
 {
-  return make_cell (TMACRO, x, STRING (name));
+  return make_cell (TMACRO, x, name->string);
 }
 
-SCM
+struct scm*
 make_number (long n)
 {
   return make_cell (TNUMBER, 0, n);
 }
 
-SCM
-make_ref (SCM x)                /*:((internal)) */
+struct scm*
+make_ref (struct scm* x)                /*:((internal)) */
 {
   return make_cell (TREF, x, 0);
 }
 
-SCM
+struct scm*
 make_string (char const *s, size_t length)
 {
   if (length > MAX_STRING)
     assert_max_string (length, "make_string", s);
-  SCM x = make_cell (TSTRING, length, 0);
-  SCM v = make_bytes (s, length + 1);
-  CDR (x) = v;
+  struct scm* x = make_cell (TSTRING, length, 0);
+  struct scm* v = make_bytes (s, length + 1);
+  x->cdr = v;
   return x;
 }
 
-SCM
+struct scm*
 make_string0 (char const *s)
 {
   return make_string (s, strlen (s));
 }
 
-SCM
-make_string_port (SCM x)        /*:((internal)) */
+struct scm*
+make_string_port (struct scm* x)        /*:((internal)) */
 {
   return make_cell (TPORT, -length__ (g_ports) - 2, x);
 }
@@ -282,17 +282,17 @@ void
 gc_init_news ()
 {
   g_news = g_free;
-  SCM ncell_arena = g_news;
-  SCM ncell_zero = ncell_arena + M2_CELL_SIZE;
+  struct scm* ncell_arena = g_news;
+  struct scm* ncell_zero = ncell_arena + M2_CELL_SIZE;
 
   g_news = g_news + M2_CELL_SIZE;
 
-  NTYPE (ncell_arena) = TVECTOR;
-  NLENGTH (ncell_arena) = LENGTH (cell_arena);
-  NVECTOR (ncell_arena) = g_news;
+  ncell_arena->type = TVECTOR;
+  ncell_arena->length = cell_arena->length;
+  ncell_arena->vector = g_news;
 
-  NTYPE (ncell_zero) = TCHAR;
-  NVALUE (ncell_zero) = 'n';
+  ncell_zero->type = TCHAR;
+  ncell_zero->value = 'n';
 }
 
 void
@@ -324,7 +324,7 @@ gc_up_arena ()
       exit (1);
     }
   g_cells = p;
-  memcpy (p + stack_offset, p + old_arena_bytes, STACK_SIZE * sizeof (SCM));
+  memcpy (p + stack_offset, p + old_arena_bytes, STACK_SIZE * sizeof (struct scm*));
   g_cells = g_cells + M2_CELL_SIZE;
 }
 
@@ -435,29 +435,29 @@ gc_flip ()
     gc_stats_ (";;; => jam");
 }
 
-SCM
-gc_copy (SCM old)               /*:((internal)) */
+struct scm*
+gc_copy (struct scm* old)               /*:((internal)) */
 {
-  if (TYPE (old) == TBROKEN_HEART)
-    return CAR (old);
-  SCM new = g_free;
+  if (old->type == TBROKEN_HEART)
+    return old->car;
+  struct scm* new = g_free;
   g_free = g_free + M2_CELL_SIZE;
   copy_news (new, old);
-  if (NTYPE (new) == TSTRUCT || NTYPE (new) == TVECTOR)
+  if (new->type == TSTRUCT || new->type == TVECTOR)
     {
-      NVECTOR (new) = g_free;
+      new->vector = g_free;
       long i;
-      for (i = 0; i < LENGTH (old); i = i + 1)
+      for (i = 0; i < old->length; i = i + 1)
         {
-          copy_news (g_free, cell_ref (VECTOR (old), i));
+          copy_news (g_free, cell_ref (old->vector, i));
           g_free = g_free + M2_CELL_SIZE;
         }
     }
-  else if (NTYPE (new) == TBYTES)
+  else if (new->type == TBYTES)
     {
       char const *src = cell_bytes (old);
       char *dest = news_bytes (new);
-      size_t length = NLENGTH (new);
+      size_t length = new->length;
       memcpy (dest, src, length);
       g_free = g_free + ((bytes_cells (length) - 1) * M2_CELL_SIZE);
 
@@ -467,43 +467,43 @@ gc_copy (SCM old)               /*:((internal)) */
           eputs (src);
           eputs ("\n");
           eputs ("    length: ");
-          eputs (ltoa (LENGTH (old)));
+          eputs (ltoa (old->length));
           eputs ("\n");
           eputs ("    nlength: ");
-          eputs (ltoa (NLENGTH (new)));
+          eputs (ltoa (new->length));
           eputs ("\n");
           eputs ("        ==> ");
           eputs (dest);
           eputs ("\n");
         }
     }
-  TYPE (old) = TBROKEN_HEART;
-  CAR (old) = new;
+  old->type = TBROKEN_HEART;
+  old->car = new;
   return new;
 }
 
-SCM
-gc_relocate_car (SCM new, SCM car)      /*:((internal)) */
+struct scm*
+gc_relocate_car (struct scm* new, struct scm* car)      /*:((internal)) */
 {
-  NCAR (new) = car;
+  new->car = car;
   return cell_unspecified;
 }
 
-SCM
-gc_relocate_cdr (SCM new, SCM cdr)      /*:((internal)) */
+struct scm*
+gc_relocate_cdr (struct scm* new, struct scm* cdr)      /*:((internal)) */
 {
-  NCDR (new) = cdr;
+  new->cdr = cdr;
   return cell_unspecified;
 }
 
 void
-gc_loop (SCM scan)
+gc_loop (struct scm* scan)
 {
-  SCM car;
-  SCM cdr;
+  struct scm* car;
+  struct scm* cdr;
   while (scan < g_free)
     {
-      long t = NTYPE (scan);
+      long t = scan->type;
       if (t == TBROKEN_HEART)
         assert_msg (0, "gc_loop: broken heart");
       /* *INDENT-OFF* */
@@ -513,7 +513,7 @@ gc_loop (SCM scan)
           || t == TVARIABLE)
         /* *INDENT-ON* */
         {
-          car = gc_copy (NCAR (scan));
+          car = gc_copy (scan->car);
           gc_relocate_car (scan, car);
         }
       /* *INDENT-OFF* */
@@ -532,18 +532,18 @@ gc_loop (SCM scan)
           )
         /* *INDENT-ON* */
         {
-          cdr = gc_copy (NCDR (scan));
+          cdr = gc_copy (scan->cdr);
           gc_relocate_cdr (scan, cdr);
         }
       if (t == TBYTES)
-        scan = scan + (bytes_cells (NLENGTH (scan)) * M2_CELL_SIZE);
+        scan = scan + (bytes_cells (scan->length) * M2_CELL_SIZE);
       else
         scan = scan + M2_CELL_SIZE;
     }
   gc_flip ();
 }
 
-SCM
+struct scm*
 gc_check ()
 {
   long used = ((g_free - g_cells) / M2_CELL_SIZE) + GC_SAFETY;
@@ -586,8 +586,8 @@ gc_ ()
       gc_up_arena ();
     }
 
-  SCM new_cell_nil = g_free;
-  SCM s;
+  struct scm* new_cell_nil = g_free;
+  struct scm* s;
   for (s = cell_nil; s < g_symbol_max; s = s + M2_CELL_SIZE)
     gc_copy (s);
 
@@ -603,7 +603,7 @@ gc_ ()
   gc_loop (new_cell_nil);
 }
 
-SCM
+struct scm*
 gc ()
 {
   if (getenv ("MES_DUMP") != 0)
@@ -665,7 +665,7 @@ gc_pop_frame ()
 }
 
 void
-gc_dump_register (char const* n, SCM r)
+gc_dump_register (char const* n, struct scm* r)
 {
   oputs (n); oputs (": ");
   long i = r;
