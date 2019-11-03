@@ -11,13 +11,12 @@ interested UNIX-like operating system.
 
 Mes consists of a mutual self-hosting Scheme interpreter written in
 ~5,000 LOC of simple C and a Nyacc-based C compiler written in Scheme.
-This mes.c is [[https://github.com/oriansj/mes-m2][being simplified]] to be transpiled by [[https://github.com/oriansj/m2-planet][M2-Planet]].
+Mes can now be bootstrapped by [[https://github.com/oriansj/m2-planet][M2-Planet]] and [[https://savannah.nongnu.org/projects/mescc-tools][Mescc-Tools]].
 
-The Scheme interpreter (mes.c) has a Garbage Collector, a library of
-loadable Scheme modules-- notably Dominique Boucher's [[https://github.com/schemeway/lalr-scm][LALR]], Pre-R6RS
-[[https://www.cs.indiana.edu/chezscheme/syntax-case/old-psyntax.html][portable syntax-case]] with R7RS ellipsis, Matt Wette's [[https://www.nongnu.org/nyacc][Nyacc]] --and test
-suite just barely enough to support a simple REPL and simple
-C-compiler: MesCC.
+The Scheme interpreter has a Garbage Collector, a library of loadable
+Scheme modules-- notably Dominique Boucher's [[https://github.com/schemeway/lalr-scm][LALR]], Pre-R6RS [[https://www.cs.indiana.edu/chezscheme/syntax-case/old-psyntax.html][portable
+syntax-case]] with R7RS ellipsis, Matt Wette's [[https://www.nongnu.org/nyacc][Nyacc]] --and test suite just
+enough to support a REPL and a C99 compiler: MesCC.
 
 Mes+MesCC can compile an only [[http://gitlab.com/janneke/tinycc][lightly patched TinyCC]] that is
 self-hosting.  Using this tcc and the Mes C library we now have a
@@ -66,14 +65,14 @@ General Public Licence version 3 or later.  See the file [[file:COPYING][COPYING
   [0] https://www.gnu.org/software/mes
   [1] https://www.gnu.org/software/guix
   [2] http://bootstrappable.org
-  [3] https://github.com/oriansj/mes-m2
-  [4] https://github.com/oriansj/m2-planet
+  [3] https://github.com/oriansj/m2-planet
+  [4] https://savannah.nongnu.org/projects/mescc-tools
   [5] https://github.com/schemeway/lalr-scm
   [6] https://www.cs.indiana.edu/chezscheme/syntax-case/old-psyntax.html
   [7] https://www.nongnu.org/nyacc
   [8] http://gitlab.com/janneke/tinycc
   [9] [[http://www.softwarepreservation.org/projects/LISP/book/LISP%201.5%20Programmers%20Manual.pdf]]
-  [10] https://github.com/oriansj/stage0
+  [10] https://savannah.nongnu.org/projects/stage0
 
 * Legalese
 Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <[[mailto:janneke@gnu.org][janneke@gnu.org]]>
