@@ -180,7 +180,8 @@ gc-gcc: bin/gc-gcc
 gc-m2: bin/gc-m2
 
 bin/mes-gcc: simple.make $(GCC_SOURCES) $(MES_SOURCES) $(INCLUDES) | bin
-	$(CC) $(CFLAGS) $(GCC_SOURCES) $(MES_SOURCES) -o $@
+#	$(CC) $(CFLAGS) $(GCC_SOURCES) $(MES_SOURCES) -o $@
+	$(CC) $(CFLAGS) -D GC_NOFLIP=1 $(GCC_SOURCES) $(MES_SOURCES) -o $@
 
 bin/gc-gcc: simple.make $(GCC_SOURCES) $(TEST_GC_SOURCES) $(INCLUDES) | bin
 	$(CC) $(CFLAGS) -D GC_TEST=1 $(GCC_SOURCES) $(TEST_GC_SOURCES) -o $@
