@@ -16,8 +16,6 @@
 ### You should have received a copy of the GNU General Public License
 ### along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
-DEFINE mov____%edi,%ebp 89fd
-DEFINE mov____%esp,%edi 89e7
 :_start
 	push___%ebp
 	mov____%esp,%ebp
