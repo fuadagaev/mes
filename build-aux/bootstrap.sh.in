@@ -24,12 +24,7 @@ if test -n "@M2_PLANET@"; then
     kaem --strict --verbose
 fi
 
-MES_ARENA=${MES_ARENA-100000000}
-export MES_ARENA
-MES_MAX_ARENA=${MES_MAX_ARENA-${MES_ARENA}}
-export MES_MAX_ARENA
-MES_STACK=${MES_STACK-10000000}
-export MES_STACK
+MES_PREFIX=${MES_PREFIX-$PWD}
 
 . build-aux/configure-lib.sh
 
