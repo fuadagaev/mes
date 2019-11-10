@@ -33,6 +33,24 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#if SYSTEM_LIBC
+#define __raise(x) -1
+#endif
+
+struct scm *
+abort_ ()                   /*:((name . "abort")) */
+{
+  if (g_debug > 0)
+    eputs ("abort!\n");
+  if (__raise (SIGABRT) < 0) /* could not raise SIGABRT */
+    {
+      /* Fail in any way possible */
+      char* x = 0;
+      x[0] = 2;
+    }
+  return cell_unspecified;
+}
+
 struct scm *
 exit_ (struct scm *x)                   /*:((name . "exit")) */
 {
