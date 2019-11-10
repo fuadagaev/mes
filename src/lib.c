@@ -170,3 +170,46 @@ integer_to_char (struct scm *x)
 {
   return make_char (x->value);
 }
+
+/*
+void
+assert_type (long type, char const *name_name, struct scm *x)
+{
+  if (x->type != type)
+    {
+      eputs (name);
+      eputs (": ");
+      error (cell_wrong_type_arg, cons (x, cell_nil));
+    }
+}
+*/
+
+void
+assert_num (long pos, struct scm *x)
+{
+  if (x->type != TNUMBER)
+    error (cell_symbol_wrong_type_arg, cons (cell_type_number, cons (make_number (pos), x)));
+}
+
+void
+assert_struct (long pos, struct scm *x)
+{
+  if (x->type != TSTRUCT)
+    error (cell_symbol_wrong_type_arg, cons (cell_type_struct, cons (make_number (pos), x)));
+}
+
+void
+assert_range (int assert, long i)
+{
+  if (assert == 0)
+    {
+      eputs ("value out of range: ");
+      eputs (ltoa (i));
+      eputs (": ");
+      assert_msg (assert, "value out of range");
+    }
+  /*
+  if (assert != 0)
+    error (cell_symbol_out_of_range, cons (cell_type_struct, cons (make_number (pos), cons (x, cell_nil))));
+  */
+}
