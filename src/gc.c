@@ -298,6 +298,12 @@ make_string_port (struct scm *x)        /*:((internal)) */
   return make_pointer_cell (TPORT, -length__ (g_ports) - 2, x);
 }
 
+struct scm *
+make_variable (struct scm *var)
+{
+  return make_cell (TVARIABLE, var, 0);
+}
+
 void
 gc_init_news ()
 {

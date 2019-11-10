@@ -213,3 +213,10 @@ assert_range (int assert, long i)
     error (cell_symbol_out_of_range, cons (cell_type_struct, cons (make_number (pos), cons (x, cell_nil))));
   */
 }
+
+void
+assert_variable (long pos, struct scm *x)
+{
+  if (x->type != TVARIABLE)
+    error (cell_symbol_wrong_type_arg, cons (cell_type_struct, cons (make_number (pos), x)));
+}

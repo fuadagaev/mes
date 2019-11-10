@@ -58,6 +58,7 @@ struct scm *add_formals (struct scm *formals, struct scm *x);
 struct scm *eval_apply ();
 /* src/gc.c */
 struct scm *cons (struct scm *x, struct scm *y);
+struct scm *make_variable (struct scm *var);
 struct scm *gc_check ();
 struct scm *gc ();
 /* src/hash.c */
@@ -169,6 +170,10 @@ struct scm *make_struct (struct scm *type, struct scm *fields, struct scm *print
 struct scm *struct_length (struct scm *x);
 struct scm *struct_ref (struct scm *x, struct scm *i);
 struct scm *struct_set_x (struct scm *x, struct scm *i, struct scm *e);
+/* src/variable.c */
+struct scm *variable_ref (struct scm *var);
+struct scm *variable_set_x (struct scm *var, struct scm *value);
+struct scm *variable_bound_p (struct scm *var);
 /* src/vector.c */
 struct scm *make_vector (struct scm *x);
 struct scm *vector_length (struct scm *x);

@@ -149,12 +149,6 @@ make_closure_ (struct scm *args, struct scm *body, struct scm *a)       /*:((int
 }
 
 struct scm *
-make_variable_ (struct scm *var)        /*:((internal)) */
-{
-  return make_cell (TVARIABLE, var, 0);
-}
-
-struct scm *
 macro_get_handle (struct scm *name)     /*:((internal)) */
 {
   if (name->type == TSYMBOL)
@@ -274,7 +268,7 @@ expand_variable_ (struct scm *x, struct scm *formals, int top_p)        /*:((int
             {
               struct scm *v = module_variable (R0, a);
               if (v != cell_f)
-                x->car = make_variable_ (v);
+                x->car = make_variable (v);
             }
         }
       x = x->cdr;
