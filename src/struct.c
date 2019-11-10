@@ -53,11 +53,15 @@ struct_length (struct scm *x)
   return make_number (x->length);
 }
 
+void assert_num (long pos, struct scm *x);
+void assert_struct (long pos, struct scm *x);
+void assert_range (int assert, long x);
+
 struct scm *
 struct_ref_ (struct scm *x, long i)
 {
-  assert_msg (x->type == TSTRUCT, "x->type == TSTRUCT");
-  assert_msg (i < x->length, "i < x->length");
+  assert_struct (1, x);
+  assert_range (i < x->length, i);
   struct scm *e = cell_ref (x->structure, i);
   if (e->type == TREF)
     e = e->ref;
