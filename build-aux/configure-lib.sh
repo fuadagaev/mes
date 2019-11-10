@@ -116,6 +116,7 @@ lib/ctype/isspace.c
 lib/ctype/isxdigit.c
 lib/mes/assert_msg.c
 lib/posix/write.c
+lib/stdlib/abort.c
 lib/stdlib/atoi.c
 "
     if test $mes_kernel = gnu; then
@@ -338,7 +339,6 @@ lib/stdio/fscanf.c
 lib/stdio/perror.c
 lib/stdio/vfscanf.c
 lib/stdlib/__exit.c
-lib/stdlib/abort.c
 lib/stdlib/abs.c
 lib/stdlib/alloca.c
 lib/stdlib/atexit.c
