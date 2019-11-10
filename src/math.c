@@ -32,6 +32,7 @@ assert_number (char const *name, struct scm *x)
   if (x->type != TNUMBER)
     {
       eputs (name);
+      eputs (": ");
       error (cell_symbol_not_a_number, x);
     }
 }
