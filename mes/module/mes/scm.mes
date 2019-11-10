@@ -203,6 +203,11 @@
   (core:hash-ref table key (and (pair? rest) (car rest))))
 
 
+;; Variable
+(define (make-undefined-variable)
+  (make-variable *undefined*))
+
+
 ;; Vector
 (define (vector . rest) (list->vector rest))
 

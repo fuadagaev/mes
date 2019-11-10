@@ -166,6 +166,7 @@ size_t bytes_cells (size_t length);
 void assert_max_string (size_t i, char const *msg, char const *string);
 void assert_msg (int check, char *msg);
 void assert_number (char const *name, struct scm *x);
+void assert_variable (long pos, struct scm *x);
 void copy_cell (struct scm *to, struct scm *from);
 void gc_ ();
 void gc_dump_arena (struct scm *cells, long size);

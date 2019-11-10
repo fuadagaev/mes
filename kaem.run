@@ -109,6 +109,7 @@ M2-Planet                                       \
     -f src/string.c                             \
     -f src/struct.c                             \
     -f src/symbol.c                             \
+    -f src/variable.c                           \
     -f src/vector.c                             \
     -o m2/mes.M1
 
