@@ -169,6 +169,7 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   /* src/gc.c */
   a = init_builtin (builtin_type, "gc-stats", 0, &gc_stats, a);
   a = init_builtin (builtin_type, "cons", 2, &cons, a);
+  a = init_builtin (builtin_type, "make-variable", 1, &make_variable, a);
   a = init_builtin (builtin_type, "gc-check", 0, &gc_check, a);
   a = init_builtin (builtin_type, "gc", 0, &gc, a);
   /* src/hash.c */
@@ -280,6 +281,10 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "struct-length", 1, &struct_length, a);
   a = init_builtin (builtin_type, "struct-ref", 2, &struct_ref, a);
   a = init_builtin (builtin_type, "struct-set!", 3, &struct_set_x, a);
+  /* src/variable.c */
+  a = init_builtin (builtin_type, "variable-ref", 1, &variable_ref, a);
+  a = init_builtin (builtin_type, "variable-set!", 2, &variable_set_x, a);
+  a = init_builtin (builtin_type, "variable-bound?", 1, &variable_bound_p, a);
   /* src/vector.c */
   a = init_builtin (builtin_type, "make-vector", -1, &make_vector, a);
   a = init_builtin (builtin_type, "vector-length", 1, &vector_length, a);
