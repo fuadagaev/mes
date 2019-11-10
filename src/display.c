@@ -139,7 +139,9 @@ display_helper (struct scm *x, int cont, char *sep, int fd, int write_p)
   else if (t == TVARIABLE)
     {
       fdputs ("#<variable ", fd);
-      display_helper (x->variable->car, cont, "", fd, 0);
+      /* FIXME: module/var display_helper (x->variable->car, cont, "", fd, 0); */
+      fdputs ("value: ", fd);
+      display_helper (x->variable, cont, "", fd, 0);
       fdputs (">", fd);
     }
   else if (t == TNUMBER)
