@@ -215,3 +215,26 @@ make_hash_table (struct scm *x)              /*:((arity . n)) */
     }
   return make_hash_table_ (size);
 }
+
+struct scm *
+hash_map_to_list (struct scm *proc, struct scm *table)
+{
+  struct scm *lst = cell_nil;
+  struct scm *buckets = struct_ref_ (table, 4);
+  int i;
+  for (i = 0; i < buckets->length; i = i + 1)
+    {
+      struct scm *e = vector_ref_ (buckets, i);
+      if (e != cell_unspecified)
+        {
+          while (e->type == TPAIR)
+            {
+              struct scm *a = e->car;
+              struct scm *x = cons (a->car, cons (a->cdr, cell_nil));
+              lst = cons (apply (proc, x, cell_nil), lst);
+              e = e->cdr;
+            }
+        }
+    }
+  return lst;
+}
