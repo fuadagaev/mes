@@ -132,6 +132,7 @@ M2_SOURCES =					\
  lib/string/strcmp.c				\
  lib/string/memcmp.c				\
  lib/linux/unlink.c				\
+ lib/stdlib/abort.c				\
  src/m2.c
 
 M2_TODO =					\

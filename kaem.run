@@ -91,6 +91,7 @@ M2-Planet                                       \
     -f lib/string/strcmp.c                      \
     -f lib/string/memcmp.c                      \
     -f lib/linux/unlink.c                       \
+    -f lib/stdlib/abort.c                       \
     -f src/builtins.c                           \
     -f src/core.c                               \
     -f src/display.c                            \

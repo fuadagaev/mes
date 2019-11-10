@@ -79,6 +79,7 @@ lib/ctype/isspace.c
 lib/ctype/isxdigit.c
 lib/mes/assert_msg.c
 lib/posix/write.c
+lib/stdlib/abort.c
 lib/stdlib/atoi.c
 "
     if test $mes_kernel = linux; then
@@ -247,7 +248,6 @@ lib/stdio/fileno.c
 lib/stdio/freopen.c
 lib/stdio/perror.c
 lib/stdlib/__exit.c
-lib/stdlib/abort.c
 lib/stdlib/abs.c
 lib/stdlib/alloca.c
 lib/stdlib/atexit.c
