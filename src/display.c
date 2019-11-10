@@ -139,7 +139,13 @@ display_helper (struct scm *x, int cont, char *sep, int fd, int write_p)
   else if (t == TVARIABLE)
     {
       fdputs ("#<variable ", fd);
-      display_helper (x->variable->car, cont, "", fd, 0);
+      if (x->variable->type == TPAIR)
+        display_helper (x->variable->car, cont, "", fd, 0);
+      else
+        {
+          fdputs ("value: ", fd);
+          display_helper (x->variable, cont, "", fd, 0);
+        }
       fdputs (">", fd);
     }
   else if (t == TNUMBER)
