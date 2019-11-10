@@ -93,7 +93,7 @@ module_variable (struct scm *module, struct scm *name)
     {
       module = M0;
       struct scm *globals = struct_ref_ (module, 5);
-      x = hashq_get_handle (globals, name, cell_f);
+      x = hashq_get_handle_ (globals, name, cell_f);
     }
   return x;
 }
