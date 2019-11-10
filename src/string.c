@@ -113,7 +113,7 @@ keyword_to_string (struct scm *keyword)
 struct scm *
 string_to_symbol (struct scm *string)
 {
-  struct scm *x = hash_ref (g_symbols, string, cell_f);
+  struct scm *x = hash_ref_ (g_symbols, string, cell_f);
   if (x == cell_f)
     x = make_symbol (string);
   return x;
