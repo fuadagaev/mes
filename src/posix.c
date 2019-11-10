@@ -32,6 +32,15 @@
 #include <unistd.h>
 
 struct scm *
+abort_ ()                   /*:((name . "abort")) */
+{
+  if (g_debug > 0)
+    eputs ("abort!\n");
+  abort ();
+  return cell_unspecified;
+}
+
+struct scm *
 exit_ (struct scm *x)                   /*:((name . "exit")) */
 {
   assert_msg (x->type == TNUMBER, "x->type == TNUMBER");
