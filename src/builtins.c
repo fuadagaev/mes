@@ -180,8 +180,10 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "hashq-set!", 3, &hashq_set_x, a);
   a = init_builtin (builtin_type, "hash-set!", 3, &hash_set_x, a);
   a = init_builtin (builtin_type, "hash-table-printer", 1, &hash_table_printer, a);
+  a = init_builtin (builtin_type, "hash-table?", 1, &hash_table_p, a);
   a = init_builtin (builtin_type, "make-hash-table", -1, &make_hash_table, a);
   a = init_builtin (builtin_type, "hash-map->list", 2, &hash_map_to_list, a);
+  a = init_builtin (builtin_type, "hash-clear!", 1, &hash_clear_x, a);
   /* src/lib.c */
   a = init_builtin (builtin_type, "core:type", 1, &type_, a);
   a = init_builtin (builtin_type, "core:car", 1, &car_, a);
@@ -209,10 +211,12 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "ash", 2, &ash, a);
   /* src/module.c */
   a = init_builtin (builtin_type, "make-module-type", 0, &make_module_type, a);
+  a = init_builtin (builtin_type, "module?", 1, &module_p, a);
   a = init_builtin (builtin_type, "module-printer", 1, &module_printer, a);
   a = init_builtin (builtin_type, "module-variable", 2, &module_variable, a);
   a = init_builtin (builtin_type, "module-ref", 2, &module_ref, a);
   a = init_builtin (builtin_type, "module-define!", 3, &module_define_x, a);
+  a = init_builtin (builtin_type, "%get-pre-modules-obarray", 0, &get_pre_modules_obarray, a);
   /* src/posix.c */
   a = init_builtin (builtin_type, "abort", 0, &abort_, a);
   a = init_builtin (builtin_type, "exit", 1, &exit_, a);
