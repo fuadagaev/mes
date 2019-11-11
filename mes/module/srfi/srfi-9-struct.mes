@@ -97,14 +97,14 @@
 (define (record-accessor type field)
   (let ((i (record-field-index type field)))
     (lambda (o . field?)
-      (if (not (eq? (record-type-descriptor o) type)) (error "record accessor: record expected" type o)
+      (if (not (eq? (record-type-descriptor o) type)) (error "record accessor: record expected" type field o)
           (if (pair? field?) field
               (struct-ref o i))))))
 
 (define (record-modifier type field)
   (let ((i (record-field-index type field)))
     (lambda (o v)
-      (if (not (eq? (record-type-descriptor o) type)) (error "record modifier: record expected" type o)
+      (if (not (eq? (record-type-descriptor o) type)) (error "record modifier: record expected" type field o)
           (struct-set! o i v)))))
 
 (define (record-field-index type field)
