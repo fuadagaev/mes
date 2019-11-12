@@ -22,11 +22,23 @@
 #include "mes/mes.h"
 
 struct scm *
-variable_ref (struct scm *var)
+deep_variable_ref (struct scm *var)
 {
   assert_variable (1, var);
   struct scm *ref = var->variable;
   struct scm *value = ref->cdr;
+  if (value == cell_undefined)
+    error (cell_symbol_unbound_variable, var);
+  if (value->type == TVARIABLE)
+    value = value->variable;
+  return value;
+}
+
+struct scm *
+variable_ref (struct scm *var)
+{
+  assert_variable (1, var);
+  struct scm *value = var->variable;
   if (value == cell_undefined)
     error (cell_symbol_unbound_variable, var);
   return value;
@@ -51,11 +63,9 @@ variable_bound_p (struct scm *var)
 }
 
 struct scm *
-lookup_variable (struct scm *lookup, struct scm *name, struct scm *define_p)
+lookup_variable (struct scm *name, struct scm *define_p)
 {
-  struct scm *handle = cell_f;
-  if (lookup->type = TPAIR)
-    handle = assq (name, lookup);
+  struct scm *handle = handle = assq (name, R0);
 
   if (handle == cell_f)
     {
@@ -68,15 +78,15 @@ lookup_variable (struct scm *lookup, struct scm *name, struct scm *define_p)
 }
 
 struct scm *
-lookup_variable_ (struct scm *lookup, char const* name)
+lookup_variable_ (char const* name)
 {
-  return lookup_variable (lookup, cstring_to_symbol (name), cell_f);
+  return lookup_variable (cstring_to_symbol (name), cell_f);
 }
 
 struct scm *
-lookup_ref (struct scm *lookup, struct scm *name)
+lookup_ref (struct scm *name)
 {
-  struct scm *x = lookup_variable (lookup, name, cell_f);
+  struct scm *x = lookup_variable (name, cell_f);
   if (x == cell_f)
     error (cell_symbol_unbound_variable, name);
   return x->cdr;
