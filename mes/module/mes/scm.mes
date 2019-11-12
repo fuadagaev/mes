@@ -202,6 +202,9 @@
 (define (hash-ref table key . rest)
   (core:hash-ref table key (and (pair? rest) (car rest))))
 
+(define (hash-fold proc init table)
+  (fold proc init (hash-map->list cons table)))
+
 
 ;; Variable
 (define (make-undefined-variable)
