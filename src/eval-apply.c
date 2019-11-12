@@ -614,9 +614,12 @@ eval:
                       name = name->car;
                     if (macro_p != 0)
                       {
+                        entry = cell_f;
+                        /* FIXME: dead code; no tests
                         entry = assq (name, g_macros);
                         if (entry == cell_f)
-                          macro_set_x (name, cell_f);
+                        */
+                        macro_set_x (name, entry);
                       }
                     else
                       {
