@@ -36,21 +36,21 @@
 struct scm *g_symbol;
 
 struct scm *
-init_symbol (struct scm *x, long type, char const *name)
+init_symbol (struct scm *symbol, long type, char const *name)
 {
-  x->type = type;
+  symbol->type = type;
   if (g_symbols == 0)
     g_free = g_free + M2_CELL_SIZE;
   else
     {
       int length = strlen (name);
       struct scm *string = make_string (name, length);
-      x->car_value = length;
-      x->cdr = string->string;
-      hash_set_x (g_symbols, string, x);
+      symbol->car_value = length;
+      symbol->string = string->string;
+      g_symbols = acons (string, symbol, g_symbols);
     }
   g_symbol = g_symbol + M2_CELL_SIZE;
-  return x;
+  return symbol;
 }
 
 void
@@ -186,9 +186,20 @@ init_symbols ()                  /*:((internal)) */
   cell_nil = g_free;
   init_symbols_ ();
   g_symbol_max = g_symbol;
-  g_symbols = make_hash_table_ (500);
+
+  g_symbols = cell_nil;
   init_symbols_ ();
   g_ports = cell_nil;
+
+  struct scm *t = make_hash_table_ (500);
+  int i;
+  while (g_symbols != cell_nil)
+    {
+      struct scm *e = g_symbols->car;
+      hash_set_x (t, e->car, e->cdr);
+      g_symbols = g_symbols->cdr;
+    }
+  g_symbols = t;
 
   struct scm *a = cell_nil;
   a = acons (cell_symbol_call_with_values, cell_symbol_call_with_values, a);
