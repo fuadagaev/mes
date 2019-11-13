@@ -45,7 +45,7 @@
         (cons <cell:broken-heart> (quote <cell:broken-heart>))))
 
 (define (cell:type-name x)
-  (cond ((assq (core:type x) cell:type-alist) => cdr)))
+  (assq-ref cell:type-alist (core:type x)))
 
 (define (bytes? x)
   (eq? (core:type x) <cell:bytes>))
