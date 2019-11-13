@@ -21,16 +21,31 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
+struct scm *scm_module_type;   /* FIXME: gc */
+
 struct scm *
 make_module_type ()             /*:(internal)) */
 {
-  struct scm *fields = cell_nil;
-  fields = cons (cstring_to_symbol ("globals"), fields);
-  fields = cons (cstring_to_symbol ("locals"), fields);
-  fields = cons (cstring_to_symbol ("name"), fields);
-  fields = cons (fields, cell_nil);
-  fields = cons (cell_symbol_module, fields);
-  return make_struct (cell_symbol_record_type, fields, cell_unspecified);
+  if (scm_module_type == 0)
+    {
+      struct scm *fields = cell_nil;
+      fields = cons (cstring_to_symbol ("globals"), fields);
+      fields = cons (cstring_to_symbol ("locals"), fields);
+      fields = cons (cstring_to_symbol ("name"), fields);
+      fields = cons (fields, cell_nil);
+      fields = cons (cell_symbol_module, fields);
+      scm_module_type = make_struct (cell_symbol_record_type, fields, cell_unspecified);
+    }
+  return scm_module_type;
+}
+
+struct scm *
+module_p (struct scm *module)
+{
+  if (module->type == TSTRUCT
+      && struct_ref_ (module, 0) == scm_module_type)
+    return cell_t;
+  return cell_f;
 }
 
 struct scm *
@@ -113,4 +128,10 @@ module_define_x (struct scm *module, struct scm *name, struct scm *value)
   module = M0;
   struct scm *globals = struct_ref_ (module, 5);
   return hashq_set_x (globals, name, value);
+}
+
+struct scm *
+get_pre_modules_obarray ()                    /*:((name . "%get-pre-modules-obarray")) */
+{
+  return R0;
 }
