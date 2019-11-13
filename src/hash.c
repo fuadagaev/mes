@@ -247,3 +247,13 @@ hash_map_to_list (struct scm *proc, struct scm *table)
     }
   return lst;
 }
+
+struct scm *
+hash_clear_x (struct scm *table)
+{
+  struct scm *s = struct_ref_ (table, 3);
+  long size = s->value;
+  struct scm *buckets = make_vector_ (size, cell_unspecified);
+  struct_set_x_ (table, 4, buckets);
+  return cell_unspecified;
+}
