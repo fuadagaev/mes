@@ -105,6 +105,8 @@ struct timespec *g_start_time;
 struct timeval *__gettimeofday_time;
 struct timespec *__get_internal_run_time_ts;
 
+struct scm *scm_hash_table_type;
+
 struct scm *cast_charp_to_scmp (char const *i);
 struct scm ** cast_charp_to_scmpp (char const *i);
 char* cast_voidp_to_charp (void const *i);
@@ -139,7 +141,7 @@ struct scm *make_value_cell (long type, long car, long cdr);
 struct scm *make_char (int n);
 struct scm *make_continuation (long n);
 struct scm *make_hash_table_ (long size);
-struct scm *make_hashq_type ();
+struct scm *make_hash_table_type ();
 struct scm *make_initial_module (struct scm *a);
 struct scm *make_macro (struct scm *name, struct scm *x);
 struct scm *make_number (long n);
