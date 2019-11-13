@@ -46,9 +46,13 @@ hashq_ (struct scm *x, long size)
 int
 hash_ (struct scm *x, long size)
 {
-  if (x->type == TSTRING)
-    return hash_cstring (cell_bytes (x->string), size);
-  return 0;
+  if (x->type != TSTRING)
+    {
+      eputs ("hash_ failed, not a string:");
+      display_error_ (x);
+      assert_msg (0, "0");
+    }
+  return hash_cstring (cell_bytes (x->string), size);
 }
 
 struct scm *
@@ -171,21 +175,15 @@ hash_table_printer (struct scm *table)
   fdputc ('>', __stdout);
 }
 
-struct scm *scm_hash_table_type;   /* FIXME: gc */
-
 struct scm *
-make_hash_table_type ()              /*:((internal)) */
+make_hashq_type ()              /*:((internal)) */
 {
-  if (scm_hash_table_type == 0)
-    {
-      struct scm *fields = cell_nil;
-      fields = cons (cell_symbol_buckets, fields);
-      fields = cons (cell_symbol_size, fields);
-      fields = cons (fields, cell_nil);
-      fields = cons (cell_symbol_hashq_table, fields);
-      scm_hash_table_type = make_struct (cell_symbol_record_type, fields, cell_unspecified);
-    }
-  return scm_hash_table_type; /* FIXME: gc */
+  struct scm *fields = cell_nil;
+  fields = cons (cell_symbol_buckets, fields);
+  fields = cons (cell_symbol_size, fields);
+  fields = cons (fields, cell_nil);
+  fields = cons (cell_symbol_hashq_table, fields);
+  return make_struct (cell_symbol_record_type, fields, cell_unspecified);
 }
 
 struct scm *
@@ -193,7 +191,7 @@ make_hash_table_ (long size)
 {
   if (size == 0)
     size = 100;
-  struct scm *type = make_hash_table_type ();
+  struct scm *hashq_type = make_hashq_type ();
 
   struct scm *buckets = make_vector_ (size, cell_unspecified);
   struct scm *values = cell_nil;
@@ -201,17 +199,8 @@ make_hash_table_ (long size)
   values = cons (make_number (size), values);
   values = cons (cell_symbol_hashq_table, values);
   /*FIXME: symbol/printer
-    return make_struct (type, values, cstring_to_symbol ("hash-table-printer");*/
-  return make_struct (type, values, cell_unspecified);
-}
-
-struct scm *
-hash_table_p (struct scm *table)
-{
-  if (table->type == TSTRUCT
-      && struct_ref_ (table, 0) == scm_hash_table_type)
-    return cell_t;
-  return cell_f;
+    return make_struct (hashq_type, values, cstring_to_symbol ("hash-table-printer");*/
+  return make_struct (hashq_type, values, cell_unspecified);
 }
 
 struct scm *
@@ -248,14 +237,4 @@ hash_map_to_list (struct scm *proc, struct scm *table)
         }
     }
   return lst;
-}
-
-struct scm *
-hash_clear_x (struct scm *table)
-{
-  struct scm *s = struct_ref_ (table, 3);
-  long size = s->value;
-  struct scm *buckets = make_vector_ (size, cell_unspecified);
-  struct_set_x_ (table, 4, buckets);
-  return cell_unspecified;
 }
