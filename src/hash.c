@@ -117,13 +117,24 @@ hash_set_x_ (struct scm *table, unsigned hash, struct scm *key, struct scm *valu
   struct scm *bucket = vector_ref_ (buckets, hash);
   if (bucket->type != TPAIR)
     bucket = cell_nil;
-  bucket = acons (key, value, bucket);
+  struct scm *handle = cons (key, value);
+  bucket = cons (handle, bucket);
   vector_set_x_ (buckets, hash, bucket);
-  return value;
+  return handle;
 }
 
 struct scm *
 hashq_set_x (struct scm *table, struct scm *key, struct scm *value)
+{
+  struct scm *s = struct_ref_ (table, 3);
+  long size = s->value;
+  unsigned hash = hashq_ (key, size);
+  struct scm *handle = hash_set_x_ (table, hash, key, value);
+  return handle->cdr;
+}
+
+struct scm *
+hashq_set_handle_x (struct scm *table, struct scm *key, struct scm *value)
 {
   struct scm *s = struct_ref_ (table, 3);
   long size = s->value;
@@ -137,7 +148,8 @@ hash_set_x (struct scm *table, struct scm *key, struct scm *value)
   struct scm *s = struct_ref_ (table, 3);
   long size = s->value;
   unsigned hash = hash_ (key, size);
-  return hash_set_x_ (table, hash, key, value);
+  struct scm *handle = hash_set_x_ (table, hash, key, value);
+  return handle->cdr;
 }
 
 struct scm *
