@@ -48,3 +48,35 @@ variable_bound_p (struct scm *var)
     return cell_t;
   return cell_f;
 }
+
+struct scm *
+lookup_variable (struct scm *lookup, struct scm *name, struct scm *define_p)
+{
+  struct scm *handle = cell_f;
+  if (lookup->type = TPAIR)
+    handle = assq (name, lookup);
+
+  if (handle == cell_f)
+    {
+      handle = hashq_get_handle_ (M0, name, cell_f);
+      if (handle == cell_f && define_p == cell_t)
+        handle = hashq_set_handle_x (M0, name, cell_f);
+    }
+
+  return handle;
+}
+
+struct scm *
+lookup_variable_ (struct scm *lookup, char const* name)
+{
+  return lookup_variable (lookup, cstring_to_symbol (name), cell_f);
+}
+
+struct scm *
+lookup_ref (struct scm *lookup, struct scm *name)
+{
+  struct scm *x = lookup_variable (lookup, name, cell_f);
+  if (x == cell_f)
+    error (cell_symbol_unbound_variable, name);
+  return x->cdr;
+}
