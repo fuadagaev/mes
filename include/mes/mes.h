@@ -133,6 +133,7 @@ struct scm *cell_ref (struct scm *cell, long index);
 struct scm *fdisplay_ (struct scm *, int, int);
 struct scm *init_symbols ();
 struct scm *init_time (struct scm *a);
+struct scm *lookup_variable_ (struct scm *lookup, char const* name);
 struct scm *make_builtin_type ();
 struct scm *make_bytes (char const *s, size_t length);
 struct scm *make_cell (long type, struct scm *car, struct scm *cdr);
