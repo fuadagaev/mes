@@ -204,10 +204,11 @@ main (int argc, char **argv, char **envp)
   a = mes_builtins (a);
   a = init_time (a);
   M0 = make_initial_module (a);
+  R0 = cell_nil;
   g_macros = make_hash_table_ (0);
 
   if (g_debug > 5)
-    module_printer (M0);
+    hash_table_printer (M0);
 
   struct scm *program = read_boot ();
   R0 = acons (cell_symbol_program, program, R0);
@@ -231,7 +232,7 @@ main (int argc, char **argv, char **envp)
   if (g_debug != 0)
     {
       if (g_debug > 5)
-        module_printer (M0);
+        hash_table_printer (M0);
 
       if (g_debug < 3)
         gc_stats_ ("\ngc run");
