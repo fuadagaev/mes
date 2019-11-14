@@ -149,9 +149,9 @@ struct scm *
 error (struct scm *key, struct scm *x)
 {
 #if !__MESC_MES__ && !__M2_PLANET__
-  struct scm *throw = module_ref (R0, cell_symbol_throw);
-  if (throw != cell_undefined)
-    return apply (throw, cons (key, cons (x, cell_nil)), R0);
+  struct scm *throw = lookup_variable (R0, cell_symbol_throw, cell_f);
+  if (throw != cell_f)
+    return apply (throw->cdr, cons (key, cons (x, cell_nil)), R0);
 #endif
   display_error_ (key);
   eputs (": ");
