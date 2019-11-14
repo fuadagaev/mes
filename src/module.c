@@ -34,6 +34,12 @@ make_initial_module (struct scm *a)     /*:((internal)) */
 }
 
 struct scm *
+initial_module ()
+{
+  return M0;
+}
+
+struct scm *
 module_define_x (struct scm *module, struct scm *name, struct scm *value)
 {
   return hashq_set_x (M0, name, value);
