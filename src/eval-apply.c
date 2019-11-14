@@ -260,7 +260,6 @@ expand_variable_ (struct scm *x, struct scm *formals, int top_p)        /*:((int
           else if (a == cell_symbol_quote)
             return cell_unspecified;
           else if (a->type == TSYMBOL
-                   && a != cell_symbol_boot_module
                    && a != cell_symbol_current_module
                    && a != cell_symbol_primitive_load
                    && formal_p (x->car, formals) == 0)
@@ -508,11 +507,6 @@ apply:
           R1 = R0;
           goto vm_return;
         }
-      if (c == cell_symbol_boot_module)
-        {
-          R1 = M0;
-          goto vm_return;
-        }
     }
   else if (t == TPAIR)
     {
@@ -685,8 +679,6 @@ eval:
     }
   else if (t == TSYMBOL)
     {
-      if (R1 == cell_symbol_boot_module)
-        goto vm_return;
       if (R1 == cell_symbol_current_module)
         goto vm_return;
       if (R1 == cell_symbol_begin)
