@@ -177,6 +177,7 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "core:hashq-get-handle", 3, &hashq_get_handle_, a);
   a = init_builtin (builtin_type, "core:hashq-ref", 3, &hashq_ref_, a);
   a = init_builtin (builtin_type, "core:hash-ref", 3, &hash_ref_, a);
+  a = init_builtin (builtin_type, "hashq-set-handle!", 3, &hashq_set_handle_x, a);
   a = init_builtin (builtin_type, "hashq-set!", 3, &hashq_set_x, a);
   a = init_builtin (builtin_type, "hash-set!", 3, &hash_set_x, a);
   a = init_builtin (builtin_type, "hash-table-printer", 1, &hash_table_printer, a);
