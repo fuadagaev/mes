@@ -70,7 +70,7 @@ struct scm *R1;
 struct scm *R2;
 /* continuation */
 struct scm *R3;
-/* current-module */
+/* initial module */
 struct scm *M0;
 /* macro */
 struct scm *g_macros;

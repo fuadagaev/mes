@@ -24,14 +24,6 @@
 #include <string.h>
 
 struct scm *
-assert_defined (struct scm *x, struct scm *e)   /*:((internal)) */
-{
-  if (e == cell_undefined)
-    return error (cell_symbol_unbound_variable, x);
-  return e;
-}
-
-struct scm *
 check_formals (struct scm *f, struct scm *formals, struct scm *args)    /*:((internal)) */
 {
   long flen;
@@ -127,7 +119,11 @@ set_env_x (struct scm *x, struct scm *e, struct scm *a)
   if (x->type == TVARIABLE)
     p = x->variable;
   else
-    p = assert_defined (x, module_variable (a, x));
+    {
+      p = lookup_variable (a, x, cell_f);
+      if (p == cell_f || p-> cdr == cell_undefined)
+        error (cell_symbol_unbound_variable, x);
+    }
   if (p->type != TPAIR)
     error (cell_symbol_not_a_pair, cons (p, x));
   return set_cdr_x (p, e);
@@ -266,7 +262,7 @@ expand_variable_ (struct scm *x, struct scm *formals, int top_p)        /*:((int
                    && a != cell_symbol_primitive_load
                    && formal_p (x->car, formals) == 0)
             {
-              struct scm *v = module_variable (R0, a);
+              struct scm *v = lookup_variable (R0, a, cell_f);
               if (v != cell_f)
                 x->car = make_variable (v);
             }
@@ -504,6 +500,7 @@ apply:
         }
       if (c == cell_symbol_current_module)
         {
+          /* FIXME: TODO */
           R1 = R0;
           goto vm_return;
         }
@@ -622,11 +619,7 @@ eval:
                         macro_set_x (name, entry);
                       }
                     else
-                      {
-                        entry = module_variable (R0, name);
-                        if (entry == cell_f)
-                          module_define_x (M0, name, cell_f);
-                      }
+                      entry = lookup_variable (R0, name, cell_t);
                   }
                 R2 = R1;
                 aa = R1->cdr->car;
@@ -660,7 +653,7 @@ eval:
                   }
                 else if (global_p != 0)
                   {
-                    entry = module_variable (R0, name);
+                    entry = lookup_variable (R0, name, cell_f);
                     set_cdr_x (entry, R1);
                   }
                 else
@@ -669,7 +662,7 @@ eval:
                     aa = cons (entry, cell_nil);
                     set_cdr_x (aa, cdr (R0));
                     set_cdr_x (R0, aa);
-                    cl = module_variable (R0, cell_closure);
+                    cl = lookup_variable (R0, cell_closure, cell_f);
                     set_cdr_x (cl, aa);
                   }
                 R1 = cell_unspecified;
@@ -696,13 +689,12 @@ eval:
         goto vm_return;
       if (R1 == cell_symbol_call_with_current_continuation)
         goto vm_return;
-      R1 = assert_defined (R1, module_ref (R0, R1));
+      R1 = lookup_ref (R0, R1);
       goto vm_return;
     }
   else if (t == TVARIABLE)
     {
-      x = R1->variable;
-      R1 = x->cdr;
+      R1 = variable_ref (R1);
       goto vm_return;
     }
   else if (t == TBROKEN_HEART)
@@ -770,13 +762,13 @@ macro_expand:
           macro = macro_get_handle (cell_symbol_portable_macro_expand);
           if (macro != cell_f)
             {
-              expanders = module_ref (R0, cell_symbol_sc_expander_alist);
-              if (expanders != cell_undefined)
+              expanders = lookup_ref (R0, cell_symbol_sc_expander_alist);
+              if (expanders != cell_f)
                 {
                   macro = assq (R1->car, expanders);
                   if (macro != cell_f)
                     {
-                      sc_expand = module_ref (R0, cell_symbol_macro_expand);
+                      sc_expand = lookup_ref (R0, cell_symbol_macro_expand);
                       R2 = R1;
                       if (sc_expand != cell_undefined && sc_expand != cell_f)
                         {
@@ -883,7 +875,7 @@ begin_expand:
               push_cc (input, R2, R0, cell_vm_return);
               x = read_input_file_env (R0);
               if (g_debug > 5)
-                module_printer (M0);
+                hash_table_printer (R0);
               gc_pop_frame ();
               input = R1;
               R1 = x;
