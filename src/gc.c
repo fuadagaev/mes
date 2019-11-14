@@ -725,6 +725,7 @@ gc_dump_state ()
   gc_dump_register ("R1", R1);
   gc_dump_register ("R2", R2);
   gc_dump_register ("R3", R3);
+  gc_dump_register ("M0", M0);
   gc_dump_register ("g_symbols", g_symbols);
   gc_dump_register ("g_symbol_max", g_symbol_max);
   gc_dump_register ("g_macros", g_macros);
