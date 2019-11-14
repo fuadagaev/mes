@@ -102,6 +102,7 @@ struct scm *logxor (struct scm *x);
 struct scm *ash (struct scm *n, struct scm *count);
 /* src/module.c */
 struct scm *module_define_x (struct scm *module, struct scm *name, struct scm *value);
+struct scm *initial_module ();
 /* src/posix.c */
 struct scm *abort_ ();
 struct scm *exit_ (struct scm *x);
