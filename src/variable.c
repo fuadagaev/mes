@@ -25,7 +25,8 @@ struct scm *
 variable_ref (struct scm *var)
 {
   assert_variable (1, var);
-  struct scm *value = var->variable;
+  struct scm *ref = var->variable;
+  struct scm *value = ref->cdr;
   if (value == cell_undefined)
     error (cell_symbol_unbound_variable, var);
   return value;
