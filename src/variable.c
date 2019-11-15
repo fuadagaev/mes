@@ -68,8 +68,8 @@ lookup_variable (struct scm *lookup, struct scm *name, struct scm *define_p)
     {
       if (lookup->type = TPAIR)
         handle = assq (name, lookup);
-      else
-        return apply (lookup, cons (name, cons (define_p, cell_nil)), cell_unspecified);
+      // else
+      //   return apply (lookup, cons (name, cons (define_p, cell_nil)), cell_unspecified);
     }
 
   if (handle == cell_f)
