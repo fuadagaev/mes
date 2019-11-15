@@ -1764,7 +1764,9 @@
     (resolve-module dir-hint-module-name #f)
     (and (not (autoload-done-or-in-progress? dir-hint name))
 	 (let ((didit #f))
-	   (define (load-file proc file)
+           ;; FIXME: *undefined* here is a terrible hack; it switches
+           ;; toplevel for defines.
+	   (define (load-file *undefined* file)
 	     (save-module-excursion (lambda () (primitive-load file)))
 	     (set! didit #t))
 	   (dynamic-wind
