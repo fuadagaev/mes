@@ -113,14 +113,14 @@ set_cdr_x (struct scm *x, struct scm *e)
 }
 
 struct scm *
-set_env_x (struct scm *x, struct scm *e, struct scm *a)
+set_x (struct scm *x, struct scm *e)        /*:((internal)) */
 {
   struct scm *p;
   if (x->type == TVARIABLE)
     p = x->variable;
   else
     {
-      p = lookup_variable (a, x, cell_f);
+      p = lookup_variable (R0, x, cell_f);
       if (p == cell_f || p-> cdr == cell_undefined)
         error (cell_symbol_unbound_variable, x);
     }
@@ -573,7 +573,7 @@ eval:
           push_cc (R1->cdr->cdr->car, R1, R0, cell_vm_eval_set_x);
           goto eval;
         eval_set_x:
-          R1 = set_env_x (R2->cdr->car, R1, R0);
+          R1 = set_x (R2->cdr->car, R1);
           goto vm_return;
         }
       else if (c == cell_vm_macro_expand)
