@@ -802,8 +802,6 @@ begin:
             {
               program = cons (R1->car, cell_nil);
               push_cc (program, R1, R0, cell_vm_begin_primitive_load);
-              /* Force toplevel by moving any *closure* down.  */
-              R0 = cons (cell_undefined, R0);
               goto begin_expand;
             begin_primitive_load:
               R2->car = R1;
