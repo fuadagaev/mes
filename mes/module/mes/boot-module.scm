@@ -59,13 +59,7 @@
 (define core:variable-bound? variable-bound?)
 
 (define (%get-pre-modules-obarray)
-  (display "%get-pre-modules-obarray\n" (current-error-port))
   (initial-module))
-
-;; (define (xx%get-pre-modules-obarray)
-;;   (display "%get-pre-modules-obarray\n" (current-error-port))
-;;   (make-hash-table 1)
-;;   )
 
 (define (make-undefined-variable)
   (make-variable *undefined*))
@@ -104,17 +98,13 @@
 ;;   (display "set-module-eval-closure!\n" (current-error-port))
 ;;   (make-hash-table 1))
 (define (standard-eval-closure module)
-  (display "standard-eval-closure\n" (current-error-port))
   (module-eval-closure module))
 (define (standard-interface-eval-closure module)
-  (display "standard-interface-eval-closure\n" (current-error-port))
   (module-eval-closure module))
 
 (define (hash-for-each proc table)
   (hash-map->list proc table)
-  ;;(hash-fold (lambda (key value x) (proc key value)) #f table)
   *unspecified*)
-
 
 (define (filter pred lst)
   (let loop ((lst lst))
@@ -144,8 +134,16 @@
     path))
 
 (define (%search-load-path file-name)
-  (warn '%search-load-path file-name '=>found: (search-path %load-path (string-append file-name ".scm"))))
-
+  (when (getenv "MES_DEBUG")
+    (display "%search-load-path " (current-error-port))
+    (display file-name (current-error-port)))
+  (let ((file (search-path %load-path (string-append file-name ".scm"))))
+    (when (getenv "MES_DEBUG")
+      (display " => " (current-error-port))
+      (display file (current-error-port))
+      (display "\n" (current-error-port))
+      )
+    file))
 
 ;;;;;;;;;;; ************************************************************
 
@@ -164,9 +162,7 @@
   '())
 
 (define (run-hook hook . args)
-  (display "NOT running hook: ")
-  (display hook)
-  (display "\n"))
+  #t)
 
 (define-macro (begin-deprecated . args)
   #f)
@@ -514,7 +510,16 @@
     path))
 
 (define (%search-load-path file-name)
-  (warn '%search-load-path file-name '=>found: (search-path %load-path (string-append file-name ".scm"))))
+  (when (getenv "MES_DEBUG")
+    (display "%search-load-path " (current-error-port))
+    (display file-name (current-error-port)))
+  (let ((file (search-path %load-path (string-append file-name ".scm"))))
+    (when (getenv "MES_DEBUG")
+      (display " => " (current-error-port))
+      (display file (current-error-port))
+      (display "\n" (current-error-port))
+      )
+    file))
 
 
 
@@ -1252,13 +1257,10 @@
 (define (module-define! module name value)
   (if (hash-table? module) (let ((h (hashq-ref module name)))
                              (core:module-define! module name value)
-                             (display "module-define! hash-table: ")
+                             (display "module-define! ")
                              (display "name=")
                              (display name)
-                             (display "=>")
-                             (display h)
-                             ;;(and h (cdr h))
-                             )
+                             (display "\n"))
       (let ((variable (module-local-variable module name)))
         (if variable
 	    (begin
@@ -1300,7 +1302,6 @@
 ;; Same as MODULE-USE! but add multiple interfaces and check for duplicates
 ;;
 (define (module-use-interfaces! module interfaces)
-  (display "module-use-interfaces!\n")
   (let* ((duplicates-handlers? (or (module-duplicates-handlers module)
 				   (default-duplicate-binding-procedures)))
 	 (uses (module-uses module)))
@@ -1321,7 +1322,6 @@
     ;; FIXME:
     ;;(set! uses (filter identity uses))
     (for-each (lambda (interface)
-                (display " mui 22\n")
 		(and duplicates-handlers?
 		     ;; perform duplicate checking
 		     (and #f 'FIXME (process-duplicates module interface)))
@@ -1481,7 +1481,6 @@
 	    (if (or (null? maybe-autoload) (car maybe-autoload))
 		(try-load-module name))
 	    ;; Get/create it.
-            (display "get/create it\n")
 	    (make-modules-in (guile:current-module) full-name))))))
 
 ;; Cheat.  These bindings are needed by modules.c, but we don't want
@@ -1572,12 +1571,7 @@
 			(and prefix (symbol-prefix-proc prefix)))
 		      identity))
          (module (resolve-module name))
-         (foo (display "resolved!\n"))
          (public-i (and module (module-public-interface module))))
-    (display "public-i: ")
-    ;;(display public-i)
-    (display (and public-i '<pi>))
-    (display "\n")
     (and (or (not module) (not public-i))
          (error "no code for module" name))
     (if (and (not select) (null? hide) (eq? renamer identity))
@@ -1624,13 +1618,8 @@
 ;; sure to update "modules.c" as well.
 
 (define (process-define-module args)
-  (display "process-define-module:" (current-error-port))
-  (display "args:" (current-error-port))
-  (display args (current-error-port))
-  (display "\n" (current-error-port))
   (let* ((module-id (car args))
          (module (resolve-module module-id #f))
-         (foo (display "pdm: resolved!\n"))
          (kws (cdr args))
          (unrecognized (lambda (arg)
                          (error "unrecognized define-module argument" arg))))
@@ -1640,15 +1629,14 @@
 	       (exports '())
 	       (re-exports '())
 	       (replacements '()))
-      (display "loop kws=")
-      (display kws)
-      (display "\ne")
+      (when (getenv "MES_DEBUG")
+        (display "loop kws=")
+        (display kws)
+        (display "\ne"))
       (if (null? kws)
 	  (call-with-deferred-observers
 	   (lambda ()
-             (display "module-use-interfaces!\n")
 	     (module-use-interfaces! module (reverse reversed-interfaces))
-             (display "module-export!\n")
 	     (module-export! module exports)
 	     (module-replace! module replacements)
 	     (module-re-export! module re-exports)))
@@ -1723,7 +1711,6 @@
 		    (append (cadr kws) replacements)))
 	     (else
 	      (unrecognized kws))))))
-    (display "run hook\n")
     (run-hook module-defined-hook module)
     module))
 
@@ -1775,9 +1762,7 @@
 				 (string-append (symbol->string elt) "/"))
 			       dir-hint-module-name))))
     (resolve-module dir-hint-module-name #f)
-    (display "try-module-autoload: resolved!\n")
     (and (not (autoload-done-or-in-progress? dir-hint name))
-         (display " tma 00\n")
 	 (let ((didit #f))
 	   (define (load-file proc file)
 	     (save-module-excursion (lambda () (primitive-load file)))
@@ -1785,7 +1770,6 @@
 	   (dynamic-wind
 	    (lambda () (autoload-in-progress! dir-hint name))
 	    (lambda ()
-              (display " tma 20\n")
 	      (let ((file (in-vicinity dir-hint name)))
 		(cond ((and load-compiled
 			    (%search-load-path (string-append file ".go")))
@@ -1794,7 +1778,6 @@
 		      ((%search-load-path file)
 		       => (lambda (full)
 			    (with-fluids ((current-reader #f))
-                              (display "gonna call load-file\n")
 			      (load-file 'primitive-load full)))))))
 	    (lambda () (set-autoloaded! dir-hint name didit)))
 	   didit))))
@@ -2307,12 +2290,11 @@
 (define-macro (define-module . args)
   `(let ((m (process-define-module
 	     (list ,@(compile-define-module-args args)))))
-     (display "define-module-macro\n")
-     (display "  m=")
+     (display "define-module-macro")
+     (display " m=")
      (display m)
      (display "\n")
      (set-current-module m)
-     (display "set...\n")
      m))
 
 ;; The guts of the use-modules macro.  Add the interfaces of the named
@@ -2730,18 +2712,17 @@
 
 ;;; boot-9.scm ends here
 
-(display "===============================")
-(display "hiero\n")
+(display "===============================\n")
 (define-module (guile-user) #:use-module (boo))
 
-(display "now in guile-user\n")
+(display "\nnow in guile-user\n")
 (display "ZEE:")
-(display ((module-ref (guile:current-module) 'ZEE-MODULE)))
+;;(display ((module-ref (guile:current-module) 'ZEE-MODULE)))
 ;;(display (module-ref (resolve-module '(boo)) 'ZEE-MODULE))
+;; (display "\n")
+(ZEE-MODULE)
 (display "\n")
-;;(ZEE-MODULE)
-;;(display "\n")
 (display "bah: ")
-(display (module-ref (guile:current-module) 'bah))
-;;(display bah)
+;;(display (module-ref (guile:current-module) 'bah))
+(display bah)
 (display "\n")
