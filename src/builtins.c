@@ -284,8 +284,8 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "variable-ref", 1, &variable_ref, a);
   a = init_builtin (builtin_type, "variable-set!", 2, &variable_set_x, a);
   a = init_builtin (builtin_type, "variable-bound?", 1, &variable_bound_p, a);
-  a = init_builtin (builtin_type, "lookup-variable", 3, &lookup_variable, a);
-  a = init_builtin (builtin_type, "lookup-ref", 2, &lookup_ref, a);
+  a = init_builtin (builtin_type, "lookup-variable", 2, &lookup_variable, a);
+  a = init_builtin (builtin_type, "lookup-ref", 1, &lookup_ref, a);
   /* src/vector.c */
   a = init_builtin (builtin_type, "make-vector", -1, &make_vector, a);
   a = init_builtin (builtin_type, "vector-length", 1, &vector_length, a);
