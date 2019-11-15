@@ -40,7 +40,79 @@ initial_module ()
 }
 
 struct scm *
+current_module ()     /*:((internal)) */
+{
+  struct scm *module = hashq_ref_ (M0, cstring_to_symbol ("*current-module*"), cell_f);
+  if (module != cell_f)
+    return module;
+  return M0;
+}
+
+struct scm *
+module_defines (struct scm *module)     /*:((internal)) */
+{
+  if (module != cell_f && module != M0)
+    return struct_ref_ (module, MODULE_DEFINES);
+  return M0;
+}
+
+struct scm *
 module_define_x (struct scm *module, struct scm *name, struct scm *value)
 {
-  return hashq_set_x (M0, name, value);
+  struct scm *table = module_defines (module);
+  return hashq_set_x (table, name, value);
+}
+
+struct scm *
+module_handle (struct scm *module, struct scm *name)     /*:((internal)) */
+{
+  /* 1. Check module defines.  */
+  struct scm *table = module_defines (module);
+  if (g_debug > 4)
+    {
+      eputs ("module_handle:");
+      eputs (" name = ");
+      write_error_ (name);
+      eputs ("\n");
+    }
+
+  struct scm *handle = hashq_get_handle_ (table, name);
+  if (handle != cell_f)
+    return handle;
+
+  /* 2. Custom binder.  */
+  /*
+  struct scm *binder = struct_ref (module, MODULE_BINDER);
+  if (binder != cell_f)
+    {
+      b = apply (binder->cdr, (cons (module, cons (name, cons (cell_f, cell_nil)))), cell_f);
+      if (b != cell_f)
+        return b;
+    }
+  */
+
+  /* 3. Search the use list.  */
+  struct scm *uses = struct_ref_ (module, MODULE_USES);
+  while (uses->type == TPAIR)
+    {
+      handle = module_handle (uses->car, name);
+      if (handle != cell_f)
+        return handle;
+      uses = uses->cdr;
+    }
+
+  /* 4. Hack for Mes: always look in M0. */
+  handle = hashq_get_handle_ (M0, name);
+
+  return handle;
+}
+
+/* NOT USED? */
+struct scm *
+module_variable (struct scm *module, struct scm *name)
+{
+  struct scm *handle = module_handle (module, name);
+  if (handle != cell_f)
+    return handle->cdr;
+  return cell_f;
 }
