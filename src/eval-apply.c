@@ -592,7 +592,8 @@ eval:
             if (R1->car == cell_symbol_define || R1->car == cell_symbol_define_macro)
               {
                 global_p = 0;
-                if (R0->car->car != cell_closure)
+                if (R0->car->car != cell_closure
+                    || R0->cdr->car->car == cell_undefined)
                   global_p = 1;
 #if 0
                 else if (g_debug > 0)
