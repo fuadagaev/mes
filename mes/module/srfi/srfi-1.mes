@@ -24,6 +24,9 @@
 
 ;;; Code:
 
+(define-module (srfi srfi-1)
+  #:export (find))
+
 (define (find pred lst)
   (let loop ((lst lst))
     (if (null? lst) #f
