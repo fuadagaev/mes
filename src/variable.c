@@ -33,6 +33,16 @@ variable_ref (struct scm *var)
 }
 
 struct scm *
+flat_variable_ref (struct scm *var)
+{
+  assert_variable (1, var);
+  struct scm *value = var->variable;
+  if (value == cell_undefined)
+    error (cell_symbol_unbound_variable, var);
+  return value;
+}
+
+struct scm *
 variable_set_x (struct scm *var, struct scm *value)
 {
   assert_variable (1, var);

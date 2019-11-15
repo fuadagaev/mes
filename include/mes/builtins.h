@@ -172,6 +172,7 @@ struct scm *struct_ref (struct scm *x, struct scm *i);
 struct scm *struct_set_x (struct scm *x, struct scm *i, struct scm *e);
 /* src/variable.c */
 struct scm *variable_ref (struct scm *var);
+struct scm *flat_variable_ref (struct scm *var);
 struct scm *variable_set_x (struct scm *var, struct scm *value);
 struct scm *variable_bound_p (struct scm *var);
 struct scm *lookup_variable (struct scm *name, struct scm *define_p);
