@@ -283,6 +283,7 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "struct-set!", 3, &struct_set_x, a);
   /* src/variable.c */
   a = init_builtin (builtin_type, "variable-ref", 1, &variable_ref, a);
+  a = init_builtin (builtin_type, "flat-variable-ref", 1, &flat_variable_ref, a);
   a = init_builtin (builtin_type, "variable-set!", 2, &variable_set_x, a);
   a = init_builtin (builtin_type, "variable-bound?", 1, &variable_bound_p, a);
   a = init_builtin (builtin_type, "lookup-variable", 3, &lookup_variable, a);
