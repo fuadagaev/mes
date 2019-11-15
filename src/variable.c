@@ -76,7 +76,15 @@ lookup_variable (struct scm *lookup, struct scm *name, struct scm *define_p)
     {
       handle = hashq_get_handle_ (M0, name, cell_f);
       if (handle == cell_f && define_p == cell_t)
-        handle = hashq_set_handle_x (M0, name, cell_f);
+        {
+          if (g_debug > 0)
+            {
+              eputs ("lookup + define: ");
+              write_error_ (name);
+              eputs ("\n");
+            }
+          handle = hashq_set_handle_x (M0, name, cell_f);
+        }
     }
 
   return handle;
