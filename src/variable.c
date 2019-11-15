@@ -63,31 +63,62 @@ variable_bound_p (struct scm *var)
 }
 
 struct scm *
-lookup_variable (struct scm *name, struct scm *define_p)
+handle_set_x (struct scm *handle, struct scm *value)
+{
+  struct scm *x = handle->cdr;
+  if (x->type == TVARIABLE)
+    x->variable = value;
+  else
+    handle->cdr = value;
+  return cell_unspecified;
+}
+
+/*
+  GUILE has `proc': scm_current_module -> scm_module_lookup_closure -> standard-eval-closure:
+
+  BUT: define-p: module-make-local-var!, !define-p: module-variable
+
+ */
+struct scm *
+lookup_handle (struct scm *name, struct scm *define_p)
 {
   struct scm *handle = handle = assq (name, R0);
 
   if (handle == cell_f)
     {
-      handle = hashq_get_handle_ (M0, name, cell_f);
-      if (handle == cell_f && define_p == cell_t)
-        handle = hashq_set_handle_x (M0, name, cell_f);
+      struct scm *module = current_module ();
+      if (define_p == cell_f)
+        {
+          if (module == M0)
+            handle = hashq_get_handle_ (M0, name);
+          else
+            handle = module_handle (module, name);
+        }
+      else
+        {
+          struct scm *table = module_defines (module);
+          handle = hashq_get_handle_ (table, name);
+          if (handle == cell_f)
+            handle = hashq_set_handle_x (table, name, cell_f);
+        }
     }
 
   return handle;
 }
 
 struct scm *
-lookup_variable_ (char const* name)
+lookup_ref (struct scm *name, struct scm *bound_p)
 {
-  return lookup_variable (cstring_to_symbol (name), cell_f);
+  struct scm *handle = lookup_handle (name, cell_f);
+  if (handle->type == TPAIR)
+    return handle->cdr;
+  if (bound_p == cell_t)
+    error (cell_symbol_unbound_variable, name);
+  return cell_undefined;
 }
 
 struct scm *
-lookup_ref (struct scm *name)
+lookup_ref_ (char const *name)
 {
-  struct scm *x = lookup_variable (name, cell_f);
-  if (x == cell_f)
-    error (cell_symbol_unbound_variable, name);
-  return x->cdr;
+  return lookup_ref (cstring_to_symbol (name), cell_f);
 }
