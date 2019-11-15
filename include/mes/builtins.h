@@ -64,7 +64,7 @@ struct scm *gc ();
 /* src/hash.c */
 struct scm *hashq (struct scm *x, struct scm *size);
 struct scm *hash (struct scm *x, struct scm *size);
-struct scm *hashq_get_handle_ (struct scm *table, struct scm *key, struct scm *dflt);
+struct scm *hashq_get_handle_ (struct scm *table, struct scm *key);
 struct scm *hashq_ref_ (struct scm *table, struct scm *key, struct scm *dflt);
 struct scm *hash_ref_ (struct scm *table, struct scm *key, struct scm *dflt);
 struct scm *hashq_set_handle_x (struct scm *table, struct scm *key, struct scm *value);
@@ -175,8 +175,8 @@ struct scm *struct_set_x (struct scm *x, struct scm *i, struct scm *e);
 struct scm *variable_ref (struct scm *var);
 struct scm *variable_set_x (struct scm *var, struct scm *value);
 struct scm *variable_bound_p (struct scm *var);
-struct scm *lookup_variable (struct scm *name, struct scm *define_p);
-struct scm *lookup_ref (struct scm *name);
+struct scm *lookup_handle (struct scm *name, struct scm* define_p);
+struct scm *lookup_ref (struct scm *name, struct scm* bound_p);
 /* src/vector.c */
 struct scm *make_vector (struct scm *x);
 struct scm *vector_length (struct scm *x);
