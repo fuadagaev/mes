@@ -120,8 +120,8 @@ set_x (struct scm *x, struct scm *e)        /*:((internal)) */
     p = x->variable;
   else
     {
-      p = lookup_variable (x, cell_f);
-      if (p == cell_f || p-> cdr == cell_undefined)
+      p = lookup_handle (x, cell_f);
+      if (p == cell_f || p->cdr == cell_undefined)
         error (cell_symbol_unbound_variable, x);
     }
   if (p->type != TPAIR)
@@ -148,7 +148,7 @@ struct scm *
 macro_get_handle (struct scm *name)     /*:((internal)) */
 {
   if (name->type == TSYMBOL)
-    return hashq_get_handle_ (g_macros, name, cell_nil);
+    return hashq_get_handle_ (g_macros, name);
   return cell_f;
 }
 
@@ -264,7 +264,7 @@ expand_variable_ (struct scm *x, struct scm *formals, int top_p)        /*:((int
                    && a != cell_symbol_primitive_load
                    && formal_p (x->car, formals) == 0)
             {
-              v = lookup_variable (a, cell_f);
+              v = lookup_handle (a, cell_f);
               if (v != cell_f)
                 x->car = make_variable (v);
             }
@@ -323,7 +323,7 @@ eval_apply ()
   struct scm *args;
   struct scm *body;
   struct scm *cl;
-  struct scm *entry;
+  struct scm *handle;
   struct scm *expanders;
   struct scm *formals;
   struct scm *input;
@@ -596,7 +596,8 @@ eval:
             if (R1->car == cell_symbol_define || R1->car == cell_symbol_define_macro)
               {
                 global_p = 0;
-                if (R0->car->car != cell_closure)
+                if (R0->car->car != cell_closure
+                    || R0->cdr->car->car == cell_undefined)
                   global_p = 1;
                 macro_p = 0;
                 if (R1->car == cell_symbol_define_macro)
@@ -609,15 +610,15 @@ eval:
                       name = name->car;
                     if (macro_p != 0)
                       {
-                        entry = cell_f;
+                        handle = cell_f;
                         /* FIXME: dead code; no tests
-                        entry = assq (name, g_macros);
-                        if (entry == cell_f)
+                        handle = assq (name, g_macros);
+                        if (handle == cell_f)
                         */
-                        macro_set_x (name, entry);
+                        macro_set_x (name, handle);
                       }
                     else
-                      entry = lookup_variable (name, cell_t);
+                      lookup_handle (name, cell_t);
                   }
                 R2 = R1;
                 aa = R1->cdr->car;
@@ -645,22 +646,28 @@ eval:
                   name = name->car;
                 if (macro_p != 0)
                   {
-                    entry = macro_get_handle (name);
+                    handle = macro_get_handle (name);
                     R1 = make_macro (name, R1);
-                    set_cdr_x (entry, R1);
+                    set_cdr_x (handle, R1);
                   }
                 else if (global_p != 0)
                   {
-                    entry = lookup_variable (name, cell_f);
-                    set_cdr_x (entry, R1);
+                    handle = lookup_handle (name, cell_f);
+                    if (g_debug > 4)
+                      {
+                        eputs ("global set: ");
+                        write_error_ (name);
+                        eputs ("\n");
+                      }
+                    handle_set_x (handle, R1);
                   }
                 else
                   {
-                    entry = cons (name, R1);
-                    aa = cons (entry, cell_nil);
+                    handle = cons (name, R1);
+                    aa = cons (handle, cell_nil);
                     set_cdr_x (aa, cdr (R0));
                     set_cdr_x (R0, aa);
-                    cl = lookup_variable (cell_closure, cell_f);
+                    cl = lookup_handle (cell_closure, cell_f);
                     set_cdr_x (cl, aa);
                   }
                 R1 = cell_unspecified;
@@ -685,7 +692,7 @@ eval:
         goto vm_return;
       if (R1 == cell_symbol_call_with_current_continuation)
         goto vm_return;
-      R1 = lookup_ref (R1);
+      R1 = lookup_ref (R1, cell_t);
       goto vm_return;
     }
   else if (t == TVARIABLE)
@@ -758,15 +765,15 @@ macro_expand:
           macro = macro_get_handle (cell_symbol_portable_macro_expand);
           if (macro != cell_f)
             {
-              expanders = lookup_ref (cell_symbol_sc_expander_alist);
-              if (expanders != cell_f)
+              expanders = lookup_ref (cell_symbol_sc_expander_alist, cell_f);
+              if (expanders != cell_undefined)
                 {
                   macro = assq (R1->car, expanders);
                   if (macro != cell_f)
                     {
-                      sc_expand = lookup_ref (cell_symbol_macro_expand);
+                      sc_expand = lookup_ref (cell_symbol_macro_expand, cell_f);
                       R2 = R1;
-                      if (sc_expand != cell_undefined && sc_expand != cell_f)
+                      if (sc_expand != cell_undefined && sc_expand != cell_undefined)
                         {
                           R1 = cons (sc_expand, cons (R1, cell_nil));
                           goto apply;
