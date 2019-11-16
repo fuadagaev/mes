@@ -147,16 +147,23 @@
 
 ;;;;;;;;;;; ************************************************************
 
-(define *current-module* #f)
-(define (guile:current-module)
-  *current-module*
-  )
+(define guile:current-module (make-fluid #f))
 
+(define lookup-global #f)
+(define (global-lookup-function name define?)
+  ;; (if define? (module-make-local-var! (guile:current-module) name)
+  ;;     (module-variable (guile:current-module) name))
+  '("boe")
+  )
 (define (set-current-module m)
   (display "set-current-module: name=")
   (display (module-name m))
   (display "\n")
-  (set! *current-module* m))
+  (let ((o (guile:current-module)))
+    (guile:current-module m)
+    ;; (unless o
+    ;;   (set! lookup-global global-lookup-function))
+    o))
 
 (define (make-hook . n)
   '())

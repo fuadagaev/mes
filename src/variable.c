@@ -67,16 +67,33 @@ lookup_variable (struct scm *name, struct scm *define_p)
 
   if (handle == cell_f)
     {
-      handle = hashq_get_handle_ (M0, name, cell_f);
-      if (handle == cell_f && define_p == cell_t)
+      struct scm *lookup = hashq_get_handle_ (M0, cstring_to_symbol ("lookup-global"), cell_f);
+      if (lookup != cell_f && lookup->cdr != cell_f)
         {
-          if (g_debug > 0)
+          eputs ("lookup? ");
+          display_error_ (lookup);
+          eputs (" ...  \n");
+          handle = apply (lookup->cdr, cons (name, cons (define_p, cell_nil)), R0);
+          eputs ("lookup: ");
+          display_error_ (name);
+          eputs (" => ");
+          write_error_ (handle);
+          if (handle != cell_f)
+            handle = cons (name, name->variable);
+        }
+      else
+        {
+          handle = hashq_get_handle_ (M0, name, cell_f);
+          if (handle == cell_f && define_p == cell_t)
             {
-              eputs ("lookup + define: ");
-              write_error_ (name);
-              eputs ("\n");
+              if (g_debug > 0)
+                {
+                  eputs ("lookup + define: ");
+                  write_error_ (name);
+                  eputs ("\n");
+                }
+              handle = hashq_set_handle_x (M0, name, cell_f);
             }
-          handle = hashq_set_handle_x (M0, name, cell_f);
         }
     }
 
