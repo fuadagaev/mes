@@ -63,35 +63,12 @@ variable_bound_p (struct scm *var)
 struct scm *
 handle_set_x (struct scm *handle, struct scm *value)
 {
-#if 0
   struct scm *x = handle->cdr;
   if (x->type == TVARIABLE)
     x->variable = value;
   else
     handle->cdr = value;
   return cell_unspecified;
-#else
-  if (g_debug > 0)
-    {
-      eputs ("variable-set!");
-      write_error_ (handle);
-      eputs ("\n");
-    }
-  if (handle->type == TPAIR)
-    {
-      struct scm *x = handle->cdr;
-      if (x->type == TVARIABLE)
-        x->variable = value;
-      else
-        //set_cdr_x (handle, value);
-        handle->cdr = value;
-    }
-  else if (handle->type == TVARIABLE)
-    handle->variable = value;
-  else
-    assert_variable (1, handle);
-  return cell_unspecified;
-#endif
 }
 
 /*
