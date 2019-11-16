@@ -71,17 +71,13 @@ module_define_x (struct scm *module, struct scm *name, struct scm *value)
 }
 
 struct scm *
-module_variable (struct scm *module, struct scm *name)
+module_handle (struct scm *module, struct scm *name)     /*:((internal)) */
 {
-  /* 1. Check module obarray */
-  /*
+  /* 1. Check module defines.  */
   struct scm *table = module_defines (module);
-  */
-  struct scm *table = struct_ref_ (module, MODULE_DEFINES);
-
   if (g_debug > 0)
     {
-      eputs ("module_variable:");
+      eputs ("module_handle:");
       eputs (" name = ");
       write_error_ (name);
       // eputs (" defines = ");
@@ -93,7 +89,7 @@ module_variable (struct scm *module, struct scm *name)
   if (handle != cell_f)
     return handle;
 
-  /* 2. Custom binder */
+  /* 2. Custom binder.  */
   /*
   struct scm *binder = struct_ref (module, MODULE_BINDER);
   if (binder != cell_f)
@@ -104,11 +100,11 @@ module_variable (struct scm *module, struct scm *name)
     }
   */
 
-  /* 3. Search the use list */
+  /* 3. Search the use list.  */
   struct scm *uses = struct_ref_ (module, MODULE_USES);
   while (uses->type == TPAIR)
     {
-      handle = module_variable (uses->car, name);
+      handle = module_handle (uses->car, name);
       if (handle != cell_f)
         return handle;
       uses = uses->cdr;
@@ -118,4 +114,14 @@ module_variable (struct scm *module, struct scm *name)
   handle = hashq_get_handle_ (M0, name, cell_f);
 
   return handle;
+}
+
+/* NOT USED? */
+struct scm *
+module_variable (struct scm *module, struct scm *name)
+{
+  struct scm *handle = module_handle (module, name);
+  if (handle != cell_f)
+    return handle->cdr;
+  return cell_f;
 }
