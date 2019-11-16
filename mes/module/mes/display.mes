@@ -125,7 +125,10 @@
         (display ">" port))
        ((variable? x)
         (display "#<variable " port)
-        (write (list->string (car (core:car x))) port)
+        (if (pair? (core:car x)) (display (car (core:car x)) port)
+            (begin
+              (display "value: " port)
+              (display (core:car x) port)))
         (display ">" port))
        ((number? x)
         (display (number->string x) port))
