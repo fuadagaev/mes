@@ -44,7 +44,6 @@
 (define (module-bound x)
   (display "core:module-bound?\n"))
 (define core:variable-ref variable-ref)
-(define variable-ref flat-variable-ref)
 
 (define (provided? x)
   #f)
@@ -2745,10 +2744,10 @@
 (display "\n")
 
 
-;; (display "===> ZEE\n")
-;; (display ZEE-MODULE)
-;; (display "\n")
+(display "===> ZEE\n")
+(display ZEE-MODULE)
+(display "\n")
 
-;; (display "===> (ZEE)\n")
-;; (display (ZEE-MODULE))
-;; (display "\n")
+(display "===> (ZEE)\n")
+(display (ZEE-MODULE))
+(display "\n")
