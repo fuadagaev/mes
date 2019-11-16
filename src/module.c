@@ -42,7 +42,7 @@ initial_module ()
 struct scm *
 current_module ()     /*:((internal)) */
 {
-#if 1
+#if 0
   struct scm *module = hashq_get_handle_ (M0, cstring_to_symbol ("*current-module*"));
   if (module->type == TPAIR && module->cdr != cell_f)
     return module->cdr;
@@ -52,8 +52,11 @@ current_module ()     /*:((internal)) */
   if (module != cell_undefined)
     return module;
   return M0;
-#elif 0
-  return hashq_ref_ (M0, cstring_to_symbol ("*current-module*"), M0);
+#elif 1
+  struct scm *module = hashq_ref_ (M0, cstring_to_symbol ("*current-module*"), cell_f);
+  if (module != cell_f)
+    return module;
+  return M0;
 #endif
 }
 
