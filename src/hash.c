@@ -66,7 +66,7 @@ hash (struct scm *x, struct scm *size)
 }
 
 struct scm *
-hashq_get_handle_ (struct scm *table, struct scm *key, struct scm *dflt)
+hashq_get_handle_ (struct scm *table, struct scm *key)
 {
   struct scm *s = struct_ref_ (table, 3);
   long size = s->value;
@@ -74,8 +74,6 @@ hashq_get_handle_ (struct scm *table, struct scm *key, struct scm *dflt)
   struct scm *buckets = struct_ref_ (table, 4);
   struct scm *bucket = vector_ref_ (buckets, hash);
   struct scm *x = cell_f;
-  if (dflt->type == TPAIR)
-    x = dflt->car;
   if (bucket->type == TPAIR)
     x = assq (key, bucket);
   return x;
@@ -84,9 +82,11 @@ hashq_get_handle_ (struct scm *table, struct scm *key, struct scm *dflt)
 struct scm *
 hashq_ref_ (struct scm *table, struct scm *key, struct scm *dflt)
 {
-  struct scm *x = hashq_get_handle_ (table, key, dflt);
+  struct scm *x = hashq_get_handle_ (table, key);
   if (x != cell_f)
     x = x->cdr;
+  else if (dflt->type == TPAIR)
+    x = dflt->car;
   return x;
 }
 

@@ -63,7 +63,7 @@ struct scm *gc ();
 /* src/hash.c */
 struct scm *hashq (struct scm *x, struct scm *size);
 struct scm *hash (struct scm *x, struct scm *size);
-struct scm *hashq_get_handle_ (struct scm *table, struct scm *key, struct scm *dflt);
+struct scm *hashq_get_handle_ (struct scm *table, struct scm *key);
 struct scm *hashq_ref_ (struct scm *table, struct scm *key, struct scm *dflt);
 struct scm *hash_ref_ (struct scm *table, struct scm *key, struct scm *dflt);
 struct scm *hashq_set_handle_x (struct scm *table, struct scm *key, struct scm *value);

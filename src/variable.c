@@ -45,32 +45,9 @@ flat_variable_ref (struct scm *var)
 struct scm *
 variable_set_x (struct scm *var, struct scm *value)
 {
-#if 0
   assert_variable (1, var);
   var->variable = value;
   return cell_unspecified;
-#else
-    if (g_debug > 0)
-    {
-      eputs ("variable-set!");
-      write_error_ (var);
-      eputs ("\n");
-    }
-  if (var->type == TPAIR)
-    {
-      struct scm *x = var->cdr;
-      if (x->type == TVARIABLE)
-        x->variable = value;
-      else
-        //set_cdr_x (var, value);
-        var->cdr = value;
-    }
-  else if (var->type == TVARIABLE)
-    var->variable = value;
-  else
-    assert_variable (1, var);
-  return cell_unspecified;
-#endif
 }
 
 struct scm *
@@ -86,35 +63,8 @@ variable_bound_p (struct scm *var)
 struct scm *
 handle_set_x (struct scm *handle, struct scm *value)
 {
-#if 0
-  struct scm *x = handle->cdr;
-  if (x->type == TVARIABLE)
-    x->variable = value;
-  else
-    handle->cdr = value;
+  handle->cdr = value;
   return cell_unspecified;
-#else
-  if (g_debug > 0)
-    {
-      eputs ("variable-set!");
-      write_error_ (handle);
-      eputs ("\n");
-    }
-  if (handle->type == TPAIR)
-    {
-      struct scm *x = handle->cdr;
-      if (x->type == TVARIABLE)
-        x->variable = value;
-      else
-        //set_cdr_x (handle, value);
-        handle->cdr = value;
-    }
-  else if (handle->type == TVARIABLE)
-    handle->variable = value;
-  else
-    assert_variable (1, handle);
-  return cell_unspecified;
-#endif
 }
 
 /*
@@ -170,7 +120,7 @@ struct scm *
 lookup_ref (struct scm *name, struct scm *bound_p)
 {
   struct scm *handle = lookup_handle (name, cell_f);
-  if (handle == TPAIR)
+  if (handle->type == TPAIR)
     return handle->cdr;
   if (bound_p == cell_t)
     error (cell_symbol_unbound_variable, name);
