@@ -1,10 +1,12 @@
 (define-module (boo)
   #:use-module (ijs-9 receive)
   #:export (ZEE-MODULE
-            bah))
+            ;;bah
+            ))
 
 (define *************************en-deze-dan************************ 42)
 (define (*************************of-deze************************) 42)
+(export bah)
 (define bah "Bah!")
 (display "*ZZZZEEE* module boo\n")
 'ZZZEEE-MODULE
@@ -17,3 +19,9 @@
 ;; (define (make-fluid x)
 ;;   (display "HAHA\n"))
 33
+
+(define-public (foo-bar)
+  "foo-bar\n")
+
+(display (foo-bar))
+;;(export foo-bar)
