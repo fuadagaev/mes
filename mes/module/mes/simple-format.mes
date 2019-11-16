@@ -22,8 +22,6 @@
 
 ;;; Code:
 
-(mes-use-module (mes display))
-
 (define (with-output-to-string thunk)
   (define save-write-byte write-byte)
   (let ((stdout '()))
