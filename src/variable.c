@@ -22,18 +22,20 @@
 #include "mes/mes.h"
 
 struct scm *
-variable_ref (struct scm *var)
+deep_variable_ref (struct scm *var)
 {
   assert_variable (1, var);
   struct scm *ref = var->variable;
   struct scm *value = ref->cdr;
   if (value == cell_undefined)
     error (cell_symbol_unbound_variable, var);
+  if (value->type == TVARIABLE)
+    value = value->variable;
   return value;
 }
 
 struct scm *
-flat_variable_ref (struct scm *var)
+variable_ref (struct scm *var)
 {
   assert_variable (1, var);
   struct scm *value = var->variable;

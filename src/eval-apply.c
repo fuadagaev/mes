@@ -725,7 +725,7 @@ eval:
     }
   else if (t == TVARIABLE)
     {
-      R1 = variable_ref (R1);
+      R1 = deep_variable_ref (R1);
       goto vm_return;
     }
   else if (t == TBROKEN_HEART)
