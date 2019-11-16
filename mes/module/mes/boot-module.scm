@@ -32,6 +32,8 @@
 
 ;;; Code:
 
+(mes-use-module (mes simple-format))
+
 (define (module? x)
   (display "core:module?\n"))
 
@@ -2359,22 +2361,22 @@
 ;; as soon as guile supports hygienic macros.
 ;;;;;;(define define-private define)
 
-(defmacro define-public args
-  (define (syntax)
-    (error "bad syntax" (list 'define-public args)))
-  (define (defined-name n)
-    (cond
-     ((symbol? n) n)
-     ((pair? n) (defined-name (car n)))
-     (else (syntax))))
-  (cond
-   ((null? args)
-    (syntax))
-   (#t
-    (let ((name (defined-name (car args))))
-      `(begin
-	 (define-private ,@args)
-	 (eval-case ((load-toplevel) (export ,name))))))))
+;; (defmacro define-public args
+;;   (define (syntax)
+;;     (error "bad syntax" (list 'define-public args)))
+;;   (define (defined-name n)
+;;     (cond
+;;      ((symbol? n) n)
+;;      ((pair? n) (defined-name (car n)))
+;;      (else (syntax))))
+;;   (cond
+;;    ((null? args)
+;;     (syntax))
+;;    (#t
+;;     (let ((name (defined-name (car args))))
+;;       `(begin
+;; 	 (define-private ,@args)
+;; 	 (eval-case ((load-toplevel) (export ,name))))))))
 
 ;; (defmacro defmacro-public args
 ;;   (define (syntax)
@@ -2391,6 +2393,24 @@
 ;;       `(begin
 ;; 	 (eval-case ((load-toplevel) (export-syntax ,name)))
 ;; 	 (defmacro ,@args))))))
+
+(define-macro (define-public . args)
+  (define (syntax)
+    (error "bad syntax" (list 'define-public args)))
+  (define (defined-name n)
+    (define (syntax)
+      (error "bad syntax" (list 'define-public args)))
+    (cond
+     ((symbol? n) n)
+     ((pair? n) (defined-name (car n)))
+     (else (syntax))))
+  (cond
+   ((null? args)
+    (syntax))
+   (#t
+    ;;`(export ,(defined-name (car args)))
+    (module-export! (guile:current-module) (list (defined-name (car args))))
+    `(define ,@args))))
 
 ;; Export a local variable
 
@@ -2434,6 +2454,9 @@
 ;; 	(module-export! (guile:current-module) ',names))))
 ;;     (else
 ;;      (error "export can only be used at the top level"))))
+
+(define-macro (export . names)
+  `(module-export! (guile:current-module) ',names))
 
 ;; (defmacro re-export names
 ;;   `(eval-case
@@ -2750,4 +2773,8 @@
 
 (display "===> (ZEE)\n")
 (display (ZEE-MODULE))
+(display "\n")
+
+(display "===> (foo-bar)\n")
+(display (foo-bar))
 (display "\n")
