@@ -134,14 +134,14 @@ lookup_handle (struct scm *name, struct scm *define_p)
       if (define_p == cell_f)
         {
           if (module == M0)
-            handle = hashq_get_handle_ (M0, name, cell_f);
+            handle = hashq_get_handle_ (M0, name);
           else
             handle = module_handle (module, name);
         }
       else
         {
           struct scm *table = module_defines (module);
-          handle = hashq_get_handle_ (table, name, cell_f);
+          handle = hashq_get_handle_ (table, name);
           if (handle == cell_f)
             {
               if (g_debug > 0)

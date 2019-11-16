@@ -148,7 +148,7 @@ struct scm *
 macro_get_handle (struct scm *name)     /*:((internal)) */
 {
   if (name->type == TSYMBOL)
-    return hashq_get_handle_ (g_macros, name, cell_nil);
+    return hashq_get_handle_ (g_macros, name);
   return cell_f;
 }
 
