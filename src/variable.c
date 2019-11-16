@@ -143,23 +143,7 @@ lookup_handle (struct scm *name, struct scm *define_p)
           struct scm *table = module_defines (module);
           handle = hashq_get_handle_ (table, name);
           if (handle == cell_f)
-            {
-              if (g_debug > 0)
-                {
-                  eputs ("lookup + define: ");
-                  write_error_ (name);
-                  eputs ("\n");
-                }
-              handle = hashq_set_handle_x (table, name, cell_f);
-            }
-          else if (handle->cdr == cell_undefined)
-            {
-              eputs ("lookup + define: ");
-              write_error_ (name);
-              eputs ("  found: ");
-              write_error_ (handle);
-              eputs ("\n");
-            }
+            handle = hashq_set_handle_x (table, name, cell_f);
         }
     }
 
