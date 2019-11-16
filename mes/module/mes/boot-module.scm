@@ -149,20 +149,18 @@
 
 (define guile:current-module (make-fluid #f))
 
-(define lookup-global #f)
-(define (global-lookup-function name define?)
-  ;; (if define? (module-make-local-var! (guile:current-module) name)
-  ;;     (module-variable (guile:current-module) name))
-  '("boe")
-  )
+(define module-system-booted? #f)
+(define *current-module* #f)
+
 (define (set-current-module m)
   (display "set-current-module: name=")
   (display (module-name m))
   (display "\n")
   (let ((o (guile:current-module)))
     (guile:current-module m)
-    ;; (unless o
-    ;;   (set! lookup-global global-lookup-function))
+    (set! *current-module* m)
+    (unless o
+      (set! module-system-booted? #t))
     o))
 
 (define (make-hook . n)
@@ -1232,7 +1230,14 @@
     (if (and variable (variable-bound? variable))
 	(variable-ref variable)
 	(if (null? rest)
-	    (error "No variable named" name 'in module)
+	    (begin
+              (when variable
+                (display "Variable's value is undefined: " (current-error-port))
+                (display name (current-error-port))
+                (display ": " (current-error-port))
+                (write variable (current-error-port))
+                (display "\n" (current-error-port)))
+              (error "No variable named" name 'in module))
 	    (car rest)			; default value
 	    ))))
 
@@ -2725,13 +2730,25 @@
 (define-module (guile-user) #:use-module (boo))
 
 (display "\nnow in guile-user\n")
-(display "ZEE:")
-;;(display ((module-ref (guile:current-module) 'ZEE-MODULE)))
-;;(display (module-ref (resolve-module '(boo)) 'ZEE-MODULE))
+(display "keil-user: ")
+(write  *current-module*)
+(display "\n")
+(display "ZEE-MODULE:")
+(display ((module-ref (guile:current-module) 'ZEE-MODULE)))
+;; (display (module-ref (resolve-module '(boo)) 'ZEE-MODULE))
 ;; (display "\n")
-(ZEE-MODULE)
+;; (ZEE-MODULE)
 (display "\n")
 (display "bah: ")
-;;(display (module-ref (guile:current-module) 'bah))
-(display bah)
+(display (module-ref (guile:current-module) 'bah))
+;;(display bah)
 (display "\n")
+
+
+;; (display "===> ZEE\n")
+;; (display ZEE-MODULE)
+;; (display "\n")
+
+;; (display "===> (ZEE)\n")
+;; (display (ZEE-MODULE))
+;; (display "\n")

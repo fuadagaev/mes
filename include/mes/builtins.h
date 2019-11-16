@@ -175,8 +175,8 @@ struct scm *variable_ref (struct scm *var);
 struct scm *flat_variable_ref (struct scm *var);
 struct scm *variable_set_x (struct scm *var, struct scm *value);
 struct scm *variable_bound_p (struct scm *var);
-struct scm *lookup_variable (struct scm *name, struct scm *define_p);
-struct scm *lookup_ref (struct scm *name);
+struct scm *lookup_handle (struct scm *name, struct scm* define_p);
+struct scm *lookup_ref (struct scm *name, struct scm* bound_p);
 /* src/vector.c */
 struct scm *make_vector (struct scm *x);
 struct scm *vector_length (struct scm *x);
