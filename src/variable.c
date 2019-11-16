@@ -63,7 +63,15 @@ variable_bound_p (struct scm *var)
 struct scm *
 handle_set_x (struct scm *handle, struct scm *value)
 {
-  handle->cdr = value;
+#if 0
+  if (handle->cdr->type == TVARIABLE && value->type == TVARIABLE)
+    {
+      handle->cdr->variable = value->variable;
+      handle->cdr = value;
+    }
+  else
+#endif
+    handle->cdr = value;
   return cell_unspecified;
 }
 

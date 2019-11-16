@@ -42,17 +42,19 @@ initial_module ()
 struct scm *
 current_module ()     /*:((internal)) */
 {
-  /*  struct scm *booted_p = hashq_get_handle_ (M0, cstring_to_symbol ("module-system-booted?"), cell_f);
-  if (booted_p->type == TPAIR && booted_p->cdr != cell_f)
-  {
-  */
-  struct scm *module = hashq_get_handle_ (M0, cstring_to_symbol ("*current-module*"), cell_f);
+#if 1
+  struct scm *module = hashq_get_handle_ (M0, cstring_to_symbol ("*current-module*"));
   if (module->type == TPAIR && module->cdr != cell_f)
     return module->cdr;
-  /*
-     }
-  */
   return M0;
+#elif 0
+  struct scm *module = lookup_ref_ ("*current-module*");
+  if (module != cell_undefined)
+    return module;
+  return M0;
+#elif 0
+  return hashq_ref_ (M0, cstring_to_symbol ("*current-module*"), M0);
+#endif
 }
 
 struct scm *
@@ -85,7 +87,7 @@ module_handle (struct scm *module, struct scm *name)     /*:((internal)) */
       eputs ("\n");
     }
 
-  struct scm *handle = hashq_get_handle_ (table, name, cell_f);
+  struct scm *handle = hashq_get_handle_ (table, name);
   if (handle != cell_f)
     return handle;
 
@@ -111,7 +113,7 @@ module_handle (struct scm *module, struct scm *name)     /*:((internal)) */
     }
 
   /* 4. Hack for Mes: always look in M0. */
-  handle = hashq_get_handle_ (M0, name, cell_f);
+  handle = hashq_get_handle_ (M0, name);
 
   return handle;
 }
