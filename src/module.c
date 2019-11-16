@@ -44,3 +44,67 @@ module_define_x (struct scm *module, struct scm *name, struct scm *value)
 {
   return hashq_set_x (M0, name, value);
 }
+
+struct scm *
+scm_module_lookup_closure (struct scm *module)
+{
+  if (module == cell_f)
+    return cell_f;
+  else
+    return struct_ref (module, MODULE_EVAL_CLOSURE);
+}
+
+struct scm *
+scm_current_module_lookup_closure ()
+{
+  if (scm_module_system_booted_p)
+    return scm_module_lookup_closure (scm_current_module ());
+  return cell_f;
+}
+
+struct scm *
+scm_eval_closure_lookup (struct scm *eclo, struct scm *name, struct scm *define_p)
+{
+  struct scm *module = eclo;
+  if (define_p == cell_f)
+    return module_variable (module, name);
+  else
+    {
+#if 0
+      if (struct scm *_EVAL_CLOSURE_INTERFACE_P (eclo))
+        return struct cell_f;
+#endif
+      return apply (module_make_local_var_x_var, cons (module, cons (name, cell_nil)));
+    }
+}
+
+struct scm *
+module_variable (struct scm *module, struct scm *name)
+{
+  /* 1. Check module obarray */
+  struct scm *a = struct_ref_ (module, MODULE_OBARRAY);
+  struct scm *b = scm_hashq_ref (a, name, cell_f);
+  if (b != cell_f)
+    return b;
+
+  /* 2. Custom binder */
+  struct scm *binder = struct_ref (module, MODULE_BINDER);
+  if (binder != cell_f)
+    {
+      b = apply (binder->cdr, (cons (module, cons (name, cons (cell_f, cell_nil)))), cell_f);
+      if (b != cell_f)
+        return b;
+    }
+
+  /* 3. Search the use list */
+  struct scm *uses = struct_ref (module, MODULE_USES);
+  while (uses->type == TPAIR)
+    {
+      b = module_variable (uses->car, name);
+      if (b != cell_f)
+        return b;
+      uses = uses->cdr;
+    }
+
+  return cell_f;
+}
