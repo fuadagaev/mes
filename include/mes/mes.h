@@ -131,6 +131,7 @@ struct scm *cell_ref (struct scm *cell, long index);
 struct scm *cstring_to_list (char const *s);
 struct scm *cstring_to_symbol (char const *s);
 struct scm *current_module ();
+struct scm *deep_variable_ref (struct scm *var);
 struct scm *fdisplay_ (struct scm *, int, int);
 struct scm *handle_set_x (struct scm *name, struct scm *value);
 struct scm *init_symbols ();
