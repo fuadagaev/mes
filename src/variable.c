@@ -170,13 +170,11 @@ struct scm *
 lookup_ref (struct scm *name, struct scm *bound_p)
 {
   struct scm *handle = lookup_handle (name, cell_f);
-  if (handle == cell_f)
-    {
-      if (bound_p == cell_t)
-        error (cell_symbol_unbound_variable, name);
-      return cell_undefined;
-    }
-  return handle->cdr;
+  if (handle->type == TPAIR)
+    return handle->cdr;
+  if (bound_p == cell_t)
+    error (cell_symbol_unbound_variable, name);
+  return cell_undefined;
 }
 
 struct scm *
