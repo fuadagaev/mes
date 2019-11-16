@@ -45,9 +45,32 @@ flat_variable_ref (struct scm *var)
 struct scm *
 variable_set_x (struct scm *var, struct scm *value)
 {
+#if 0
   assert_variable (1, var);
   var->variable = value;
   return cell_unspecified;
+#else
+    if (g_debug > 0)
+    {
+      eputs ("variable-set!");
+      write_error_ (var);
+      eputs ("\n");
+    }
+  if (var->type == TPAIR)
+    {
+      struct scm *x = var->cdr;
+      if (x->type == TVARIABLE)
+        x->variable = value;
+      else
+        //set_cdr_x (var, value);
+        var->cdr = value;
+    }
+  else if (var->type == TVARIABLE)
+    var->variable = value;
+  else
+    assert_variable (1, var);
+  return cell_unspecified;
+#endif
 }
 
 struct scm *
@@ -61,30 +84,65 @@ variable_bound_p (struct scm *var)
 }
 
 struct scm *
-lookup_variable (struct scm *name, struct scm *define_p)
+handle_set_x (struct scm *handle, struct scm *value)
+{
+#if 0
+  struct scm *x = handle->cdr;
+  if (x->type == TVARIABLE)
+    x->variable = value;
+  else
+    handle->cdr = value;
+  return cell_unspecified;
+#else
+  if (g_debug > 0)
+    {
+      eputs ("variable-set!");
+      write_error_ (handle);
+      eputs ("\n");
+    }
+  if (handle->type == TPAIR)
+    {
+      struct scm *x = handle->cdr;
+      if (x->type == TVARIABLE)
+        x->variable = value;
+      else
+        //set_cdr_x (handle, value);
+        handle->cdr = value;
+    }
+  else if (handle->type == TVARIABLE)
+    handle->variable = value;
+  else
+    assert_variable (1, handle);
+  return cell_unspecified;
+#endif
+}
+
+/*
+  GUILE has `proc': scm_current_module -> scm_module_lookup_closure -> standard-eval-closure:
+
+  BUT: define-p: module-make-local-var!, !define-p: module-variable
+
+ */
+struct scm *
+lookup_handle (struct scm *name, struct scm *define_p)
 {
   struct scm *handle = handle = assq (name, R0);
 
   if (handle == cell_f)
     {
-      struct scm *lookup = hashq_get_handle_ (M0, cstring_to_symbol ("lookup-global"), cell_f);
-      if (lookup != cell_f && lookup->cdr != cell_f)
+      struct scm *module = current_module ();
+      if (define_p == cell_f)
         {
-          eputs ("lookup? ");
-          display_error_ (lookup);
-          eputs (" ...  \n");
-          handle = apply (lookup->cdr, cons (name, cons (define_p, cell_nil)), R0);
-          eputs ("lookup: ");
-          display_error_ (name);
-          eputs (" => ");
-          write_error_ (handle);
-          if (handle != cell_f)
-            handle = cons (name, name->variable);
+          if (module == M0)
+            handle = hashq_get_handle_ (M0, name, cell_f);
+          else
+            handle = module_handle (module, name);
         }
       else
         {
-          handle = hashq_get_handle_ (M0, name, cell_f);
-          if (handle == cell_f && define_p == cell_t)
+          struct scm *table = module_defines (module);
+          handle = hashq_get_handle_ (table, name, cell_f);
+          if (handle == cell_f)
             {
               if (g_debug > 0)
                 {
@@ -92,7 +150,15 @@ lookup_variable (struct scm *name, struct scm *define_p)
                   write_error_ (name);
                   eputs ("\n");
                 }
-              handle = hashq_set_handle_x (M0, name, cell_f);
+              handle = hashq_set_handle_x (table, name, cell_f);
+            }
+          else if (handle->cdr == cell_undefined)
+            {
+              eputs ("lookup + define: ");
+              write_error_ (name);
+              eputs ("  found: ");
+              write_error_ (handle);
+              eputs ("\n");
             }
         }
     }
@@ -101,16 +167,20 @@ lookup_variable (struct scm *name, struct scm *define_p)
 }
 
 struct scm *
-lookup_variable_ (char const* name)
+lookup_ref (struct scm *name, struct scm *bound_p)
 {
-  return lookup_variable (cstring_to_symbol (name), cell_f);
+  struct scm *handle = lookup_handle (name, cell_f);
+  if (handle == cell_f)
+    {
+      if (bound_p == cell_t)
+        error (cell_symbol_unbound_variable, name);
+      return cell_undefined;
+    }
+  return handle->cdr;
 }
 
 struct scm *
-lookup_ref (struct scm *name)
+lookup_ref_ (char const *name)
 {
-  struct scm *x = lookup_variable (name, cell_f);
-  if (x == cell_f)
-    error (cell_symbol_unbound_variable, name);
-  return x->cdr;
+  return lookup_ref (cstring_to_symbol (name), cell_f);
 }
