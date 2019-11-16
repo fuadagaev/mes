@@ -20,7 +20,7 @@
 (define mes %version)
 
 (define (defined? x)
-  (lookup-variable x #f))
+  (lookup-handle x #f))
 
 (define (cond-expand-expander clauses)
   (if (defined? (car (car clauses)))
