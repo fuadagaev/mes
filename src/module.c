@@ -42,16 +42,9 @@ initial_module ()
 struct scm *
 current_module ()     /*:((internal)) */
 {
-  /*  struct scm *booted_p = hashq_get_handle_ (M0, cstring_to_symbol ("module-system-booted?"), cell_f);
-  if (booted_p->type == TPAIR && booted_p->cdr != cell_f)
-  {
-  */
-  struct scm *module = hashq_get_handle_ (M0, cstring_to_symbol ("*current-module*"));
-  if (module->type == TPAIR && module->cdr != cell_f)
-    return module->cdr;
-  /*
-     }
-  */
+  struct scm *module = hashq_ref_ (M0, cstring_to_symbol ("*current-module*"), cell_f);
+  if (module != cell_f)
+    return module;
   return M0;
 }
 
