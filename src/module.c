@@ -39,72 +39,83 @@ initial_module ()
   return M0;
 }
 
-// struct scm *
-// module_define_x (struct scm *module, struct scm *name, struct scm *value)
-// {
-//   return hashq_set_x (M0, name, value);
-// }
+struct scm *
+current_module ()     /*:((internal)) */
+{
+  /*  struct scm *booted_p = hashq_get_handle_ (M0, cstring_to_symbol ("module-system-booted?"), cell_f);
+  if (booted_p->type == TPAIR && booted_p->cdr != cell_f)
+  {
+  */
+  struct scm *module = hashq_get_handle_ (M0, cstring_to_symbol ("*current-module*"), cell_f);
+  if (module->type == TPAIR && module->cdr != cell_f)
+    return module->cdr;
+  /*
+     }
+  */
+  return M0;
+}
 
-// struct scm *
-// scm_module_lookup_closure (struct scm *module)
-// {
-//   if (module == cell_f)
-//     return cell_f;
-//   else
-//     return struct_ref (module, MODULE_EVAL_CLOSURE);
-// }
+struct scm *
+module_defines (struct scm *module)     /*:((internal)) */
+{
+  if (module != cell_f && module != M0)
+    return struct_ref_ (module, MODULE_DEFINES);
+  return M0;
+}
 
-// struct scm *
-// scm_current_module_lookup_closure ()
-// {
-//   if (scm_module_system_booted_p)
-//     return scm_module_lookup_closure (scm_current_module ());
-//   return cell_f;
-// }
-
-// struct scm *
-// scm_eval_closure_lookup (struct scm *eclo, struct scm *name, struct scm *define_p)
-// {
-//   struct scm *module = eclo;
-//   if (define_p == cell_f)
-//     return module_variable (module, name);
-//   else
-//     {
-// #if 0
-//       if (struct scm *_EVAL_CLOSURE_INTERFACE_P (eclo))
-//         return struct cell_f;
-// #endif
-//       return apply (module_make_local_var_x_var, cons (module, cons (name, cell_nil)));
-//     }
-// }
+struct scm *
+module_define_x (struct scm *module, struct scm *name, struct scm *value)
+{
+  struct scm *table = module_defines (module);
+  return hashq_set_x (table, name, value);
+}
 
 struct scm *
 module_variable (struct scm *module, struct scm *name)
 {
   /* 1. Check module obarray */
-  struct scm *a = struct_ref_ (module, MODULE_OBARRAY);
-  struct scm *b = scm_hashq_ref (a, name, cell_f);
-  if (b != cell_f)
-    return b;
+  /*
+  struct scm *table = module_defines (module);
+  */
+  struct scm *table = struct_ref_ (module, MODULE_DEFINES);
 
-  // /* 2. Custom binder */
-  // struct scm *binder = struct_ref (module, MODULE_BINDER);
-  // if (binder != cell_f)
-  //   {
-  //     b = apply (binder->cdr, (cons (module, cons (name, cons (cell_f, cell_nil)))), cell_f);
-  //     if (b != cell_f)
-  //       return b;
-  //   }
-
-  /* 3. Search the use list */
-  struct scm *uses = struct_ref (module, MODULE_USES);
-  while (uses->type == TPAIR)
+  if (g_debug > 0)
     {
-      b = module_variable (uses->car, name);
+      eputs ("module_variable:");
+      eputs (" name = ");
+      write_error_ (name);
+      // eputs (" defines = ");
+      // write_error_ (table);
+      eputs ("\n");
+    }
+
+  struct scm *handle = hashq_get_handle_ (table, name, cell_f);
+  if (handle != cell_f)
+    return handle;
+
+  /* 2. Custom binder */
+  /*
+  struct scm *binder = struct_ref (module, MODULE_BINDER);
+  if (binder != cell_f)
+    {
+      b = apply (binder->cdr, (cons (module, cons (name, cons (cell_f, cell_nil)))), cell_f);
       if (b != cell_f)
         return b;
+    }
+  */
+
+  /* 3. Search the use list */
+  struct scm *uses = struct_ref_ (module, MODULE_USES);
+  while (uses->type == TPAIR)
+    {
+      handle = module_variable (uses->car, name);
+      if (handle != cell_f)
+        return handle;
       uses = uses->cdr;
     }
 
-  return cell_f;
+  /* 4. Hack for Mes: always look in M0. */
+  handle = hashq_get_handle_ (M0, name, cell_f);
+
+  return handle;
 }

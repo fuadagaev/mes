@@ -634,7 +634,7 @@ eval:
                         macro_set_x (name, entry);
                       }
                     else
-                      entry = lookup_variable (name, cell_t);
+                      lookup_variable (name, cell_t);
                   }
                 R2 = R1;
                 aa = R1->cdr->car;
@@ -669,7 +669,17 @@ eval:
                 else if (global_p != 0)
                   {
                     entry = lookup_variable (name, cell_f);
+                    if (g_debug > 0)
+                      {
+                        eputs ("global set: ");
+                        write_error_ (name);
+                        eputs ("\n");
+                      }
+#if 0
                     set_cdr_x (entry, R1);
+#else
+                    variable_set_x (entry, R1);
+#endif
                   }
                 else
                   {
