@@ -138,7 +138,8 @@
   (when (getenv "MES_DEBUG")
     (display "%search-load-path " (current-error-port))
     (display file-name (current-error-port)))
-  (let ((file (search-path %load-path (string-append file-name ".scm"))))
+  (let ((file (or (search-path %load-path (string-append file-name ".mes"))
+                  (search-path %load-path (string-append file-name ".scm")))))
     (when (getenv "MES_DEBUG")
       (display " => " (current-error-port))
       (display file (current-error-port))
@@ -519,7 +520,8 @@
   (when (getenv "MES_DEBUG")
     (display "%search-load-path " (current-error-port))
     (display file-name (current-error-port)))
-  (let ((file (search-path %load-path (string-append file-name ".scm"))))
+  (let ((file (or (search-path %load-path (string-append file-name ".mes"))
+                  (search-path %load-path (string-append file-name ".scm")))))
     (when (getenv "MES_DEBUG")
       (display " => " (current-error-port))
       (display file (current-error-port))
@@ -2749,7 +2751,9 @@
 ;;; boot-9.scm ends here
 
 (display "===============================\n")
-(define-module (guile-user) #:use-module (boo))
+;;(define-module (guile-user) #:use-module (boo))
+(define-module (guile-user)
+  #:use-module (boo))
 
 (display "\nnow in guile-user\n")
 (display "keil-user: ")
