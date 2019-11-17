@@ -107,9 +107,7 @@ General help using GNU software: <http://gnu.org/gethelp/>
              (mes-use-module (mes repl))
              (set-current-input-port 0)
              (repl))
-            (else #t))
-    (display "top\n")
-    (display "**********************load hack:\n"))))
+            (else #t)))))
 
 (define (top-load *undefined*)
   (primitive-load 0)
