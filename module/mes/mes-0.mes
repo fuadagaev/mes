@@ -27,35 +27,13 @@
 
 (define-module (mes mes-0)
   #:export (
-            builtin?
-            mes-use-module
-            append2
             mes?
             guile?
             guile-1.8?
             guile-2?
-            %arch
-            %compiler
-            %program
-            pmatch-car
-            pmatch-cdr
             ))
 
-(cond-expand
- (guile-2)
- (guile
-  (define %host-type (string-append (utsname:machine (uname)) "linux-gnu")))
- (else))
-
-(define-macro (mes-use-module . rest) #t)
-(define builtin? procedure?) ; not strictly true, but ok for tests/*.test
-(define mes? #f)
-(define guile? #t)
-(define guile-1.8? (equal? (effective-version) "1.8"))
-(define guile-2? (equal? (major-version) "2"))
-(define append2 append)
-(define %arch (car (string-split %host-type #\-)))
-(define %compiler "gnuc")
-(define %program "the program text")
-(define pmatch-car car)
-(define pmatch-cdr cdr)
+(define mes? #t)
+(define guile? #f)
+(define guile-1.8? #f)
+(define guile-2? #f)
