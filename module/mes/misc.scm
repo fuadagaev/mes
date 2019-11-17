@@ -1,5 +1,5 @@
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2017,2018,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -18,53 +18,8 @@
 
 (define-module (mes misc)
   #:use-module (srfi srfi-1)
-  #:export (%scheme
-            disjoin
-            guile?
-            mes?
-            pk
-            pke
-            warn
-            stderr
+  #:export (disjoin
             string-substitute))
-
-(cond-expand
- (mes
-  (define %scheme "mes"))
- (guile
-  (define %scheme "guile")))
-
-(define guile? (equal? %scheme "guile"))
-(define mes? (equal? %scheme "mes"))
-
-(define (logf port string . rest)
-  (apply format (cons* port string rest))
-  (force-output port)
-  #t)
-
-(define (stderr string . rest)
-  (apply logf (cons* (current-error-port) string rest)))
-
-(define (pk . stuff)
-  (newline)
-  (display ";;; ")
-  (write stuff)
-  (newline)
-  (car (last-pair stuff)))
-
-(define (pke . stuff)
-  (display "\n" (current-error-port))
-  (newline (current-error-port))
-  (display ";;; " (current-error-port))
-  (write stuff (current-error-port))
-  (display "\n" (current-error-port))
-  (car (last-pair stuff)))
-
-(define warn pke)
-
-(define (disjoin . predicates)
-  (lambda (. arguments)
-    (any (lambda (o) (apply o arguments)) predicates)))
 
 (define (string-substitute string find replace)
   (let ((index (string-contains string find)))
@@ -75,3 +30,7 @@
          (string-substitute
           (string-drop string (+ index (string-length find)))
           find replace)))))
+
+(define (disjoin . predicates)
+  (lambda (. arguments)
+    (any (lambda (o) (apply o arguments)) predicates)))

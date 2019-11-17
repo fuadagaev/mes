@@ -1,17 +1,5 @@
-#! /bin/sh
-# -*-scheme-*-
-srcdir=${srcdir-.}
-GUILE_LOAD_PATH=$srcdir/tests
-export GUILE_LOAD_PATH
-MES_BOOT=boot-5.mes
-export MES_BOOT
-exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests module)' -s "$0" "$@"
-!#
-
-;;; -*-scheme-*-
-
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -28,26 +16,13 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (tests module)
-  #:use-module (data foo)
-  #:use-module (data bar)
-  #:use-module (mes test))
+;;; Commentary:
 
-(pass-if "first dummy" #t)
-(pass-if-not "second dummy" #f)
+;;; foo.scm is used by tests/boot-6.test
 
-(pass-if "defined foo"
-  (defined? 'foo))
+;;; Code:
 
-(pass-if-equal "foo"
-    "foo"
-  (and (defined? 'foo) foo))
+(define-module (data foo)
+  #:export (foo))
 
-(pass-if "defined bar"
-  (defined? 'bar))
-
-(pass-if-equal "bar"
-    "bar"
-  (and (defined? 'bar) bar))
-
-(result 'report)
+(define foo "foo")

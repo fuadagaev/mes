@@ -47,6 +47,7 @@
             core:write-port
             core:type
             %compiler
+            %program
             equal2?
             keyword->string
             pmatch-car
@@ -93,8 +94,7 @@
   (define <cell:vector> 15)
   (define %arch (car (string-split %host-type #\-)))
   (define %compiler "gnuc")
-
-  (define %compiler "gnuc")
+  (define %program "the program text")
   (define keyword->string (compose symbol->string keyword->symbol))
 
   (define (core:type x)
