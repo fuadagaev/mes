@@ -99,9 +99,7 @@ General help using GNU software: <http://gnu.org/gethelp/>
                     (port (if (equal? file "-") 0
                               (open-input-file file))))
                (set! %argv files)
-               (set-current-input-port port)
-               (display "DUN\n")
-               ))
+               (set-current-input-port port)))
             ((and (null? files) tty?)
 
              (mes-use-module (mes repl))
