@@ -69,7 +69,7 @@
   #t)
 
 ;;;;;;;;;;;;;;;;;;; MODULE-DEPS
-(define %debug (and=> (getenv "MES_DEBUG") string->number))
+(define %debug (and=> (or (getenv "MES_DEBUG") "0") string->number))
 
 (define core:module-define! module-define!)
 (define (standard-eval-closure module)
@@ -120,19 +120,6 @@
           (if (eq? i n) (begin (set-cdr! prev (cdr lst))
                                (loop (cdr lst) prev))
               (cons n (loop (cdr lst) lst)))))))
-
-(define %load-path
-  (let ((path (cons* %moduledir "module" (string-split (or (getenv "GUILE_LOAD_PATH") "") #\:))))
-    path))
-
-(define (%search-load-path file-name)
-  (when (> %debug 2)
-    (format (current-error-port) "%search-load-path ~s\n" file-name))
-  (let ((file (or (search-path %load-path (string-append file-name ".mes"))
-                  (search-path %load-path (string-append file-name ".scm")))))
-    (when (> %debug 1)
-      (format (current-error-port) " => ~s\n" file))
-    file))
 
 
 
@@ -225,9 +212,6 @@
      (define (syntax)
        (error "syntax error in eval-case"))
      (let loop ((clauses (cdr ',exp)))
-       (display "eval-case: clauses=")
-       (display clauses)
-       (display "")
        (cond
         ((null? clauses)
          #f)
@@ -516,10 +500,6 @@
 ;;; {Load Paths}
 ;;;
 
-;;; Here for backward compatability
-;;
-(define scheme-file-suffix (lambda () ".scm"))
-
 (define (in-vicinity vicinity file)
   (let ((tail (let ((len (string-length vicinity)))
 		(if (zero? len)
@@ -537,16 +517,12 @@
     path))
 
 (define (%search-load-path file-name)
-  (when (getenv "MES_DEBUG")
-    (display "%search-load-path " (current-error-port))
-    (display file-name (current-error-port)))
+  (when (> %debug 2)
+    (format (current-error-port) "%search-load-path ~s\n" file-name))
   (let ((file (or (search-path %load-path (string-append file-name ".mes"))
                   (search-path %load-path (string-append file-name ".scm")))))
-    (when (getenv "MES_DEBUG")
-      (display " => " (current-error-port))
-      (display file (current-error-port))
-      (display "\n" (current-error-port))
-      )
+    (when (> %debug 1)
+      (format (current-error-port) " => ~s\n" file))
     file))
 
 
@@ -1656,10 +1632,6 @@
 	       (exports '())
 	       (re-exports '())
 	       (replacements '()))
-      (when (getenv "MES_DEBUG")
-        (display "loop kws=")
-        (display kws)
-        (display "\ne"))
       (if (null? kws)
 	  (call-with-deferred-observers
 	   (lambda ()
@@ -2319,10 +2291,8 @@
 (define-macro (define-module . args)
   `(let ((m (process-define-module
 	     (list ,@(compile-define-module-args args)))))
-     (display "define-module-macro")
-     (display " m=")
-     (display m)
-     (display "\n")
+     (when (> %debug 3)
+       (format (current-error-port) "define-module: name=~s" m))
      (set-current-module m)
      m))
 
