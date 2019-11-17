@@ -68,7 +68,7 @@ module_handle (struct scm *module, struct scm *name)     /*:((internal)) */
 {
   /* 1. Check module defines.  */
   struct scm *table = module_defines (module);
-  if (g_debug > 2)
+  if (g_debug > 4)
     {
       eputs ("module_handle:");
       eputs (" name = ");
