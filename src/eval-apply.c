@@ -595,26 +595,6 @@ eval:
                 if (R0->car->car != cell_closure
                     || R0->cdr->car->car == cell_undefined)
                   global_p = 1;
-#if 0
-                else if (g_debug > 0)
-                  {
-                    eputs ("local...");
-                    if (R0->type != TPAIR)
-                      eputs ("R0 NOT A PAIR\n");
-                    else
-                      {
-                        x = R0->cdr;
-                        if (x->type != TPAIR)
-                          eputs ("cdr not a pair\n");
-                        else
-                          {
-                            x = x->car->car;
-                            write_error_ (x);
-                            eputs ("\n");
-                          }
-                      }
-                  }
-#endif
                 macro_p = 0;
                 if (R1->car == cell_symbol_define_macro)
                   macro_p = 1;
@@ -675,22 +655,10 @@ eval:
                         write_error_ (name);
                         eputs ("\n");
                       }
-#if 0
-                    set_cdr_x (handle, R1);
-#else
                     handle_set_x (handle, R1);
-#endif
                   }
                 else
                   {
-#if 0
-                    if (g_debug > 0)
-                      {
-                        eputs ("local!");
-                        write_error_ (name);
-                        eputs ("\n");
-                      }
-#endif
                     handle = cons (name, R1);
                     aa = cons (handle, cell_nil);
                     set_cdr_x (aa, cdr (R0));
