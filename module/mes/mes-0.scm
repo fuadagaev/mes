@@ -29,7 +29,6 @@
   #:export (
             builtin?
             mes-use-module
-            EOF
             append2
             mes?
             guile?
@@ -37,7 +36,11 @@
             guile-2?
             %arch
             %compiler
+            %program
+            pmatch-car
+            pmatch-cdr
             ))
+
 (cond-expand
  (guile-2)
  (guile
@@ -50,7 +53,9 @@
 (define guile? #t)
 (define guile-1.8? (equal? (effective-version) "1.8"))
 (define guile-2? (equal? (major-version) "2"))
-(define EOF (if #f #f))
 (define append2 append)
 (define %arch (car (string-split %host-type #\-)))
 (define %compiler "gnuc")
+(define %program "the program text")
+(define pmatch-car car)
+(define pmatch-cdr cdr)
