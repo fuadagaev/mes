@@ -157,7 +157,7 @@
         (out)
         r))
     (lambda (key . args)
-      (format #f "ERROR: dynamic-wind: ~a ~s\n" key args)
+      (format (current-error-port) "ERROR: dynamic-wind: ~a ~s\n" key args)
       (out))))
 
 
