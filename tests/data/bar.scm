@@ -1,7 +1,5 @@
-;;; -*-scheme-*-
-
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -20,9 +18,11 @@
 
 ;;; Commentary:
 
-;;; srfi-26.mes - cut, cute
+;;; bar.scm is used by tests/boot-6.test
 
-(mes-use-module (mes scm))
-(mes-use-module (mes guile))
-(mes-use-module (srfi srfi-1))
-(include-from-path "srfi/srfi-26.scm")
+;;; Code:
+
+(define-module (data bar)
+  #:export (bar))
+
+(define bar "bar")
