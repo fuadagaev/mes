@@ -77,10 +77,10 @@
   (eq? (core:type x) <cell:port>))
 
 (define (procedure? p)
-  (cond ((builtin? p) #t)
-        ((and (pair? p) (eq? (car p) 'lambda)))
-        ((closure? p) #t)
-        (#t #f)))
+  (and (or (builtin? p)
+           (and (pair? p) (eq? (car p) 'lambda))
+           (closure? p))
+       #t))
 
 (define (special? x)
   (eq? (core:type x) <cell:special>))
