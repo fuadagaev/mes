@@ -181,3 +181,7 @@
 
 (mes-use-module (srfi srfi-9))
 (mes-use-module (mes guile module))
+(top-main)
+;; (top-load 0)
+(primitive-load 0)
+(primitive-load (open-input-string %main))
