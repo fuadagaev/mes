@@ -34,30 +34,15 @@
 
 ;;; Code:
 
-(define (module? x)
-  (display "core:module?\n"))
+(define %debug (and=> (getenv "MES_DEBUG") string->number))
 
-(define (module-variable x)
-  (display "core:module-variable\n"))
-
-(define (module-ref x)
-  (display "core:module-ref\n"))
-
-(define (module-bound x)
-  (display "core:module-bound?\n"))
-(define core:variable-ref variable-ref)
+(define core:module-define! module-define!)
 
 (define (provided? x)
   #f)
 
 (define (save-stack)
   #t)
-
-(define core:module? module?)
-(define core:module-variable module-variable)
-(define core:module-define! module-define!)
-(define core:module-ref module-ref)
-(define core:variable-bound? variable-bound?)
 
 (define (%get-pre-modules-obarray)
   (initial-module))
@@ -95,9 +80,7 @@
                  (apply and-map f (map cdr lists)))))))
 
 (define make-weak-value-hash-table make-hash-table)
-;; (define (set-module-eval-closure! module closure)
-;;   (display "set-module-eval-closure!\n" (current-error-port))
-;;   (make-hash-table 1))
+
 (define (standard-eval-closure module)
   (module-eval-closure module))
 (define (standard-interface-eval-closure module)
@@ -155,9 +138,8 @@
 (define *current-module* #f)
 
 (define (set-current-module m)
-  (display "set-current-module: name=")
-  (display (module-name m))
-  (display "\n")
+  (when (> %debug 2)
+    (format (current-error-port) "set-current-module: name=~a" (module-name m)))
   (let ((o (guile:current-module)))
     (guile:current-module m)
     (set! *current-module* m)
@@ -1271,11 +1253,9 @@
 
 (define (module-define! module name value)
   (if (hash-table? module) (let ((h (hashq-ref module name)))
-                             (core:module-define! module name value)
-                             (display "module-define! ")
-                             (display "name=")
-                             (display name)
-                             (display "\n"))
+                             (when (> %debug 2)
+                               (format (current-error-port) "core:module-define! ~a\n" name))
+                             (core:module-define! module name value))
       (let ((variable (module-local-variable module name)))
         (if variable
 	    (begin
@@ -1292,12 +1272,6 @@
 (define (module-defined? module name)
   (let ((variable (module-variable module name)))
     (and variable (variable-bound? variable))))
-
-(define (module-defined? module name)
-  (if (not (module? module)) (let ((variable (core:module-variable module name)))
-                               (and variable (core:variable-bound? variable)))
-      (let ((variable (module-variable module name)))
-        (and variable (variable-bound? variable)))))
 
 ;; MODULE-USE! module interface
 ;;
