@@ -132,7 +132,7 @@
 
 (define (set-current-module m)
   (when (> %debug 2)
-    (format (current-error-port) "set-current-module: name=~a" (module-name m)))
+    (format (current-error-port) "set-current-module: name=~a\n" (module-name m)))
   (let ((o (guile:current-module)))
     (guile:current-module m)
     (set! *current-module* m)
@@ -486,14 +486,14 @@
   (set-port-revealed! port (+ (port-revealed port) 1))
   (fileno port))
 
-(define (setenv name value)
-  (if value
-      (putenv (string-append name "=" value))
-      (putenv name)))
+;; (define (setenv name value)
+;;   (if value
+;;       (putenv (string-append name "=" value))
+;;       (putenv name)))
 
-(define (unsetenv name)
-  "Remove the entry for NAME from the environment."
-  (putenv name))
+;; (define (unsetenv name)
+;;   "Remove the entry for NAME from the environment."
+;;   (putenv name))
 
 
 
@@ -1779,7 +1779,7 @@
 		      ((%search-load-path file)
 		       => (lambda (full)
 			    (with-fluids ((current-reader #f))
-			      (load-file 'primitive-load full)))))))
+                              (load-file 'primitive-load full)))))))
 	    (lambda () (set-autoloaded! dir-hint name didit)))
 	   didit))))
 
@@ -2001,6 +2001,8 @@
     (force-output cep)
     (throw 'abort key)))
 
+;; FIXME: how does Guile exit 0?
+(define core:exit exit)
 (define (quit . args)
   (apply throw 'quit args))
 
@@ -2292,7 +2294,7 @@
   `(let ((m (process-define-module
 	     (list ,@(compile-define-module-args args)))))
      (when (> %debug 3)
-       (format (current-error-port) "define-module: name=~s" m))
+       (format (current-error-port) "define-module: name=~s\n" m))
      (set-current-module m)
      m))
 

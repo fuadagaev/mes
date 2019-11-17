@@ -1,9 +1,9 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
-;;; This file is part of GNU Mes.
+;;; mes-0.scm: This file is part of GNU Mes.
 ;;;
 ;;; GNU Mes is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
@@ -20,9 +20,20 @@
 
 ;;; Commentary:
 
-;;; srfi-26.mes - cut, cute
+;;; mes-0.scm is the first file being loaded into Guile.  It provides
+;;; non-standard definitions that Mes modules and tests depend on.
 
-(mes-use-module (mes scm))
-(mes-use-module (mes guile))
-(mes-use-module (srfi srfi-1))
-(include-from-path "srfi/srfi-26.scm")
+;;; Code:
+
+(define-module (mes mes-0)
+  #:export (
+            mes?
+            guile?
+            guile-1.8?
+            guile-2?
+            ))
+
+(define mes? #t)
+(define guile? #f)
+(define guile-1.8? #f)
+(define guile-2? #f)
