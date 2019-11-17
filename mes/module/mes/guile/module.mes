@@ -1,3 +1,5 @@
+;;; -*-scheme-*-
+
 ;;; GNU Mes --- Maxwell Equations of Software
 ;;; Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007
 ;;; Free Software Foundation, Inc.
@@ -21,7 +23,7 @@
 
 ;;; Commentary:
 
-;;; boot-module.mes taken from GNU Guile 1.8 boot-9.scm
+;;; guile/module.mes taken from GNU Guile 1.8 boot-9.scm
 ;;; This is experimental code for proper Guile module load support.
 
 ;;; This file is the first thing loaded into Guile.  It adds many mundane
@@ -31,8 +33,6 @@
 ;;; file.
 
 ;;; Code:
-
-(mes-use-module (mes simple-format))
 
 (define (module? x)
   (display "core:module?\n"))
@@ -2746,39 +2746,6 @@
 ;;; Place the user in the guile-user module.
 ;;;
 
-;;;(define-module (guile-user))
+(define-module (guile-user))
 
 ;;; boot-9.scm ends here
-
-(display "===============================\n")
-;;(define-module (guile-user) #:use-module (boo))
-(define-module (guile-user)
-  #:use-module (boo))
-
-(display "\nnow in guile-user\n")
-(display "keil-user: ")
-(write  *current-module*)
-(display "\n")
-(display "ZEE-MODULE:")
-(display ((module-ref (guile:current-module) 'ZEE-MODULE)))
-;; (display (module-ref (resolve-module '(boo)) 'ZEE-MODULE))
-;; (display "\n")
-;; (ZEE-MODULE)
-(display "\n")
-(display "bah: ")
-(display (module-ref (guile:current-module) 'bah))
-;;(display bah)
-(display "\n")
-
-
-(display "===> ZEE\n")
-(display ZEE-MODULE)
-(display "\n")
-
-(display "===> (ZEE)\n")
-(display (ZEE-MODULE))
-(display "\n")
-
-(display "===> (foo-bar)\n")
-(display (foo-bar))
-(display "\n")

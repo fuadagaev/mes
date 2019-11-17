@@ -669,7 +669,7 @@ eval:
                 else if (global_p != 0)
                   {
                     handle = lookup_handle (name, cell_f);
-                    if (g_debug > 0)
+                    if (g_debug > 2)
                       {
                         eputs ("global set: ");
                         write_error_ (name);

@@ -25,6 +25,7 @@
 
 ;; Internal helper procedure.  Map `f' over the single list `ls'.
 ;;
+
 (define map1 map)
 
 (define (any pred ls . lists)
