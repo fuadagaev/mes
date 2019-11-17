@@ -96,6 +96,9 @@
 
 (define-macro (mes-use-module module)
   #t)
+
+(define-macro (define-module module . rest)
+  #t)
 ;; end boot-02.scm
 
 ;; boot-03.scm
@@ -162,14 +165,7 @@
 (mes-use-module (mes quasiquote))
 (mes-use-module (mes let))
 (mes-use-module (mes scm))
-
-(define-macro (define-module module . rest)
-  `(if ,(and (pair? module)
-             (= 1 (length module))
-             (symbol? (car module)))
-       (define (,(car module) . arguments) (main (command-line)))))
-
-(define-macro (use-modules . rest) #t)
 ;; end boot-03.scm
+
 (primitive-load 0)
 (primitive-load 0)
