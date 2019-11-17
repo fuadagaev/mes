@@ -99,14 +99,6 @@ exec ${MES-mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests boot
 (pass-if-equal "assoc-set!" '((a . 0) (b . 2)) (assoc-set! '((a . 0) (b . 1)) 'b 2))
 (pass-if-equal "assoc-set! new" '((b . 2) (a . 0)) (assoc-set! '((a . 0)) 'b 2))
 
-(pass-if "builtin? car" (builtin? car))
-(pass-if "builtin? cdr" (builtin? cdr))
-(pass-if "builtin? cons" (builtin? cons))
-(pass-if "builtin? eq?" (builtin? eq?))
-(pass-if "builtin? if" (builtin? eq?))
-(when (not guile?)
-  (pass-if "builtin? eval" (not (builtin? not))))
-(pass-if "procedure?" (procedure? builtin?))
 (pass-if "procedure?" (procedure? procedure?))
 (pass-if "gensym"
   (symbol? (gensym)))
