@@ -34,25 +34,7 @@
 
 ;;; Code:
 
-(define %debug (and=> (getenv "MES_DEBUG") string->number))
-
-(define core:module-define! module-define!)
-
-(define (provided? x)
-  #f)
-
-(define (save-stack)
-  #t)
-
-(define (%get-pre-modules-obarray)
-  (initial-module))
-
-(define (make-undefined-variable)
-  (make-variable *undefined*))
-
-(define (hash-fold proc init table)
-  (fold proc init (hash-map->list cons table)))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;; EARLY!
 (define (pke . stuff)
   (display "\n" (current-error-port))
   (newline (current-error-port))
@@ -63,12 +45,44 @@
 
 (define warn pke)
 
+;;;;;;;;;;;;;;;;;;; GUILE
+
+;; FIXME: move *features* to core, make dynamic
+(define *core-features* '(current-time fork popen
+                                       ;;posix
+                                       system))
+
+(define *features* (cons* 'defmacro 'record 'define-macro
+                          *core-features*))
+
+(define (include-deprecated-features) #f)
+
+(define make-weak-value-hash-table make-hash-table)
+(define (%get-pre-modules-obarray)
+  (initial-module))
+
 (define (make-mutex)
   '*mutex*)
 (define (lock-mutex m)
   #t)
 (define (unlock-mutex m)
   #t)
+
+;;;;;;;;;;;;;;;;;;; MODULE-DEPS
+(define %debug (and=> (getenv "MES_DEBUG") string->number))
+
+(define core:module-define! module-define!)
+(define (standard-eval-closure module)
+  (module-eval-closure module))
+(define (standard-interface-eval-closure module)
+  (module-eval-closure module))
+
+;; (define (make-undefined-variable)
+;;   (make-variable *undefined*))
+
+(define (hash-fold proc init table)
+  (fold proc init (hash-map->list cons table)))
+
 
 (define current-reader (make-fluid))
 
@@ -79,12 +93,6 @@
             (and (apply f (map car lists))
                  (apply and-map f (map cdr lists)))))))
 
-(define make-weak-value-hash-table make-hash-table)
-
-(define (standard-eval-closure module)
-  (module-eval-closure module))
-(define (standard-interface-eval-closure module)
-  (module-eval-closure module))
 
 (define (hash-for-each proc table)
   (hash-map->list proc table)
@@ -118,17 +126,15 @@
     path))
 
 (define (%search-load-path file-name)
-  (when (getenv "MES_DEBUG")
-    (display "%search-load-path " (current-error-port))
-    (display file-name (current-error-port)))
+  (when (> %debug 2)
+    (format (current-error-port) "%search-load-path ~s\n" file-name))
   (let ((file (or (search-path %load-path (string-append file-name ".mes"))
                   (search-path %load-path (string-append file-name ".scm")))))
-    (when (getenv "MES_DEBUG")
-      (display " => " (current-error-port))
-      (display file (current-error-port))
-      (display "\n" (current-error-port))
-      )
+    (when (> %debug 1)
+      (format (current-error-port) " => ~s\n" file))
     file))
+
+
 
 ;;;;;;;;;;; ************************************************************
 
@@ -153,8 +159,8 @@
 (define (run-hook hook . args)
   #t)
 
-(define-macro (begin-deprecated . args)
-  #f)
+;; (define-macro (begin-deprecated . args)
+;;   #f)
 
 (define (dynamic-wind in thunk out)
   (catch #t
@@ -167,6 +173,38 @@
       (format #f "ERROR: dynamic-wind: ~a ~s\n" key args)
       (out))))
 
+
+
+
+;;; {Features}
+;;;
+
+(define (provide sym)
+  (if (not (memq sym *features*))
+      (set! *features* (cons sym *features*))))
+
+;; Return #t iff FEATURE is available to this Guile interpreter.  In SLIB,
+;; provided? also checks to see if the module is available.  We should do that
+;; too, but don't.
+
+(define (provided? feature)
+  (and (memq feature *features*) #t))
+
+;; let format alias simple-format until the more complete version is loaded
+
+(define format simple-format)
+
+
+
+;;; {Deprecation}
+;;;
+;;; Depends on: defmacro
+;;;
+
+(defmacro begin-deprecated forms
+  (if (include-deprecated-features)
+      (cons begin forms)
+      #f))
 
 
 
