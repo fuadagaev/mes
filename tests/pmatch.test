@@ -26,6 +26,7 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
 (define-module (tests pmatch)
   #:use-module (system base pmatch)
   #:use-module (mes mes-0)
+  #:use-module (mes guile)
   #:use-module (mes test))
 
 (cond-expand
