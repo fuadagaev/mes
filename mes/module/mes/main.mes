@@ -94,7 +94,6 @@ General help using GNU software: <http://gnu.org/gethelp/>
           (exit 0)))
       (when main (set! %main main))
       (cond ((pair? files)
-             (display "pair!\n")
              (let* ((file (car files))
                     (port (if (equal? file "-") 0
                               (open-input-file file))))
