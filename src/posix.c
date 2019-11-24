@@ -214,7 +214,10 @@ current_input_port ()
 struct scm *
 open_input_file (struct scm *file_name)
 {
-  return make_number (mes_open (cell_bytes (file_name->string), O_RDONLY, 0));
+  int filedes = mes_open (cell_bytes (file_name->string), O_RDONLY, 0);
+  if (filedes == -1)
+    error (cell_symbol_system_error, cons (make_string0 ("No such file or directory"), file_name));
+  return make_number (filedes);
 }
 
 struct scm *
