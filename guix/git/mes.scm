@@ -152,7 +152,10 @@ extensive examples, including parsers for the Javascript and C99 languages.")
          ("perl" ,perl)                ; build-aux/gitlog-to-changelog
          ("texinfo" ,texinfo)))
       (arguments
-       `(#:strip-binaries? #f)) ; binutil's strip b0rkes MesCC/M1/hex2 binaries
+       `(#:configure-flags (list (string-append "--includedir=" (assoc-ref %outputs "out") "/include/mes")
+                                 (string-append "--libdir=" (assoc-ref %outputs "out") "/lib/mes"))
+         #:tests? #f
+         #:strip-binaries? #f)) ; binutil's strip b0rkes MesCC/M1/hex2 binaries
       (synopsis "Scheme interpreter and C compiler for full source bootstrapping")
       (description
        "GNU Mes--Maxwell Equations of Software--brings the Reduced Binary Seed
