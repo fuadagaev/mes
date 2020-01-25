@@ -1,0 +1,32 @@
+* < 1 week *Trivial*
+** Trusting trust attack can compromise entire system
+** System language, essential applications
+
+| Program | Depndency | Seed |
+|---------+-----------+------|
+| Gcc     | GCC-1     |      |
+| Guile   | C         |      |
+|---------+-----------+------|
+
+
+* < 1 year *Doable*
+** Trusting trust attack can lead to data loss
+** Emerging application programming languages
+
+| Program | Dependency | Seed      |
+|---------+------------+-----------|
+| rust    | rust-1     | mrustc(?) |
+|         |            |           |
+|         |            |           |
+|---------+------------+-----------|
+
+* >= 1 year *Impossible*
+** OK to ignore Trusting trust attack
+** Experimental languages, toy languages
+
+| Program | Dependency | Seed |
+|---------+------------+------|
+| C       |            |      |
+|         |            |      |
+|         |            |      |
+|---------+------------+------|

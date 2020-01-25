@@ -1,0 +1,20 @@
+ 3906  ./pre-inst-env guix graph --system=i686-linux gcc-mesboot0
+ 3907  ./pre-inst-env guix graph --system=i686-linux -e '(@@ (gnu packages commencement) gcc-mesboot0)'
+ 3908  ./pre-inst-env guix graph --system=i686-linux -e '(@@ (gnu packages commencement) gcc-mesboot0)' > gcc-mesboot0-scheme-only.dot
+ 3914  ./pre-inst-env guix graph --system=i686-linux -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' > gcc-core-mesboot0-scheme-only.dot
+ 3923  ./pre-inst-env guix graph --system=i686-linux -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' > gcc-core-mesboot0-scheme-only.dotpk
+ 4859  ~/src/guix/version-1.0/pre-inst-env guix graph -e '(@@ (gnu packages commencement) gnu-make-boot0)'
+ 4860  guix graph hello > hello| dot -T png > hello.png
+ 5855  ~/src/guix/version-1.0/pre-inst-env guix graph -e '(@@ (gnu packages commencement) gnu-make-boot0)' > gnu-make-boot0.dot
+ 5859  ~/src/guix/version-1.0/pre-inst-env guix graph -e '(@@ (gnu packages commencement) gnu-make-boot0)' > gnu-make-boot0.dot
+ 5862  ~/src/guix/version-1.0/pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-final)' > gcc-final.dot
+ 5865  ~/src/guix/version-1.0/pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-boot-0)' > gcc-boot-0.dot
+ 5866  ~/src/guix/version-1.0/pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-boot0)' > gcc-boot0.dot
+ 5925  guix graph hello > hello| dot -T png > hello.png
+ 5928  guix graph hello | dot -T png > hello.png
+ 5930  guix graph mes | dot -T png > mes.png
+ 5932  guix graph make | dot -T png > make.png
+10007  git grep 'guix graph'
+10008  history | grep guix graph
+10009  history | grep 'guix graph'
+10010  history | grep 'guix graph' > graphs

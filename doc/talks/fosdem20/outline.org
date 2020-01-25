@@ -1,0 +1,81 @@
+**** johri: hoe zit t met binary blobs en 512 bytes?
+**** trusting trust solved, not solved: auditen van source code
+**** waarom??? ==> zelfde gcc+binutils+glibc=>trust hashes, voting => ugh
+
+* Welcome
+
+  You will learn why you want to watch this project and
+  why you need to get involved,
+  or get your software provider to adopt #bootstrappable practices.
+
+* What is Scheme-only bootstrap?
+
+  Scheme-only bootstrap (guix wip-bootstrap)
+    + reduce again by 50% to ~60 MB
+    + get rid of GNU userland, clear out /bin, /usr/bin
+    + Only Guile and the Mes bootstrap binaries
+
+  Reduced Binary Seed bootstrap (guix master)
+    + get rid of gcc
+    + reduce by 50% to ~140 MB
+
+* Why working on bootstrap?
+
+  # trusting trust
+
+  downloading a binary and running it
+
+  # unwise, if it's signed and many people are doing it, all we know is
+  # that more people are
+
+  => bitcoin Carl Dong -- Chaincode Labs.
+
+  # it just doesn't feel right -- Vagrant Cascadian (debian developer)
+
+* Questions to avoid ungrounded trust
+
+  Does this program do what I want it to do?
+
+  1. Inspect Source
+
+  2. Does this binary correspond to the source code?
+
+  # reproducibility is not enough, we are still trusting something
+
+  3. Was this binary built with non-malicious tools?
+
+Q: Hardware, kernel?  # DDC
+
+9e*fb
+
+* Future
+
+* Full Source bootstrap
+   + connect hex0 and mes: get rid of Mes bootstrap binaries
+
+* Full Mes bootstrap
+   + remove Guile from bootstrap binaries, use Mes to run Guix and Gash
+
+* Porting
+
+  Mes v0.22
+
+  * NixOS (mes-boot built, next: tcc, gcc)
+  * ARM (NlNet)
+  * the Hurd (mes runs)
+  * FreeBSD (initial binaries run)
+  * Debian, Arch, Windows
+
+* Cleaning up
+
+  * Remove gcc-2.95, go straight to gcc-4.6
+  * Build vanilla tcc, upstream remaining patches
+
+* Raising the bar
+
+  I want code easy to reason about at the heart of this bootstrap, so
+  that everyone will be able to sit down in the morning and be done by
+  lunch time; understading how every piece of it works.  -- Jeremiah Orians
+
+  What should be optimized is the ease with which users can convince
+  themselves that MesCC compiles programs correctly.  -- Mark H Weaver

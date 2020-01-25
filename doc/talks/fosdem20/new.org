@@ -1,0 +1,497 @@
+#+TITLE: GNU Mes
+#+TITLE: \smaller[2]{-- Scheme-only bootstrap}
+#+DATE:2020-02-02
+#+EMAIL: janneke@gnu.org
+#+AUTHOR: janneke@gnu.org
+#+COPYRIGHT: janneke (Jan) Nieuwenhuizen <janneke@gn.org>
+#+LICENSE: GNU Free Documentation License, version 1.3 or later.
+#+OPTIONS: H:2 @:t ::t
+#+OPTIONS: tex:t latex:t todo:t tasks:t
+#+LATEX_HEADER:\institute{FOSDEM'20}
+#+LATEX_HEADER:\def\ahref#1#2{\htmladdnormallink{#2}{#1}}
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LATEX_HEADER: \usepackage{relsize}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \mode<beamer>{\usetheme{X}}
+#+KEYWORDS: GNU, Mes, Mes, Guix, bootstrappable, reproducible
+#+BEAMER_THEME: X
+#+BEAMER_FRAME_LEVEL: 2
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+
+# Ken Thompson UNIX, UTF-8, Golang
+# Reflections on trusting trust
+# 1984 turing award acceptance speach
+
+# because toolchains are built by previous versions of themselves
+# you can poison an entire line of them
+# just by poisoning one generation
+# and it would propagate down to future generations
+# even if the source code was clean
+
+# so, what can we do about a toolchain that consists of countless trusted
+# binaries?
+
+# reproducible + bootstrappable
+
+# => Minimize trusted binary seeds
+# => Maintain auditable bootstrap path
+
+* Introduction
+
+** Scheme-only bootstrap: GNU Mes
+
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.6
+   :BEAMER_ENV: block
+   :END:
+
+  * A Scheme interpreter written in ~5,000LOC of simple C.
+
+  * A C compiler written in Scheme.
+
+  * Built on LISP: eval/apply, the *Maxwell Equations of Software*.
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.3
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\rightskip=2cm\includegraphics[width=0.7\textwidth]{mes.png}
+
+
+** Auditable Elegance
+
+#+LATEX:\tiny
+#+BEGIN_SRC scheme
+(define (apply fn x a)
+  (cond
+   ((atom fn)
+    (cond
+     ((eq fn CAR)  (caar x))
+     ((eq fn CDR)  (cdar x))
+     ((eq fn CONS) (cons (car x) (cadr x)))
+     ((eq fn ATOM) (atom (car x)))
+     ((eq fn EQ)   (eq (car x) (cadr x)))
+     (#t           (apply (eval fn a) x a))))
+   ((eq (car fn) LAMBDA)
+                   (eval (caddr fn) (pairlis (cadr fn) x a)))
+   ((eq (car fn) LABEL)
+                   (apply (caddr fn) x
+                          (cons (cons (cadr fn) (caddr fn)) a)))))
+
+(define (eval e a)
+  (cond
+   ((atom e) (cdr (assoc e a)))
+   ((atom (car e))
+    (cond ((eq (car e) QUOTE) (cadr e))
+          ((eq (car e) COND)  (evcon (cdr e) a))
+          (#t                 (apply (car e) (evlis (cdr e) a) a))))
+   (#t       (apply (car e) (evlis (cdr e) a) a))))
+#+END_SRC
+#+LATEX:\normalsize
+
+=eval= and =apply= are mutual recursing functions that---using
+a few helper functions---describe the universe of computing.
+
+** Long path: Best Practice
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.7
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+  * *500+ MB:* no bootstrap
+#+LATEX:\vskip 10cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.3
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\vskip 10cm
+#+LATEX:\normalsize
+
+** Long path: Best Practice
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.7
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.3
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\normalsize
+*** FOO
+   :PROPERTIES:
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[width=2cm]{logos/android.png}
+#+LATEX:{\includegraphics[height=0.8cm]{logos/apple.png}\includegraphics[width=1.2cm]{logos/macos.png}}
+#+LATEX:\includegraphics[height=1cm]{logos/debian.png}
+#+LATEX:\includegraphics[width=2cm]{logos/fedora.png}
+#+LATEX:\includegraphics[height=0.8cm]{logos/freebsd.png}
+#+LATEX:\includegraphics[height=0.8cm]{logos/netbsd.png}
+#+LATEX:\includegraphics[height=1cm]{logos/openbsd.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/opensuse.png}
+#+LATEX:\includegraphics[width=2cm]{logos/redhat.png}
+#+LATEX:\includegraphics[width=2cm]{logos/ubuntu.png}
+#+LATEX:\includegraphics[width=2.2cm]{logos/windows.png}
+#+LATEX:\vskip 5cm
+#+LATEX:\normalsize
+
+** Reduce binary seeds to bare minimum
+   #+BEGIN_QUOTE
+These big chunks of binary code are practically non-auditable which
+breaks the source to binary transparency that we get in the rest of
+the package dependency graph.
+   #+END_QUOTE
+   #+BEGIN_QUOTE
+Every unauditable binary leaves us vulnerable to compiler backdoors as
+described by Ken Thompson in the 1984 paper *Reflections on Trusting
+Trust*.
+   #+END_QUOTE
+   #+BEGIN_QUOTE
+Thus, our goal is to reduce the set of bootstrap binaries to the bare
+minimum.  -- Ludovic Courtès (GNU Guix documentation, December 2017)
+   #+END_QUOTE
+
+** Long path: GNU Guix System v1.0
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.75
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+ * *252 MB:* GNU Guix System v1.0
+#+LATEX:\vskip 6cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.25
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\includegraphics[height=0.4cm]{logos/nixos.png}\\[0.4cm]
+#+LATEX:\vskip 5.5cm
+#+LATEX:\normalsize
+
+* Reproducibility
+** Carl Dong -- bitcoin build system security
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{bitcoin-carl-dong.png}}}
+#+LATEX:\end{frame}}
+
+** Reproducible-Builds.org
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducible-builds.png}}}
+#+LATEX:\end{frame}}
+
+** How to Bootstrap: An Old Recipe...
+#+LATEX:\rightskip=2cm\includegraphics[width=0.3\textwidth]{yoghurt.png}\\
+   #+BEGIN_QUOTE
+Recipe for yoghurt: Add yoghurt to milk -- Anonymous
+   #+END_QUOTE
+
+** Pour milk
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{pour-milk.png}}
+#+LATEX:\end{frame}}
+
+** Add yoghurt
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{add-yoghurt.png}}
+#+LATEX:\end{frame}}
+
+** We're reproducible
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{we-are-reproducible.png}}}
+#+LATEX:\end{frame}}
+
+** Add evil yoghurt
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2.5cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{add-evil-yoghurt.png}}
+#+LATEX:\end{frame}}
+
+** We're reproducible
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{we-are-reproducible.png}}}
+#+LATEX:\end{frame}}
+
+** We're reproducibly malicous
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{we-are-reproducibly-malicious.png}}}
+#+LATEX:\end{frame}}
+
+** Reproducibility is not enough
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducibility-is-not-enough.png}}}
+#+LATEX:\end{frame}}
+
+
+** Reproducibility plus clean source code is not enough
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducibility+clean-source-code.png}}}
+#+LATEX:\end{frame}}
+
+
+* Bootstrappability
+
+** Guix /pronounced geeks/
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{guix-pronounced-geeks.png}}}
+#+LATEX:\end{frame}}
+
+
+** Guix functional
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{guix-functional.png}}}
+#+LATEX:\end{frame}}
+
+** Long path: Reduced Binary Seed bootstrap
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.75
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+ * *252 MB:* GNU Guix System v1.0
+ * *145 MB:* Reduced Binary Seed
+   + master branch
+   + +GCC+, +GLIBC+, +Binutils+
+   + + MesCC-Tools, + Mes
+#+LATEX:\vskip 5cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.25
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\includegraphics[height=0.4cm]{logos/nixos.png}\\[0.4cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\[1cm]
+#+LATEX:\vskip 4.75cm
+#+LATEX:\normalsize
+
+** GCC mesboot0
+#+LATEX:{\hspace{-0.55cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-1.9cm\includegraphics[width=1\paperwidth,height=1\paperheight]{gcc-mesboot0-unversioned.png}}}
+#+LATEX:\end{frame}}
+
+** NLnet Foundation
+#+LATEX:\begin{center}
+#+LATEX:\includegraphics[width=0.5\paperwidth,height=0.5\paperheight]{nl-net.png}
+#+LATEX:\end{center}
+
+** Long path: Scheme-only bootstrap
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.75
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+ * *252 MB:* GNU Guix System v1.0
+ * *145 MB:* Reduced Binary Seed
+   + master branch
+   + +GCC+, +GLIBC+, +Binutils+
+   + + MesCC-Tools, + Mes
+ * *57 MB:* Scheme-only
+   + wip-bootstrap branch
+   + +Awk+, +Bash+, +Bzip2+, +GNU Core Utilities+, +Grep+, +Gzip+,
+     +Make+, +Patch+, +Sed+, +Tar+, and +XZ+.
+   + + Gash (source only!)
+#+LATEX:\vskip 3cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.25
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\includegraphics[height=0.4cm]{logos/nixos.png}\\[0.4cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\[1cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\
+#+LATEX:\vskip 4.75cm
+#+LATEX:\normalsize
+
+** GCC core-mesboot0-scheme-only
+#+LATEX:{\hspace{-0.55cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-1.9cm\includegraphics[width=1\paperwidth,height=1\paperheight]{gcc-core-mesboot0-scheme-only-unversioned.png}}}
+#+LATEX:\end{frame}}
+
+** GCC mesboot0-scheme-only
+#+LATEX:{\hspace{-0.55cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-1.9cm\includegraphics[width=1\paperwidth,height=1\paperheight]{gcc-mesboot0-scheme-only-unversioned.png}}}
+#+LATEX:\end{frame}}
+
+
+** Cross distro reproducibility
+The sha256sum for bin/mes-mescc on x86 shall be
+
+#+LATEX:\scriptsize
+#+BEGIN_SRC sh
+    722790ed261954eb53cf2cd2906c89c7589ef72b66171bbe2a9dce0f0af20232 v0.22
+    9e0bcb1633c58e7bc415f6ea27cee7951d6b0658e13cdc147e992b31a14625fb v0.21
+#+END_SRC
+#+LATEX:\normalsize
+
+only differing in the version number string.
+
+For v0.21 this has been verified on GNU Guix, Debian GNU/Linux and NixOS.
+
+** The holy grail
+   #+BEGIN_QUOTE
+The holy grail of bootstrappability will be connecting mes to hex0.
+
+                                       -- Carl Dong, Chaincode Labs
+   #+END_QUOTE
+
+** Full Source Bootstrap
+#+LATEX:\begin{center}
+#+LATEX:\includegraphics[width=0.6\textwidth]{fsb-logo-guile-guix-mes.png}
+#+LATEX:\end{center}
+
+** Long path: Full Source Bootstrap
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.75
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+ * *252 MB:* GNU Guix System v1.0
+ * *145 MB:* Reduced Binary Seed
+   + master branch
+   + +GCC+, +GLIBC+, +Binutils+
+   + + MesCC-Tools, + Mes
+ * *57 MB:* Scheme-only
+   + wip-bootstrap branch
+   + +Awk+, +Bash+, +Bzip2+, +GNU Core Utilities+, +Grep+, +Gzip+,
+     +Make+, +Patch+, +Sed+, +Tar+, and +XZ+.
+   + + Gash (source only!)
+ * *357 bytes:* Full Source
+   + +MesCC-Tools+, +Mes+
+   + + Stage0: 357 bytes (x86)
+#+LATEX:\vskip 1cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.25
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\includegraphics[height=0.4cm]{logos/nixos.png}\\[0.4cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\[1cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\
+#+LATEX:\vskip 4.2cm
+#+LATEX:\normalsize
+
+
+** Trusted Computing Base
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{bowl-empty-spoon.png}}}
+#+LATEX:\end{frame}}
+
+** Trusted Computing Base
+  * Binary seeds
+  * Source code
+  * Guix System
+  * Linux
+    + initrd
+    + bootloader
+    + the Hurd
+
+** Won't your life be boring?
+   #+BEGIN_QUOTE
+MesCC should optimize for the ease of convincing us of its correctness.
+                                                       -- Mark H Weaver
+   #+END_QUOTE
+
+** Raising the bar on auditibility
+   #+BEGIN_QUOTE
+I want code easy to reason about at the heart of this bootstrap, so that
+everyone will be able to sit down in the morning and be done by lunch
+time; understanding how every piece of it works.
+                                                      -- Jeremiah Orians
+   #+END_QUOTE
+
+* Thanks
+** Thanks
+# *** Mortals                                                   :B_block:BMCOL:
+#     :PROPERTIES:
+#     :BEAMER_COL: 0.48
+#     :BEAMER_ENV: block
+#     :END:
+   * Carl Dong
+   * David Terry
+   * Jeremiah Orians
+   * Ludovic Courtès
+   * Matt Wette
+   * Timothy Sample
+   * Vagrant Cascadian
+   * ...
+# *** All the Giants                                            :B_block:BMCOL:
+#     :PROPERTIES:
+#     :BEAMER_COL: 0.48
+#     :xBEAMER_ACT: <2->
+#     :BEAMER_ENV: block
+#     :END:
+#    * ...
+# *** Connect
+#     * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+#     * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+#     * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+#     * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+** Thank you?
+*** For helping
+  * make Guix run on Mes
+  * write a bootstrappable syntax-case
+  * simplify MesCC and target GCC-4.6
+  * bootstrap NixOS, Debian
+  * port MesCC to the Hurd, FreeBSD
+  * help with your funding
+  * retweet =@janneke_gnu= =janneke@octodon.social=
+
+*** Connect
+    * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+    * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+    * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+    * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+* legalese
+  :PROPERTIES:
+  :COPYING: t
+  :END:
+
+  Copyright \copy 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+
+  #+BEGIN_QUOTE
+  Permission is granted to copy, distribute and/or modify this
+  document under the terms of the GNU Free Documentation License,
+  Version 1.3 or any later version published by the Free Software
+  Foundation; with no Invariant Sections, with no Front-Cover Texts,
+  and with no Back-Cover Texts.
+  #+END_QUOTE
+
+By Debian - www.debian.org/logos/, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=3330975
+By Canonical Ltd. - http://design.ubuntu.com/wp-content/uploads/logo-ubuntu_no%C2%AE-black_orange-hex.svg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=18296544
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=60635229
+By Original: Apple Inc.Vectorization: Totie - https://www.apple.com/macos/high-sierra/, Public Domain, https://commons.wikimedia.org/w/index.php?curid=59644704
+By Original: Rob Janoff - https://www.apple.com/ac/globalnav/2.0/en_US/images/ac-globalnav/globalnav/apple/image_large.svg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=10472152
+
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=26987122
+By Source (WP:NFCC#4), Fair use, https://en.wikipedia.org/w/index.php?curid=38767733
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=13822991
+By Microsoft - File:Windows Server 2012 logo.svg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=45931123
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=28200444
