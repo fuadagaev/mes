@@ -1,0 +1,292 @@
+# time grep -E '^([^#]|$)' autocue.org | sed -re 's/^[*]+.*/. . slide. ./' | head -264 | tr '\n' ' ' | espeak -s 110 -l 1
+#+TITLE: GNU Mes
+
+* Introduction
+
+hello, i am janneke.
+
+this talk is about GNU Mes and the ongoing effort to remove all
+the binaries that we inject into our free software stack.
+
+** Scheme-only bootstrap: Why?
+
+hopefully you will learn what the new bootstrapping hype is all about.
+
+** Scheme-only bootstrap: GNU Mes
+
+to crack the chicken and egg problem that bootstrapping is, i wrote GNU
+Mes.
+
+MesCC is a C99 compiler written in a subset of Guile Scheme and comes
+with Mes, a Scheme interpreter to run it.
+
+** Auditable Elegance
+
+it has been known from the early days of computing that LISP gives us an
+excellent way to jump from a low level language to an elegant, high
+level language.
+
+** Long path: Best Practice
+
+before we had mes, how were our systems bootstrapped, you may wonder?
+
+in short: they weren't, really.
+
+** Reduce binary seeds to bare minimum
+
+not so GNU Guix. Like NixOS, it has had a proper bootstrap.
+
+** Guix /pronounced geeks/
+
+So what is different?  Ludovic noted that injecting these binary
+bootstrap seeds is a problem, and suggested we get rid of them.
+
+** A big problem, predicted 40y ago
+
+in the eighties, ken thompson showed us that we were having a big problem
+in computing.
+
+how do we react when someone points out a big problem that will be
+affecting almost everyone and is very hard to solve?
+
+** Long path: Ignoring the problem
+
+we ignore it.
+
+** Long path: GNU Guix System v1.0
+
+Guix and its sister Nix use a much smaller set of binary bootstrap
+seeds.
+
+but there is a another reason why Nix and Guix are great for
+bootstrapping research and experiments.
+
+the dependencies between packages are an acyclic, directed graph; unlike
+others there are no bootstrap cycles.
+
+this means that if we find a way to reduce the bootstrap binary seed,
+the the system will still build.
+
+** Carl Dong -- bitcoin build system security
+
+the importance of this was evident to bitcoin developer Carl Dong of
+Chaincode Labs.
+
+i warmly recommend his talk he gave this summer at the breaking bitcoin
+conference, it will only take 18 minutes of your time.
+
+** Reproducible-Builds.org
+
+carl dong explains that bitcoin, driven by the wish to provide secure
+bitcoin downloads, have implemented Gitian, a system that uses
+reproducible builds.
+
+** What is a Bootstrap?
+
+in computing, bootstrapping is slang for doing something that is
+impossible.
+
+for example, let's say you wrote the very first C compiler in C and you
+called it GNU CC; it is impossible to compile this C source code into a
+a working gcc program.
+
+** How to Bootstrap: An Old Recipe...
+
+when we want to do something that is impossible, yet we know something
+quite similar has been done before, what do we do?  we just ask grandma.
+
+grandma, show mee again how you made that yoghurt. well son, you can
+use fresh milk, and add a some yoghurt leftover from yesterday.
+
+** How to Bootstrap: Create your second GCC
+
+using this wisdom, we can now create our second GCC!
+
+** Pour milk
+
+we would like this second GCC to be really bug-free, feature-full and
+secure. so while this may look like ordinary milk, it is actually a
+carefully crafted piece of software. a masterpiece. peer reviewed.
+free software, the real difficult bits may have been pair programmed.
+
+if at all possible, we apply formal verification methods to make our
+second compiler really secure!
+
+** Add yoghurt
+
+we publish the recipe, so that others may verify the result. their
+second compiler.
+
+** We're reproducible
+
+and low and behold, your second compiler exactly matches ours!
+
+as long as you follow our recipe.
+
+** Add evil yoghurt
+
+and use the exact same, FIRST compiler...
+
+** We're reproducible
+
+everyone is ...
+
+** Evil yoghurt
+
+just as bug-free and secure
+
+** We're reproducibly malicous
+
+as our shared, FIRST compiler is
+
+** Reproducibility is not enough
+
+reproducibility is no substitute for bootstrappability
+
+** Reproducibility plus clean source code is not enough
+
+and while bug-free source code remains important, we need something
+else.
+
+** Guix /pronounced geeks/
+
+Carl Dong noticed that Gitian, to build reproducibly, starts by
+downloading "almost all of ubuntu".
+
+so as an attempt to create a more secure and trustworthy bitcoin binary
+download, we download a whole lot of binaries that we must first trust.
+
+hmm?
+
+Carl went looking for a more acceptable solution and found it in Guix.
+
+** Long path: Reduced Binary Seed bootstrap
+
+last year at fosdem, i presented the reduced binary seed bootstrap.
+the next release of Guix has a bootstrap path without GCC.
+
+no more trusting the first GCC.
+
+** GCC mesboot0
+
+could we possibly reduce the binary seed even further?  we would have to
+remove bash, core utils, awk, grep, gzip, make, sed, tar.
+
+that's a lot of work.
+
+** NLnet Foundation
+
+so we are very excited that NlNet believes that what we are doing is
+important. nlnet provided a grant for me to work on the Scheme-only
+bootstrap.
+
+
+** Long path: Scheme-only bootstrap
+
+and that's what i present you this year; another reduction by 50%
+
+** Scheme-only bootstrap: Gash Core Utils
+
+a key ingredient was the development of gash core utils. currently
+focussed single-mindedly on supporting the bootstrap, we plan to create
+a scheme library for shell scripting.
+
+** GCC core-mesboot0-scheme-only
+
+this is what the graph looks like now: the only interesting binaries
+left, are a scheme interpreter and scheme compiler: mes and guile.
+
+** GCC mesboot0-scheme-only
+
+???
+
+** Cross distro reproducibility
+
+after Vagrant Cascadian packaged Mes for Debian and got it into
+unstable, he wondered if there was something we could do to increase the
+trust in Mes.
+
+when he suggested a cross-distro reproducibility test at the
+reproducible build summit, david terry and jelle van der waa joined in
+
+** The holy grail
+
+something else we can do?
+
+** Full Source Bootstrap
+
+given that we dislike downloading binaries and trusting them, why not
+stop doing so altogether?
+
+** Long path: Full Source Bootstrap
+
+the coming year, we will create a full source bootstrap path
+
+** Trusted Computing Base
+
+anything else?
+
+** Trusted Computing Base
+
+when building a package on Guix, the trusted computing base includes
+the build daemon and the linux kernel.
+
+ludovic has built a package in the intial ramdisk, thereby removing the
+build daemon from the trusted computing base.
+
+an obvious next step is linux.
+
+mes v0.22 now runs on the hurd, a micro kernel is another possibility to
+reduce the trusted computing base.
+
+** Raising the bar on auditibility
+
+are our efforts coming to an end?  jeremiah orians has some ideas to
+keep us busy.
+
+** Won't your life be boring?
+
+and so does mark weaver, who is making an excellent point.
+
+** Joy of Source
+
+are we doing this only to counter the trusting trust attack?
+
+i'm not sure, i think that building from source is the proper way to do
+computing; and the trusting trust attack is only a symptom of confusing
+a binary substitute with the compilation of source code.
+
+* Thanks
+
+i am very grateful for getting so much help and seeing this crazy
+project grow!
+
+** Want to join?
+
+that's all folks!
+
+*** You can help
+  * make Guix run on Mes
+  * write a bootstrappable syntax-case
+  * simplify MesCC and target GCC-4.6
+  * bootstrap NixOS, Debian
+  * port MesCC to the Hurd, FreeBSD
+  * spread the message
+  * retweet =@janneke_gnu= =janneke@octodon.social=
+
+*** Connect
+    * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+    * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+    * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+    * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+* legalese
+  Copyright \copy 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+
+  #+BEGIN_QUOTE
+  Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License, Version 1.3 or
+  any later version published by the Free Software Foundation; with no
+  Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+  Texts.
+  #+END_QUOTE

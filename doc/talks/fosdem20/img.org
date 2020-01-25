@@ -1,0 +1,86 @@
+#+TITLE: GNU Mes
+#+TITLE: \smaller[2]{-- Scheme-only bootstrap}
+#+DATE:2020-02-02
+#+EMAIL: janneke@gnu.org
+#+AUTHOR: janneke@gnu.org
+#+OPTIONS: ^:nil
+#+COPYRIGHT: janneke (Jan) Nieuwenhuizen <janneke@gn.org>
+#+LICENSE: GNU Free Documentation License, version 1.3 or later.
+#+LATEX_HEADER:\institute{FOSDEM'20}
+#+LATEX_HEADER:\def\ahref#1#2{\htmladdnormallink{#2}{#1}}
+#+OPTIONS: H:2
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LATEX_HEADER: \usepackage{relsize}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \mode<beamer>{\usetheme{X}}
+#+LATEX_HEADER: \newcommand<>{\fullscreen}[1]{
+#+LATEX_HEADER: \begin{textblock*}{0cm}(-1cm,-3.78cm)
+#+LATEX_HEADER: \includegraphics[width=\paperwidth]{#1}
+#+LATEX_HEADER: \end{textblock*}
+#+LATEX_HEADER: }
+#+BEAMER_THEME: X
+#+BEAMER_FRAME_LEVEL: 2
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+
+Ken Thompson UNIX, UTF-8, Golang
+Reflections on trusting trust
+1984 turing award acceptance speach
+
+because toolchains are built by previous versions of themselves
+you can poison an entire line of them
+just by poisoning one generation
+and it would propagate down to future generations
+even if the source code was clean
+
+so, what can we do about a toolchain that consists of countless trusted
+binaries?
+
+reproducible + bootstrappable
+
+=> Minimize trusted binary seeds
+=> Maintain auditable bootstrap path
+
+* Scheme-only bootstrap: Introduction.
+
+** Scheme-only bootstrap: GNU Mes
+
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.6
+   :BEAMER_ENV: block
+   :END:
+
+  * A Scheme interpreter written in ~5,000LOC of simple C.
+
+  * A C compiler written in Scheme.
+
+  * Built on Lisp: eval/apply, the *Maxwell Equations of Software*.
+
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.3
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\rightskip=2cm\includegraphics[width=0.7\textwidth]{mes.png}
+
+** Reproducible-Builds.org
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\hskip-10cm\vskip-2.5cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducible-builds.png}}
+#+LATEX:\end{frame}}
+
+** Reproducible-Builds.org
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2.5cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducible-builds.png}}
+#+LATEX:\end{frame}}
+
+** Reproducible-Builds.org
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2.5cm{\hspace{-1.5cm}\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducible-builds.png}}}
+#+LATEX:\end{frame}}
+
+** How to Bootstrap: An Old Recipe...
+#+LATEX:\rightskip=2cm\includegraphics[width=0.3\textwidth]{yoghurt.png}\\
+   #+BEGIN_QUOTE
+Recipe for yoghurt: Add yoghurt to milk -- Anonymous
+   #+END_QUOTE
