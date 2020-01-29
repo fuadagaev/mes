@@ -2,108 +2,131 @@ digraph  {
   node[shape=box,width=1,height=0.25];
   edge [height=0.25];
 
-  # "hex0-monitor" [label = "hex0 Monitor", shape = box];
-  # "hex0-assembler" [label = "hex0 Assembler", shape = box];
+  # "hex0 Monitor" [label = "hex0 Monitor", shape = box];
+  # "hex0 Assembler" [label = "hex0 Assembler", shape = box];
   # "SET" [label = "SET editor", shape = box];
-  # "hex1-assembler" [label = "hex1 Assembler", shape = box];
-  # "hex2-assembler" [label = "hex2 Assembler", shape = box];
-  # "M1-Macro" [label = "M1 Macro assembler", shape = box];
-  # "cat" [label = "cat", shape = box];
+  # "hex1 Assembler" [label = "hex1 Assembler", shape = box];
+  # "hex2 Assembler" [label = "hex2 Assembler", shape = box];
+  # "M1 Macro assembler" [label = "M1 Macro assembler", shape = box];
+  # "catm" [label = "catm", shape = box];
   # "Slow_Lisp" [label = "Slow Lisp", shape = box];
   # "Stage0-FORTH" [label = "Stage0 FORTH", shape = box];
   # "cc_x86" [label = "cc_x86", shape = box];
   # "M2-Planet" [label = "M2-PLanet", shape = box];
   # "M2-Moon" [label = "M2-Moon", color = red1, shape = box];
   # "mescc-tools-seed" [label = "mescc-tools-seed", shape = box];
-  "?" [label = "?", color = red1, shape = box];
-  "bootstrap-binaries" [label = "bootstrap-binaries", color=red1, shape = box];
-  # "mescc-tools" [label = "mescc-tools", shape = box];
-  # "Mes C Lib.M2" [label = "Mes C Lib.M2", color = red1, shape = box];
-  # "mes.M2" [label = "mes.M2", color = red1, shape = box];
-  # "mescc" [label = "mescc", shape = box];
-  # "Mes C Lib +tcc" [label = "Mes C Lib +tcc", color = red1, shape = box];
-  "tcc" [label = "tcc", shape = box];
-  "Mes C Lib +GNU" [label = "Mes C Lib +GNU", shape = box];
-  "gcc-core 2.95.3" [label = "gcc-core 2.95.3", shape = box];
-  "glibc 2.2.5" [label = "glibc 2.2.5", shape = box];
-  "gcc 2.95.3" [label = "gcc 2.95.3", shape = box];
-  "glibc 2.16" [label = "glibc 2.16", shape = box];
-  "gcc 4.7.4" [label = "gcc 4.7.4", shape = box];
+  # "%bootstrap Guile" [label = "%bootstrap Guile", color=cyan3, shape = box];
+  # "mescc-tools" [label = "mescc-tools", color = black, shape = box];
 
-  # "SET" -> "hex0-monitor" [color = cyan];
-  # "hex0-assembler" -> "hex0-monitor" [color = black];
-  # "hex1-assembler" -> "hex0-assembler" [color = black];
-  # "hex2-assembler" -> "hex1-assembler" [color = black];
-  # "M1-Macro" -> "hex2-assembler" [color = black];
-  # "cat" -> "M1-Macro" [color = cyan];
-  # "Slow_Lisp" -> "M1-Macro" [color = green2];
-  # "Stage0-FORTH" -> "M1-Macro" [color = green2];
-  # "cc_x86" -> "M1-Macro" [color = black];
+  # "Mes' M2" [label = "Mes' M2", color = red1, shape = box];
+  # "Mes' Libc M2" [label = "Mes' Libc M2", color = red1, shape = box];
+  # "Mes" [label = "Mes", color = cyan3, shape = box];
+  # "Mes Libc" [label = "Mes Libc", color = cyan3, shape = box];
+  # "mescc" [label = "mescc", color = black, shape = box];
+  # "Mes Libc +TCC" [label = "Mes Libc +TCC", color = black, shape = box];
+
+  "tcc" [label = "tcc", color=cyan3, shape = box];
+  "Mes Libc +GNU" [label = "Mes Libc +GNU", shape = box];
+  "gcc-core 2.95.3" [label = "gcc-core 2.95.3", shape = box];
+  "glibc 2.2.5" [label = "glibc 2.2.5", color=cyan3, shape = box];
+  "gcc 2.95.3" [label = "gcc 2.95.3", color=cyan3, shape = box];
+  "glibc 2.16" [label = "glibc 2.16", shape = box];
+  "gcc 4.6.4" [label = "gcc 4.6.4", shape = box];
+
+  # "SET" -> "hex0 Monitor" [color = cyan];
+  # "hex0 Assembler" -> "hex0 Monitor" [color = black];
+  # "hex1 Assembler" -> "hex0 Assembler" [color = black];
+  # "hex2 Assembler" -> "hex1 Assembler" [color = black];
+  # "M1 Macro assembler" -> "hex2 Assembler" [color = black];
+  # "catm" -> "M1 Macro assembler" [color = cyan];
+  # "Slow_Lisp" -> "M1 Macro assembler" [color = green2];
+  # "Stage0-FORTH" -> "M1 Macro assembler" [color = green2];
+  # "cc_x86" -> "M1 Macro assembler" [color = black];
   # "M2-Planet" -> "cc_x86" [color = black];
-  # "M2-Moon" -> "M1-Macro" [color = red1];
+  # "M2-Moon" -> "M1 Macro assembler" [color = red1];
   # "mescc-tools-seed" -> "cc_x86" [color = black];
   # "mescc-tools" -> "mescc-tools-seed" [color = black];
   # "mescc-tools" -> "M2-Planet" [color = black];
-  "bootstrap-binaries" -> "?" [color = red1];
 
-  # "mes.M2" -> "bootstrap-binaries" [color = black];
-  # "mes.M2" -> "mescc-tools" [color = red1];
-  # "mes.M2" -> "Mes C Lib.M2" [color = red1];
-  # "mes.M2" -> "M2-Planet" [color = red1];
-  # "mescc" -> "mes.M2" [color = black];
+  # "Gash" -> "Mes' M2" [color = red1];
+  # "Gash" -> "%bootstrap Guile" [color = cyan3];
+  "Gash Core Utils" -> "Gash" [color = black];
+  # "Gash Core Utils" -> "%bootstrap Guile" [color = cyan3];
+  # "Gash Core Utils" -> "Mes' M2" [color = red1];
 
-  # "Mes C Lib +tcc" -> "mes.M2" [color = red1];
+  # "Mes' Libc M2" -> "M2-Planet" [color = red1];
 
-  # "tcc" -> "Mes C Lib +tcc" [color = black];
-  # "tcc" -> "bootstrap-binaries" [color = black];
+  # "Mes' M2" -> "mescc-tools" [color = red1];
+  # "Mes' M2" -> "Mes' Libc M2" [color = red1];
+  # "Mes' M2" -> "M2-Planet" [color = red1];
+
+  # "Mes" -> "mescc-tools" [color = cyan3];
+  # "Mes" -> "Mes Libc" [color = cyan3];
+  # "Mes" -> "Gash" [color = cyan3];
+  # "Mes" -> "Gash Core Utils" [color = cyan3];
+
+  # "mescc" -> "Mes' M2" [color = red1];
+  # "mescc" -> "Mes" [color = cyan3];
+
+  # "Mes Libc +TCC" -> "Mes" [color = cyan3];
+  # "Mes Libc +TCC" -> "Mes' M2" [color = red1];
+
+  # "tcc" -> "Mes Libc +TCC" [color = black];
+  # "tcc" -> "Gash" [color = black];
+  # "tcc" -> "Gash Core Utils" [color = black];
   # "tcc" -> "mescc" [color = black];
 
-  "gcc-core 2.95.3" -> "Mes C Lib +GNU" [color = black];
+  "Mes Libc +GNU" -> "tcc" [color = black];
+
+  "gcc-core 2.95.3" -> "Mes Libc +GNU" [color = black];
+  "gcc-core 2.95.3" -> "Gash" [color = black];
+  "gcc-core 2.95.3" -> "Gash Core Utils" [color = black];
   "gcc-core 2.95.3" -> "tcc" [color = black];
-  "gcc-core 2.95.3" -> "bootstrap-binaries" [color = black];
 
-  "binutils" -> "Mes C Lib +GNU" [color = black];
-  "binutils" -> "tcc" [color = black];
-  "binutils" -> "bootstrap-binaries" [color = black];
-
-  "make" -> "Mes C Lib +GNU" [color = black];
+  "make" -> "Mes Libc +GNU" [color = black];
   "make" -> "tcc" [color = black];
-  "make" -> "bootstrap-binaries" [color = black];
+  "make" -> "Gash" [color = black];
+  "make" -> "Gash Core Utils" [color = black];
+
+  "binutils 2.14" -> "tcc" [color = black];
+  "binutils 2.14" -> "Mes Libc +GNU" [color = black];
 
   "glibc 2.2.5" -> "gcc-core 2.95.3" [color = black];
-  "glibc 2.2.5" -> "binutils" [color = black];
-  "glibc 2.2.5" -> "Mes C Lib +GNU" [color = black];
+  "glibc 2.2.5" -> "binutils 2.14" [color = black];
+  "glibc 2.2.5" -> "Mes Libc +GNU" [color = black];
   "glibc 2.2.5" -> "make" [color = black];
-  "glibc 2.2.5" -> "bootstrap-binaries" [color = black];
+  "glibc 2.2.5" -> "Gash" [color = black];
+  "glibc 2.2.5" -> "Gash Core Utils" [color = black];
 
   "gcc 2.95.3" -> "gcc-core 2.95.3" [color = black];
-  "gcc 2.95.3" -> "binutils" [color = black];
+  "gcc 2.95.3" -> "binutils 2.14" [color = black];
   "gcc 2.95.3" -> "glibc 2.2.5" [color = black];
   "gcc 2.95.3" -> "make" [color = black];
-  "gcc 2.95.3" -> "bootstrap-binaries" [color = black];
+  "gcc 2.95.3" -> "Gash" [color = black];
+  "gcc 2.95.3" -> "Gash Core Utils" [color = black];
 
   "glibc 2.16" -> "glibc 2.2.5" [color = black];
-  "glibc 2.16" -> "binutils" [color = black];
+  "glibc 2.16" -> "binutils 2.14" [color = black];
   "glibc 2.16" -> "gcc 2.95.3" [color = black];
   "glibc 2.16" -> "make" [color = black];
-  "glibc 2.16" -> "bootstrap-binaries" [color = black];
+  "glibc 2.16" -> "Gash" [color = black];
+  "glibc 2.16" -> "Gash Core Utils" [color = black];
 
-  "gcc 4.7.4" -> "glibc 2.16" [color = black];
-  "gcc 4.7.4" -> "binutils" [color = black];
-  "gcc 4.7.4" -> "gcc 2.95.3" [color = black];
-  "gcc 4.7.4" -> "make" [color = black];
-  "gcc 4.7.4" -> "bootstrap-binaries" [color = black];
+  "gcc 4.6.4" -> "glibc 2.16" [color = black];
+  "gcc 4.6.4" -> "binutils 2.14" [color = black];
+  "gcc 4.6.4" -> "gcc 2.95.3" [color = black];
+  "gcc 4.6.4" -> "make" [color = black];
+  "gcc 4.6.4" -> "Gash" [color = black];
+  "gcc 4.6.4" -> "Gash Core Utils" [color = black];
 
   node [shape=plaintext]
   subgraph cluster_01 {
     key [label=<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
       <tr><td align="left"><font color="black">black</font></td><td align="left">done, essential</td></tr>
-<!--
       <tr><td align="left"><font color="cyan3">cyan</font></td><td align="left">done, optional</td></tr>
-      <tr><td align="left"><font color="green3">green</font></td><td align="left">done, undecided</td></tr>
-!-->
-      <tr><td align="left"><font color="red1">red</font></td><td align="left">in progress, essential</td></tr>
 <!--
+      <tr><td align="left"><font color="green3">green</font></td><td align="left">done, undecided</td></tr>
+      <tr><td align="left"><font color="red1">red</font></td><td align="left">in progress, essential</td></tr>
       <tr><td align="left"><font color="orange">orange</font></td><td align="left">in progress, undecided</td></tr>
 !-->
       </table>>]
