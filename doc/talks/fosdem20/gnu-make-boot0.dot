@@ -1,0 +1,13 @@
+digraph "Guix package" {
+  "39920672" [label = "make-boot0@4.2.1", shape = box, fontname = Helvetica];
+  "39920672" -> "40227520" [color = black];
+  "39920672" -> "40227344" [color = black];
+  "39920672" -> "40227168" [color = black];
+  "39920672" -> "40226992" [color = black];
+  "40227520" [label = "glibc-bootstrap@0", fontname = Helvetica];
+  "40227344" [label = "gcc-bootstrap@0", fontname = Helvetica];
+  "40227344" -> "40227520" [color = black];
+  "40227168" [label = "binutils-bootstrap@0", fontname = Helvetica];
+  "40226992" [label = "bootstrap-binaries@0", fontname = Helvetica];
+
+}
