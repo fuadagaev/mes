@@ -1,0 +1,57 @@
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                        |
+----------------------------------------------------------------------------------------
+
+xwininfo: Window id: 0x1e0000e "GNU Mes [2]– Bootstrapping GNU"
+
+  Absolute upper-left X:  1
+  Absolute upper-left Y:  -1
+  Relative upper-left X:  1
+  Relative upper-left Y:  -1
+  Width: 1230
+  Height: 942
+  Depth: 24
+  Visual: 0x161
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x1e0000d (not installed)
+  Bit Gravity State: NorthWestGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: no
+  Map State: IsViewable
+  Override Redirect State: no
+  Corners:  +1+-1  -1969+-1  -1969-859  +1-859
+  -geometry 615x471+1+-1

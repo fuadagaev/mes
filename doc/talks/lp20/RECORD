@@ -1,0 +1,5 @@
+guix environment --ad-hoc espeak xwininfo recordmydesktop
+xwininfo
+recordmydesktop --delay 3 --windowid 0x1e0000e -x 50 -y 130 --width 1280 --height 960 --no-cursor
+
+recordmydesktop --delay 3 --fps 15 --windowid 0x1e0000e -x 375 -y 340 --width 480 --height 350 --no-cursor

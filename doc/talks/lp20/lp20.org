@@ -1,0 +1,386 @@
+#+TITLE: GNU Mes
+#+TITLE: \smaller[2]{-- Bootstrapping GNU}
+#+DATE:2020-03-15
+#+EMAIL: janneke@gnu.org
+#+AUTHOR: janneke@gnu.org
+#+COPYRIGHT: janneke (Jan) Nieuwenhuizen <janneke@gn.org>
+#+LICENSE: GNU Free Documentation License, version 1.3 or later.
+#+OPTIONS: H:2 @:t ::t
+#+OPTIONS: tex:t latex:t todo:t tasks:t
+#+LATEX_HEADER:\institute{Libre Planet '20}
+#+LATEX_HEADER:\def\ahref#1#2{\htmladdnormallink{#2}{#1}}
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LATEX_HEADER: \usepackage{relsize}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \mode<beamer>{\usetheme{X}}
+#+KEYWORDS: GNU, Mes, Mes, Guix, bootstrappable, reproducible
+#+BEAMER_THEME: X
+#+BEAMER_FRAME_LEVEL: 2
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+# #+LATEX_HEADER:\usepackage{pgfpages}
+# #+LATEX_HEADER:\setbeameroption{show notes}
+# #+LATEX_HEADER:\setbeameroption{show notes on second screen=left}
+
+* Introduction
+
+** GNU Mes: Bootstrapping GNU
+
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.6
+   :BEAMER_ENV: block
+   :END:
+
+  * A Scheme interpreter written in ~5,000LOC of simple C.
+
+  * A C compiler written in Scheme.
+
+  * Built on LISP: eval/apply, the *Maxwell Equations of Software*.
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.3
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\rightskip=2cm\includegraphics[width=0.7\textwidth]{mes.png}
+
+** A big problem, predicted 40y ago
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{ken-thompson.png}}}
+#+LATEX:\end{frame}}
+
+** Long path: Ignoring the Problem
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.7
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.3
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\normalsize
+*** FOO
+   :PROPERTIES:
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[width=2cm]{logos/android.png}
+#+LATEX:{\includegraphics[height=0.8cm]{logos/apple.png}\includegraphics[width=1.2cm]{logos/macos.png}}
+#+LATEX:\includegraphics[height=1cm]{logos/debian.png}
+#+LATEX:\includegraphics[width=2cm]{logos/fedora.png}
+#+LATEX:\includegraphics[height=0.8cm]{logos/freebsd.png}
+#+LATEX:\includegraphics[height=0.8cm]{logos/netbsd.png}
+#+LATEX:\includegraphics[height=1cm]{logos/openbsd.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/opensuse.png}
+#+LATEX:\includegraphics[width=2cm]{logos/redhat.png}
+#+LATEX:\includegraphics[width=2cm]{logos/ubuntu.png}
+#+LATEX:\includegraphics[width=2.2cm]{logos/windows.png}
+#+LATEX:\vskip 5cm
+#+LATEX:\normalsize
+
+** Journey to the Source?
+#+LATEX:\hspace{115mm}\tiny{???}\\[-6.0ex]
+#+LATEX:\hspace{ 90mm}\tiny{Soft Landing Systems}\\[-0.5ex]
+#+LATEX:\hspace{ 82mm}\tiny{0.90 .. 0.01}\\[-1.0ex]
+#+LATEX:\hspace{ 74mm}\tiny{0.93rc5}\\[-1.1ex]
+#+LATEX:\hspace{ 66mm}\tiny{0.93rc6}\\[-1.0ex]
+#+LATEX:\hspace{ 60mm}\tiny{1.1 buzz}\\[-1.0ex]
+#+LATEX:\hspace{ 54mm}\tiny{1.2 rex}\\[-1.0ex]
+#+LATEX:\hspace{ 48mm}\tiny{1.3 bo}\\[-1.0ex]
+#+LATEX:\hspace{ 42mm}\tiny{2.0 hamm}\\[-0.6ex]
+#+LATEX:\hspace{ 37mm}\tiny{2.1 slink}\\[-1.1ex]
+#+LATEX:\hspace{ 30mm}\scriptsize{2.2 potato}\\[-1.1ex]
+#+LATEX:\hspace{ 24mm}\footnotesize{3.0 woody}\\[-1.1ex]
+#+LATEX:\hspace{ 19mm}\small{3.1 sarge}\\[-1.0ex]
+#+LATEX:\hspace{ 14mm}\normalsize{4 etch}\\[-1.1ex]
+#+LATEX:\hspace{ 10mm}\large{5 lenny}\\[-1.2ex]
+#+LATEX:\hspace{ 6mm}\Large{6 squeeze}\\[-1.2ex]
+#+LATEX:\hspace{ 3mm}\LARGE{7 wheezy}\\[-1.2ex]
+#+LATEX:\hspace{ 1mm}\huge{8 jessie}\\[-1.3ex]
+#+LATEX:\hspace{ 0mm}\Huge{9 stretch}\\[-0.2ex]
+#+LATEX:\hspace{ 0mm}\Huge{10 buster}
+#+LATEX:\normalsize
+   #+BEGIN_QUOTE
+As time goes on we will expire the binary packages for old releases.
+Currently we have binaries for squeeze, lenny, etch, sarge, woody,
+potato, slink, hamm and bo available, and only source code for the other
+releases.  -- \ahref{https://www.debian.org/distrib/archive}{www.debian.org/distrib/archive}
+   #+END_QUOTE
+
+* Reproducibility
+** Carl Dong -- bitcoin build system security
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{bitcoin-carl-dong.png}}}
+#+LATEX:\end{frame}}
+
+** Reproducible-Builds.org
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducible-builds.png}}}
+#+LATEX:\end{frame}}
+
+** What is a Bootstrap?
+*** Impossible task: pull yourself up on your boot straps
+
+#+LATEX:\rightskip=2cm\includegraphics[width=0.3\textwidth]{boot-strap.png}
+
+*** Software: to create your first: kernel, shell, C compiler, ...
+
+#+LATEX:\includegraphics[width=0.15\textwidth]{gcc.png}
+#+LATEX:{\fontsize{20}{10}\selectfont source\normalsize}
+#+LATEX:{\fontsize{40}{20}\selectfont + ?? =}
+#+LATEX:\includegraphics[width=0.15\textwidth]{gcc.png}
+#+LATEX:{\fontsize{20}{10}\selectfont binary\normalsize}
+
+** How to Bootstrap: An Old Recipe...
+#+LATEX:\rightskip=2cm\includegraphics[width=0.3\textwidth]{yoghurt.png}\\
+   #+BEGIN_QUOTE
+Recipe for yoghurt: Add yoghurt to milk -- Anonymous
+   #+END_QUOTE
+** How to Bootstrap: Create your second GCC
+
+*** IGNORE
+   :PROPERTIES:
+   :BEAMER_env: ignoreheading
+   :END:
+
+Traditional recipe: like yoghurt
+#+LATEX:\\[1cm]
+#+LATEX:\includegraphics[width=0.15\textwidth]{gcc.png}
+#+LATEX:{\fontsize{10}{5}\selectfont source\normalsize}
+#+LATEX:{\fontsize{40}{20}\selectfont +}
+#+LATEX:\includegraphics[width=0.15\textwidth]{gcc.png}
+#+LATEX:{\fontsize{10}{5}\selectfont binary - 1\normalsize}
+#+LATEX:{\fontsize{40}{10}\selectfont = \normalsize}
+#+LATEX:\includegraphics[width=0.15\textwidth]{gcc.png}
+#+LATEX:{\fontsize{10}{5}\selectfont binary\normalsize}
+#+LATEX:\\[1cm]
+
+*** IGNORE
+   :PROPERTIES:
+   :BEAMER_env: ignoreheading
+   :END:
+
+... and done!
+
+** Pour milk
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{pour-milk.png}}
+#+LATEX:\end{frame}}
+
+** Add yoghurt
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{add-yoghurt.png}}
+#+LATEX:\end{frame}}
+
+** We're reproducible
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{we-are-reproducible.png}}}
+#+LATEX:\end{frame}}
+
+** Add evil yoghurt
+#+LATEX:{\begin{frame}[plain]
+#+LATEX:{\vskip-2.5cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{add-evil-yoghurt.png}}
+#+LATEX:\end{frame}}
+
+** We're reproducible
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{we-are-reproducible.png}}}
+#+LATEX:\end{frame}}
+
+** Evil yoghurt
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{evil-yoghurt-rect-black.png}}}
+#+LATEX:\end{frame}}
+
+** We're reproducibly malicous
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{we-are-reproducibly-malicious.png}}}
+#+LATEX:\end{frame}}
+
+** Reproducibility is not enough
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducibility-is-not-enough.png}}}
+#+LATEX:\end{frame}}
+
+
+** Reproducibility plus clean source code is not enough
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{reproducibility+clean-source-code.png}}}
+#+LATEX:\end{frame}}
+
+
+* Bootstrappability
+
+** Guix /pronounced geeks/
+#+LATEX:{\hspace{-1.2cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-2.8cm\includegraphics[width=1.1\paperwidth,height=1.1\paperheight]{guix-pronounced-geeks.png}}}
+#+LATEX:\end{frame}}
+
+** Long path: Scheme-only bootstrap
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.75
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+ * *252 MB:* GNU Guix System v1.0
+ * *145 MB:* Reduced Binary Seed
+   + master branch
+   + +GCC+, +GLIBC+, +Binutils+
+   + + MesCC-Tools, + Mes
+ * *57 MB:* Scheme-only
+   + wip-bootstrap branch
+   + +Awk+, +Bash+, +Bzip2+, +GNU Core Utilities+, +Grep+, +Gzip+,
+     +Make+, +Patch+, +Sed+, +Tar+, and +XZ+.
+   + + Gash (source only!)
+#+LATEX:\vskip 3cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.25
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\includegraphics[height=0.4cm]{logos/nixos.png}\\[0.4cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\[1cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\
+#+LATEX:\vskip 4.75cm
+#+LATEX:\normalsize
+
+** NLnet Foundation
+#+LATEX:\begin{center}
+#+LATEX:\includegraphics[width=0.5\paperwidth,height=0.5\paperheight]{nl-net.png}
+#+LATEX:\end{center}
+
+** GCC mesboot0-scheme-only
+#+LATEX:{\hspace{-0.55cm}\begin{frame}[plain]
+#+LATEX:{{\vskip-1.9cm\includegraphics[width=1\paperwidth,height=1\paperheight]{gcc-mesboot0-scheme-only-unversioned.png}}}
+#+LATEX:\end{frame}}
+
+** Full Source Bootstrap
+#+LATEX:\begin{center}
+#+LATEX:\includegraphics[width=0.6\textwidth]{fsb-logo-guile-guix-mes.png}
+#+LATEX:\end{center}
+
+** Long path: Full Source Bootstrap
+#+LATEX:\Large
+*** GNU Mes
+   :PROPERTIES:
+   :BEAMER_COL: 0.75
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\normalfont
+ * *500+ MB:* no bootstrap
+ * *252 MB:* GNU Guix System v1.0
+ * *145 MB:* Reduced Binary Seed
+   + master branch
+   + +GCC+, +GLIBC+, +Binutils+
+   + + MesCC-Tools, + Mes
+ * *57 MB:* Scheme-only
+   + wip-bootstrap branch
+   + +Awk+, +Bash+, +Bzip2+, +GNU Core Utilities+, +Grep+, +Gzip+,
+     +Make+, +Patch+, +Sed+, +Tar+, and +XZ+.
+   + + Gash (source only!)
+ * *357 bytes:* Full Source
+   + +MesCC-Tools+, +Mes+
+   + + Stage0: 357 bytes (x86)
+#+LATEX:\vskip 1cm
+*** LOGO
+   :PROPERTIES:
+   :BEAMER_COL: 0.25
+   :BEAMER_ENV: quote
+   :END:
+#+LATEX:\includegraphics[height=0.7cm]{logos/debian.png}
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\includegraphics[height=0.4cm]{logos/nixos.png}\\[0.4cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\[1cm]
+#+LATEX:\includegraphics[height=0.7cm]{logos/guix.png}\\
+#+LATEX:\vskip 4.2cm
+#+LATEX:\normalsize
+
+** Joy of Source
+#+LATEX:\large
+   #+BEGIN_QUOTE
+Vulnerability to a *trusting trust attack* is a symptom of an
+unauditable or missing bootstrap story.  -- janneke
+   #+END_QUOTE
+#+LATEX:\normalsize
+
+* Thanks
+** Thanks
+# *** Mortals                                                   :B_block:BMCOL:
+#     :PROPERTIES:
+#     :BEAMER_COL: 0.48
+#     :BEAMER_ENV: block
+#     :END:
+   * Carl Dong
+   * Danny Milosavljevic
+   * David Terry
+   * Jeremiah Orians
+   * Ludovic Courtès
+   * Matt Wette
+   * Pjotr Prins
+   * Rutger van Beusekom
+   * Timothy Sample
+   * Vagrant Cascadian
+# *** All the Giants                                            :B_block:BMCOL:
+#     :PROPERTIES:
+#     :BEAMER_COL: 0.48
+#     :xBEAMER_ACT: <2->
+#     :BEAMER_ENV: block
+#     :END:
+#    * ...
+# *** Connect
+#     * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+#     * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+#     * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+#     * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+** Want to join?
+*** You can help
+  * raise awareness
+  * make core GNU packages bootstrappable again
+    + +XZ-only+ => *.GZ* tarballs (thank you: sed, coreutils!)
+    + GCC (c++!), GNU Libc (python?!)
+  * reduced bootstrap NixOS, Debian
+  * port MesCC to the Hurd, FreeBSD
+  * retweet/toot =@janneke_gnu= =janneke@octodon.social=
+
+*** Connect
+    * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+    * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+    * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+    * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+* legalese
+  :PROPERTIES:
+  :BEAMER_ENV: note
+  :COPYING: t
+  :END:
+
+  Copyright \copy 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+
+  #+BEGIN_QUOTE
+  Permission is granted to copy, distribute and/or modify this
+  document under the terms of the GNU Free Documentation License,
+  Version 1.3 or any later version published by the Free Software
+  Foundation; with no Invariant Sections, with no Front-Cover Texts,
+  and with no Back-Cover Texts.
+  #+END_QUOTE
+
+By Debian - www.debian.org/logos/, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=3330975
+By Canonical Ltd. - http://design.ubuntu.com/wp-content/uploads/logo-ubuntu_no%C2%AE-black_orange-hex.svg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=18296544
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=60635229
+By Original: Apple Inc.Vectorization: Totie - https://www.apple.com/macos/high-sierra/, Public Domain, https://commons.wikimedia.org/w/index.php?curid=59644704
+By Original: Rob Janoff - https://www.apple.com/ac/globalnav/2.0/en_US/images/ac-globalnav/globalnav/apple/image_large.svg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=10472152
+
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=26987122
+By Source (WP:NFCC#4), Fair use, https://en.wikipedia.org/w/index.php?curid=38767733
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=13822991
+By Microsoft - File:Windows Server 2012 logo.svg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=45931123
+By Source, Fair use, https://en.wikipedia.org/w/index.php?curid=28200444
