@@ -1,0 +1,338 @@
+#! /bin/sh
+
+convert -density 400 ../lp20.pdf lp20.png
+
+for i in $(seq 0 27); do
+    rm -f $i.avi
+    ffmpeg -r 1 -i lp20-$i.png -c:v libx264 -r 30 -pix_fmt yuv420p $i.avi
+done
+
+cat > avi.lst <<EOF
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+file 0.avi
+
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+file 1.avi
+
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+file 2.avi
+
+file 3.avi
+file 3.avi
+file 3.avi
+file 3.avi
+file 3.avi
+file 3.avi
+file 3.avi
+
+file 4.avi
+file 4.avi
+file 4.avi
+file 4.avi
+file 4.avi
+file 4.avi
+file 4.avi
+file 4.avi
+file 4.avi
+
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+file 5.avi
+
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+file 6.avi
+
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+file 7.avi
+
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+file 8.avi
+
+file 9.avi
+file 9.avi
+file 9.avi
+file 9.avi
+file 9.avi
+file 9.avi
+file 9.avi
+file 9.avi
+file 9.avi
+
+file 10.avi
+file 10.avi
+file 10.avi
+file 10.avi
+file 10.avi
+
+file 11.avi
+file 11.avi
+file 11.avi
+file 11.avi
+file 11.avi
+file 11.avi
+file 11.avi
+file 11.avi
+
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+file 12.avi
+
+file 13.avi
+file 13.avi
+file 13.avi
+file 13.avi
+
+file 14.avi
+file 14.avi
+file 14.avi
+file 14.avi
+file 14.avi
+
+file 15.avi
+file 15.avi
+file 15.avi
+file 15.avi
+
+file 16.avi
+file 16.avi
+file 16.avi
+file 16.avi
+
+file 17.avi
+file 17.avi
+file 17.avi
+file 17.avi
+file 17.avi
+file 17.avi
+file 17.avi
+file 17.avi
+file 17.avi
+
+file 18.avi
+file 18.avi
+file 18.avi
+file 18.avi
+file 18.avi
+file 18.avi
+file 18.avi
+
+file 19.avi
+file 19.avi
+file 19.avi
+file 19.avi
+file 19.avi
+file 19.avi
+file 19.avi
+file 19.avi
+
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+file 20.avi
+
+file 21.avi
+file 21.avi
+file 21.avi
+file 21.avi
+file 21.avi
+file 21.avi
+file 21.avi
+file 21.avi
+file 21.avi
+
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+file 22.avi
+
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+file 23.avi
+
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+file 24.avi
+
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+file 25.avi
+
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+file 26.avi
+
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+file 27.avi
+EOF
+
+rm -f movie.avi
+ffmpeg -f concat -r 1 -i avi.lst -c copy -c:v libx264 -r 30 movie.avi
+
+rm -f video.ogv
+ffmpeg -i movie.avi video.ogv
+rm -f talk.ogv
+
+ffmpeg -i audio.ogg -i video.ogv -metadata title="GNU Mes -- Bootstrapping GNU" -metadata year="2020"  -metadata author="janneke@gnu.org" -metadata comment="LibrePlanet 2020 Lightning talk" talk.ogv
