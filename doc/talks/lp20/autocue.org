@@ -1,0 +1,165 @@
+# time grep -E '^([^#]|$)' autocue.org | sed -re 's/^[*]+.*/. . slide. ./' | head -156 | tr '\n' ' ' | espeak -s 110 -l 1
+#+TITLE: GNU Mes
+
+* Introduction
+
+hello, i am janneke.
+
+this talk is about GNU Mes and our efforts to create an auditable, full
+source bootstrap for our free software systems.
+
+** Scheme-only bootstrap: GNU Mes
+
+MesCC is a C99 compiler written in a subset of Guile Scheme and comes
+with Mes, a Scheme interpreter to run it.
+
+** A big problem, predicted 40y ago
+
+in the eighties, ken thompson showed us the growing trust problem that
+was being introduced in computing.
+
+** Long path: Ignoring the problem
+
+his message has mostly been ignored.
+
+** Journey to the Source?
+
+we are injecting more and larger binary seeds to build our free software
+systems.
+
+** Carl Dong -- bitcoin build system security
+
+the importance to stop this trend was evident to bitcoin developer Carl
+Dong of Chaincode Labs.
+
+i warmly recommend the talk he gave at the breaking bitcoin conference.
+
+** Reproducible-Builds.org
+
+bitcoin has implemented Gitian, a system that uses reproducible builds.
+
+** What is a Bootstrap?
+
+let's say you wrote the first ever GNU CC compiler and you wrote it in
+C; it is impossible to compile this C source code into an executable gcc
+program.
+
+** How to Bootstrap: An Old Recipe...
+
+ah but that's like making yoghurt: use fresh milk and just add some
+yoghurt leftover from yesterday.
+
+** How to Bootstrap: Create your second GCC
+
+using this insight, we can now create our second GCC!
+
+** Pour milk
+
+we take fresh, security-audited milk.
+
+** Add yoghurt
+
+we publish the recipe, so that others may verify the result.
+
+** We're reproducible
+
+and low and behold, your second compiler exactly matches ours!
+
+as long as you follow our recipe.
+
+** Add evil yoghurt
+
+and use the exact same, FIRST compiler...
+
+** We're reproducible
+
+everyone is ...
+
+** Evil yoghurt
+
+just as bug-free and secure
+
+** We're reproducibly malicous
+
+as our shared, FIRST compiler was
+
+** Reproducibility is not enough
+
+reproducibility is no substitute for bootstrappability
+
+** Reproducibility plus clean source code is not enough
+
+and while bug-free source code remains important, we need something
+else.
+
+** Guix /pronounced geeks/
+
+enter GNU Guix.
+
+in Guix, we implemented a Reduced Binary Seed bootstrap.
+
+** Long path: Reduced Binary Seed bootstrap
+
+a full GNU/Linux system is bootstrapped from only 60 megabytes of
+trusted binaries.
+
+** NLnet Foundation
+
+so we are very excited that NlNet provided a grant to make that possible
+
+** GCC core-mesboot0-scheme-only
+
+this is what the graph looks like now: the only interesting binaries
+left, are a scheme interpreter and scheme compiler: gnu mes and gnu guile.
+
+** Full Source Bootstrap
+
+given that we dislike downloading binaries and trusting them, why not
+stop doing so altogether?
+
+** Long path: Full Source Bootstrap
+
+we are creating a full source bootstrap path
+
+** Joy of Source
+
+are we doing this only to counter the trusting trust attack?
+
+i think that building from source is the proper way to do computing; and
+the trusting trust attack is only a symptom of confusing a binary
+substitute with the compilation of source code.
+
+* Thanks
+
+i am very grateful for getting so much help and seeing this crazy
+project grow!
+
+** Want to join?
+
+that's all folks!
+
+*** You can help
+  * raise awareness
+  * make core GNU packages bootstrappable again
+    + +XZ-only+ => *.GZ* tarballs (thank you: sed, coreutils!)
+    + GCC (c++!), GNU Libc (python?!)
+  * reduced bootstrap NixOS, Debian
+  * port MesCC to the Hurd, FreeBSD
+  * retweet/toot =@janneke_gnu= =janneke@octodon.social=
+
+*** Connect
+    * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+    * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+    * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+    * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+* legalese
+  Copyright \copy 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+
+  #+BEGIN_QUOTE
+  Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License, Version 1.3 or
+  any later version published by the Free Software Foundation; with no
+  Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+  Texts.
+  #+END_QUOTE
