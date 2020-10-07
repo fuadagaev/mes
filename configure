@@ -363,6 +363,8 @@ Some influential environment variables:
   CFLAGS            C compiler flags
   GUILE             guile command
   GUILD             guild command
+  GUILD_OPTIMIZE    guild compile optimization
+  GUILE_LOAD_PATH   guile load path; where to find Nyacc
   MES_FOR_BUILD     build system MES [can be mes or guile]
 " PACKAGE VERSION (getenv "prefix")))
 
@@ -445,7 +447,10 @@ Some influential environment variables:
                              (make-dep "perl" #:version '(5) #:optional? #t)
                              (make-dep "git" #:version '(2) #:optional? #t))))
            (guile (file-name "guile" deps))
-           (deps (if guile (cons (check-program-version (make-dep "nyacc" #:version '(0 86 0) #:commands (list (string-append guile " -c '(use-modules (nyacc lalr)) (display *nyacc-version*)'")) #:file-name #t))
+           ;; See https://bugs.gnu.org/43831; use -O1 with Guile-3
+           (guild-optimize (let ((guile-version (and=> (find-dep "guile" deps) dependency-version-found)))
+                             (and guile-version (tuple< '(2) guile-version) "-O1")))
+           (deps (if guile (cons (check-program-version (make-dep "nyacc" #:version '(0 99 0) #:commands (list (string-append guile " -c '(use-modules (nyacc lalr)) (display *nyacc-version*)'")) #:file-name #t #:version-option #f))
                                  deps)
                      deps))
            (guile (or guile "guile"))
@@ -591,6 +596,7 @@ See \"Porting GNU Mes\" in the manual, or try --with-courage\n" mes-system)
                      ("@DIFF@" . ,(or (file-name "diff" deps) (string-append abs-top-builddir "/pre-inst-env diff.scm")))
                      ("@DOT@" . ,(or (file-name "dot" deps) ""))
                      ("@GIT@" . ,(or (file-name "git" deps) ""))
+                     ("@GUILD_OPTIMIZE@" . ,(or (getenv "GUILD_OPTIMIZE") guild-optimize ""))
                      ("@GUILE@" . ,guile)
                      ("@GUIX@" . ,(or (file-name "guix" deps) ""))
                      ("@HELP2MAN@" . ,(or (file-name "help2man" deps) ""))
