@@ -97,10 +97,26 @@ fi
 -I ${srcdest}include
 -I ${srcdest}include/$mes_kernel/$mes_cpu
 "
-    if test $compiler = gcc; then
+    if test "$compiler" != bootstrap; then
         ${SHELL} ${srcdest}build-aux/build-mes.sh
     fi
 )
+
+if test -n "$M2_PLANET"; then
+    (
+        . ${srcdest}build-aux/trace.sh
+        if [ -z "$V" -o "$V" = 0 ]; then
+            __verbose=
+        else
+            __verbose=--verbose
+        fi
+        trace "KAEM       scaffold/main.kaem" kaem --strict $__verbose -f scaffold/main.kaem
+        trace "KAEM       scaffold/hello.kaem" kaem --strict $__verbose -f scaffold/hello.kaem
+        trace "KAEM       scaffold/argv.kaem" kaem --strict $__verbose -f scaffold/argv.kaem
+        trace "KAEM       scaffold/read.kaem" kaem --strict $__verbose -f scaffold/read.kaem
+        trace "KAEM       kaem.run" kaem --strict $__verbose
+    )
+fi
 
 (
     mkdir -p mescc-lib
