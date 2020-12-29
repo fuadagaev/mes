@@ -19,15 +19,14 @@
  */
 
 #include <mes/lib.h>
-#include <sys/ioctl.h>
 #include <errno.h>
 
 int
-ioctl (int filedes, unsigned long command, ...)
+ioctl3 (int filedes, unsigned long command, long data)
 {
   static int stub = 0;
   if (__mes_debug () && !stub)
-    eputs ("ioctl stub\n");
+    eputs ("ioctl3 stub\n");
   stub = 1;
   errno = 0;
   return 0;
