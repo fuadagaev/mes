@@ -59,7 +59,7 @@ M2-Planet                                       \
     -f lib/string/strncmp.c                     \
     -f lib/posix/getenv.c                       \
     -f lib/mes/fdputs.c                         \
-    -f lib/m2/ntoab.c                           \
+    -f lib/mes/ntoab.c                          \
     -f lib/ctype/isdigit.c                      \
     -f lib/ctype/isxdigit.c                     \
     -f lib/ctype/isspace.c                      \
