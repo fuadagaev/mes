@@ -123,7 +123,7 @@ M2_SOURCES =					\
  lib/linux/fork.c				\
  lib/m2/execve.c				\
  lib/m2/execv.c					\
- lib/m2/waitpid.c				\
+ lib/linux/waitpid.c				\
  lib/linux/gettimeofday.c			\
  lib/m2/clock_gettime.c				\
  lib/m2/time.c					\
