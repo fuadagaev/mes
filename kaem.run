@@ -81,7 +81,7 @@ M2-Planet                                       \
     -f lib/linux/fork.c                         \
     -f lib/m2/execve.c                          \
     -f lib/m2/execv.c                           \
-    -f lib/m2/waitpid.c                         \
+    -f lib/linux/waitpid.c                      \
     -f lib/linux/gettimeofday.c                 \
     -f lib/m2/clock_gettime.c                   \
     -f lib/m2/time.c                            \
