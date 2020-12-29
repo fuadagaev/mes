@@ -54,7 +54,7 @@
 (define-public mescc-tools
   (package
     (name "mescc-tools")
-    (version "0.7.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -65,7 +65,7 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1p1ijia4rm3002f5sypidl9v5gq0mlch9b0n61rpxkdsaaxjqax3"))))
+         "12cjryqfd6m6j807pvhk7i4vr2q0jiibpfrpnq5s67iq9l4rrc6b"))))
     (build-system gnu-build-system)
     (supported-systems
      '("aarch64-linux" "armhf-linux" "i686-linux" "x86_64-linux"))
@@ -78,7 +78,7 @@
                   (add-after 'unpack 'patch-prefix
                     (lambda _
                       (substitute* "sha256.sh"
-                        (("/usr/bin/sha256sum") (which "sha256sum")))
+                        (("\\$\\(which sha256sum\\)") (which "sha256sum")))
                       #t)))))
     (synopsis "Tools for the full source bootstrapping process")
     (description
