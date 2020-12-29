@@ -144,9 +144,9 @@ plus (struct scm *x)                    /*:((name . "+") (arity . n)) */
 struct scm *
 divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
 {
-  long n = 1;
+  size_t n = 1;
   struct scm *i;
-  long v;
+  size_t v;
   if (x != cell_nil)
     {
       i = car (x);
@@ -175,8 +175,8 @@ modulo (struct scm *a, struct scm *b)
 {
   assert_number ("modulo", a);
   assert_number ("modulo", b);
-  long x = a->value;
-  long y = b->value;
+  size_t x = a->value;
+  size_t y = b->value;
   if (y == 0)
     error (cstring_to_symbol ("divide-by-zero"), a);
   while (x < 0)
