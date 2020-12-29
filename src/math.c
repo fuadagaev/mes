@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -44,11 +44,13 @@ greater_p (struct scm *x)               /*:((name . ">") (arity . n)) */
   assert_number ("greater_p", x->car);
   long n = x->car->value;
   x = x->cdr;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
       assert_number ("greater_p", x->car);
-      struct scm *i = car (x);
-      long v = i->value;
+      i = car (x);
+      v = i->value;
       if (v >= n)
         return cell_f;
       n = v;
@@ -65,11 +67,13 @@ less_p (struct scm *x)                  /*:((name . "<") (arity . n)) */
   assert_number ("less_p", x->car);
   long n = x->car->value;
   x = x->cdr;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
       assert_number ("less_p", x->car);
-      struct scm *i = car (x);
-      long v = i->value;
+      i = car (x);
+      v = i->value;
       if (v <= n)
         return cell_f;
       n = v;
@@ -86,10 +90,12 @@ is_p (struct scm *x)                    /*:((name . "=") (arity . n)) */
   assert_number ("is_p", x->car);
   long n = x->car->value;
   x = cdr (x);
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
-      long v = i->value;
+      i = car (x);
+      v = i->value;
       if (v != n)
         return cell_f;
       x = cdr (x);
@@ -105,11 +111,13 @@ minus (struct scm *x)                   /*:((name . "-") (arity . n)) */
   x = cdr (x);
   if (x == cell_nil)
     n = -n;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("minus", i);
-      long v = i->value;
+      v = i->value;
       n = n - v;
       x = cdr (x);
     }
@@ -120,11 +128,13 @@ struct scm *
 plus (struct scm *x)                    /*:((name . "+") (arity . n)) */
 {
   long n = 0;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("plus", i);
-      long v = i->value;
+      v = i->value;
       n = n + v;
       x = cdr (x);
     }
@@ -135,19 +145,21 @@ struct scm *
 divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
 {
   long n = 1;
+  struct scm *i;
+  long v;
   if (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("divide", i);
-      long v = i->value;
+      v = i->value;
       n = v;
       x = cdr (x);
     }
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("divide", i);
-      long v = i->value;
+      v = i->value;
       if (v == 0)
         error (cstring_to_symbol ("divide-by-zero"), x);
       if (n == 0)
@@ -179,11 +191,13 @@ struct scm *
 multiply (struct scm *x)                /*:((name . "*") (arity . n)) */
 {
   long n = 1;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("multiply", i);
-      long v = i->value;
+      v = i->value;
       n = n * v;
       x = cdr (x);
     }
@@ -194,11 +208,13 @@ struct scm *
 logand (struct scm *x)                  /*:((arity . n)) */
 {
   long n = 0;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("multiply", i);
-      long v = i->value;
+      v = i->value;
       n = n & v;
       x = cdr (x);
     }
@@ -209,11 +225,13 @@ struct scm *
 logior (struct scm *x)                  /*:((arity . n)) */
 {
   long n = 0;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("logior", i);
-      long v = i->value;
+      v = i->value;
       n = n | v;
       x = cdr (x);
     }
@@ -232,11 +250,13 @@ struct scm *
 logxor (struct scm *x)                  /*:((arity . n)) */
 {
   long n = 0;
+  struct scm *i;
+  long v;
   while (x != cell_nil)
     {
-      struct scm *i = car (x);
+      i = car (x);
       assert_number ("logxor", i);
-      long v = i->value;
+      v = i->value;
       n = n ^ v;
       x = cdr (x);
     }
