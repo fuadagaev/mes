@@ -183,6 +183,7 @@
 (mes-use-module (mes main))
 
 (mes-use-module (srfi srfi-9))
+(mes-use-module (mes syntax))
 (mes-use-module (mes boot-6))
 (top-main)
 (primitive-load 0)
