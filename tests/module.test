@@ -1,6 +1,7 @@
 #! /bin/sh
 # -*-scheme-*-
-GUILE_LOAD_PATH=mes/module:module
+srcdir=${srcdir-.}
+GUILE_LOAD_PATH=mes/module:module:$srcdir
 export GUILE_LOAD_PATH
 MES_BOOT=boot-5.mes
 export MES_BOOT
@@ -29,10 +30,19 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
 
 (define-module (tests module)
   ;; #:use-module (mes mes-0)
-  ;; #:use-module (mes misc)
-  #:use-module (mes test))
+  #:use-module (tests data foo)
+  #:use-module (tests data bar)
+  ;;#:use-module (mes test)
+  )
 
-(pass-if "first dummy" #t)
-(pass-if-not "second dummy" #f)
+(define (tests . rest) (format (current-error-port) "zis is tests: rest=~s\n" rest))
+(define (module) "zis is module")
+(pke "hiero")
+(format (current-error-port) "foo=~s\n" foo)
+(format (current-error-port) "bar=~s\n" bar)
 
-(result 'report)
+
+;; (pass-if "first dummy" #t)
+;; (pass-if-not "second dummy" #f)
+
+;;(result 'report)
