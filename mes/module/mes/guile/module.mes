@@ -2005,12 +2005,14 @@
     (force-output cep)
     (throw 'abort key)))
 
-;; FIXME: how does Guile exit 0?
 (define core:exit exit)
 (define (quit . args)
   (apply throw 'quit args))
 
-(define exit quit)
+;; FIXME: how does Guile exit 0?
+;; this gives
+;;    unhandled exception: error: (("option must be specified with argument:" "main"))
+;;(define exit quit)
 
 ;;(define has-shown-backtrace-hint? #f) Defined by scm_init_backtrace ()
 
