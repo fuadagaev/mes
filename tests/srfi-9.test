@@ -38,15 +38,7 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
   ;; bootstrap test
   (primitive-load "module/mes/test.scm")
   (primitive-load "mes/module/srfi/srfi-9-struct.mes")
-  (primitive-load "mes/module/srfi/srfi-9/gnu-struct.mes")
-  (define-macro (mes-use-module . rest) #t)
-
-  ;; (primitive-load "mes/module/srfi/srfi-9-vector.mes")
-  ;; (primitive-load "mes/module/srfi/srfi-9/gnu-vector.mes")
-
-  (mes-use-module (srfi srfi-9))
-  (mes-use-module (srfi srfi-9 gnu))
-  (mes-use-module (mes test)))
+  (primitive-load "mes/module/srfi/srfi-9/gnu-struct.mes"))
  (else))
 
 (pass-if "first dummy" #t)

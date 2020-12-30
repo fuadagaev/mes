@@ -66,3 +66,5 @@
       (if (null? (cdr rest)) (car rest)
           (append2 (car rest) (apply append (cdr rest))))))
 ;; end boot-01.scm
+
+(primitive-load 0)

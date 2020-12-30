@@ -166,3 +166,5 @@
 (mes-use-module (mes let))
 (mes-use-module (mes scm))
 ;; end boot-03.scm
+
+(primitive-load 0)
