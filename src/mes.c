@@ -81,7 +81,7 @@ try_open_boot (char *file_name, char const *boot, char const *location)
   strcpy (file_name + strlen (file_name), boot);
   if (g_debug > 1)
     {
-      eputs ("mes: reading boot-0 [");
+      eputs ("mes: reading boot-5 [");
       eputs (location);
       eputs ("]: ");
       eputs (file_name);
@@ -90,7 +90,7 @@ try_open_boot (char *file_name, char const *boot, char const *location)
   int fd = mes_open (file_name, O_RDONLY, 0);
   if (g_debug != 0 && fd > 0)
     {
-      eputs ("mes: read boot-0: ");
+      eputs ("mes: read boot-5: ");
       eputs (file_name);
       eputs ("\n");
     }
@@ -107,7 +107,7 @@ open_boot ()
   if (getenv ("MES_BOOT") != 0)
     strcpy (boot, getenv ("MES_BOOT"));
   else
-    strcpy (boot, "boot-0.scm");
+    strcpy (boot, "boot-5.mes");
   if (getenv ("MES_PREFIX") != 0)
     {
       strcpy (g_datadir, getenv ("MES_PREFIX"));
