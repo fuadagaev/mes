@@ -2238,9 +2238,17 @@
 ;;   `(eval-case
 ;;     ((load-toplevel)
 ;;      (let ((m (process-define-module
-;; 	       (list ,@(compile-define-module-args args)))))
-;;        (set-current-module m)
-;;        m))
+;; 	        (list ,@(compile-define-module-args args)))))
+;;         (when (> %debug 3)
+;;           (format (current-error-port) "define-module: name=~s\n" m))
+;;         (set-current-module m)
+;;         ;; XXX For Mes -- how/where does Guile define this 'module-procedure?
+;;         ,(let ((module (and (pair? args) (car args))))
+;;            `(when ,(and (pair? module)
+;;                         (= 1 (length module))
+;;                         (symbol? (car module)))
+;;               (define (,(car module) . arguments) (main (command-line)))))
+;;         m))
 ;;     (else
 ;;      (error "define-module can only be used at the top level"))))
 
@@ -2250,6 +2258,12 @@
      (when (> %debug 3)
        (format (current-error-port) "define-module: name=~s" m))
      (set-current-module m)
+     ;; XXX For Mes -- how/where does Guile define this 'module-procedure?
+     ,(let ((module (and (pair? args) (car args))))
+        `(when ,(and (pair? module)
+                     (= 1 (length module))
+                     (symbol? (car module)))
+           (define (,(car module) . arguments) (main (command-line)))))
      m))
 
 ;; The guts of the use-modules macro.  Add the interfaces of the named
