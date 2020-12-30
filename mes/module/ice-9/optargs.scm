@@ -58,17 +58,27 @@
 ;;; Code:
 
 (define-module (ice-9 optargs)
+  #:use-module (mes mes-0)
   #:use-module (system base pmatch)
-  #:replace (lambda*)
-  #:export-syntax (let-optional
-		  let-optional*
-		  let-keywords
-		  let-keywords*
-		  define*
-                  define*-public
-		  defmacro*
-		  defmacro*-public))
+  #:export (lambda*
+            let-optional
+            let-optional*
+            let-keywords
+            let-keywords*
+            define*
+            define*-public
+            defmacro*
+            defmacro*-public
+            define-macro*
 
+            define*-guts
+            parse-arglist
+            every?
+            ext-decl?
+            let-optional-template
+            let-keywords-template
+            rest-arg->keyword-binding-list))
+;
 ;; let-optional rest-arg (binding ...) . body
 ;; let-optional* rest-arg (binding ...) . body
 ;;   macros used to bind optional arguments
@@ -151,7 +161,7 @@
 				 => cdr)
 				(else
 				 ,(cadr key)))))))
-	  `(let ((,kb-list-gensym ((if (not mes?) (@@ (mes optargs) rest-arg->keyword-binding-list)
+	  `(let ((,kb-list-gensym ((if (not mes?) #f ;;(@@ (ice-9 optargs) rest-arg->keyword-binding-list)
                                        rest-arg->keyword-binding-list)
                                    ,REST-ARG ',(map (lambda (x) (symbol->keyword (if (pair? x) (car x) x)))
                                                     BINDINGS)
@@ -418,6 +428,9 @@
   `(begin
      (defmacro* ,NAME ,ARGLIST ,@BODY)
      (export-syntax ,NAME)))
+
+(define-macro (define-macro* NAME+ARGLIST . BODY)
+  `(define-macro ,(car NAME+ARGLIST) #f (lambda* ,(cdr NAME+ARGLIST) ,@BODY)))
 
 ;;; Support for optional & keyword args with the interpreter.
 (define *uninitialized* (list 'uninitialized))

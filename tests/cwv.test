@@ -1,12 +1,14 @@
 #! /bin/sh
 # -*-scheme-*-
+MES_BOOT=boot-5.mes
+export MES_BOOT
 exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests cwv)' -s "$0" "$@"
 !#
 
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -26,9 +28,6 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
 (define-module (tests cwv)
   #:use-module (mes mes-0)
   #:use-module (mes test))
-
-(mes-use-module (mes scm))
-(mes-use-module (mes test))
 
 (if (not guile-1.8?)
     (pass-if "values" (seq? (values 0 1) 0)))

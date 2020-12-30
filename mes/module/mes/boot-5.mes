@@ -179,12 +179,11 @@
 ;; end boot-04.scm
 
 ;; FIXME: need no load before booting guile module -- srfi-1 stuff
-(mes-use-module (mes getopt-long))
-(mes-use-module (mes main))
 
 (mes-use-module (srfi srfi-9))
 (mes-use-module (mes syntax))
 (mes-use-module (mes boot-6))
+(include-from-path "mes/main.mes")
 (top-main)
 (primitive-load 0)
 (primitive-load (open-input-string %main))

@@ -25,7 +25,34 @@
 ;;; Code:
 
 (define-module (srfi srfi-1)
-  #:export (find))
+  #:export (every
+            find
+            filter
+            append-map
+            filter-map
+            fold
+            fold-right
+            unfold
+            remove
+            reverse!
+            srfi-1:member
+            mes:member
+            member
+            mes:iota
+            srfi-1:iota
+            iota
+            srfi-1:iota
+            delete-duplicates
+            any
+            any1
+            every
+            every1
+            list-index
+            lset-union
+            lset-intersection
+            lset-difference
+            reverse!
+            take-while))
 
 (define (find pred lst)
   (let loop ((lst lst))
