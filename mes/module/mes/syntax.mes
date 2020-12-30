@@ -25,7 +25,15 @@
 ;;; syntax-rules is adapted from scheme48-1.1/scheme/alt/syntax.scm
 
 ;;; Code:
-(mes-use-module (mes scm))
+
+(define-module (mes syntax)
+  #:export (define-syntax
+            define-syntax-rule
+            syntax-error
+            silent-syntax-error
+            id-pattern
+            let-syntax))
+
 (include-from-path "mes/syntax.scm")
 
 (define (syntax-error message thing)
