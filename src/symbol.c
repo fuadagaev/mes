@@ -76,6 +76,7 @@ init_symbols_ ()                  /*:((internal)) */
   cell_vm_begin_expand_macro = init_symbol (g_symbol, TSPECIAL, "*vm:begin-expand-macro*");
   cell_vm_begin_expand_primitive_load = init_symbol (g_symbol, TSPECIAL, "*vm:core:begin-expand-primitive-load*");
   cell_vm_begin_primitive_load = init_symbol (g_symbol, TSPECIAL, "*vm:core:begin-primitive-load*");
+  cell_vm_primitive_load_return = init_symbol (g_symbol, TSPECIAL, "*vm:core:primitive-load-return*");
   cell_vm_begin_read_input_file = init_symbol (g_symbol, TSPECIAL, "*vm-begin-read-input-file*");
   cell_vm_call_with_current_continuation2 = init_symbol (g_symbol, TSPECIAL, "*vm-call-with-current-continuation2*");
   cell_vm_call_with_values2 = init_symbol (g_symbol, TSPECIAL, "*vm-call-with-values2*");

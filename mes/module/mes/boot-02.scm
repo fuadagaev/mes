@@ -101,5 +101,3 @@
   #t)
 
 ;; end boot-02.scm
-
-(primitive-load 0)
