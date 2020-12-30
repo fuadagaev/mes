@@ -1,5 +1,32 @@
-;;; match.scm -- portable hygienic pattern matcher -*- coding: utf-8; mode: scheme -*-
-;;
+;;; GNU Mes --- Maxwell Equations of Software
+;;; Copyright © 2016,2018,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;;
+;;; This file is part of GNU Mes.
+;;;
+;;; GNU Mes is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Mes is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
+
+(define-module (ice-9 match)
+  #:export (match match-lambda match-lambda* match-define
+		  match-let match-let* match-letrec
+		  define-structure define-const-structure
+                  match:andmap
+		  match:error match:set-error
+		  match:error-control match:set-error-control
+		  match:structure-control match:set-structure-control))
+
+;;; Commentary:
+
 ;; This code is written by Alex Shinn and placed in the
 ;; Public Domain.  All warranties are disclaimed.
 
@@ -185,6 +212,8 @@
 
 ;;> @example{(match '(a (a (a b))) ((x *** 'b) x))}
 ;;> @example{(match '(a (b) (c (d e) (f g))) ((x *** 'g) x))}
+
+;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Notes
