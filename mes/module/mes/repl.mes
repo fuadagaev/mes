@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2017,2018,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -24,8 +24,12 @@
 
 ;;; Code:
 
-(mes-use-module (mes scm))
+;;; XXX FIXME
 (mes-use-module (srfi srfi-14))
+
+(define-module (mes repl)
+  ;;#:use-module (srfi srfi-14)
+  #:export (repl))
 
 (define welcome
   (string-append "GNU Mes " %version "

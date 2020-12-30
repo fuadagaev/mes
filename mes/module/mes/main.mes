@@ -22,7 +22,10 @@
 
 ;;; Code:
 
-(mes-use-module (mes getopt-long))
+(define-module (mes main)
+  #:use-module (ice-9 getopt-long)
+  #:use-module (mes repl)
+  #:export (top-main))
 
 (define %main #f)
 (define (top-main)
@@ -105,7 +108,3 @@ General help using GNU software: <http://gnu.org/gethelp/>
              (set-current-input-port 0)
              (repl))
             (else #t)))))
-
-(define (top-load *undefined*)
-  (primitive-load 0)
-  (primitive-load (open-input-string %main)))

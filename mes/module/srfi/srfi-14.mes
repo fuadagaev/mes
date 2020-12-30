@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2018,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -23,6 +23,24 @@
 ;;; Minimal implementation of srfi-14, for nyacc.
 
 ;;; Code:
+
+(define-module (srfi srfi-14)
+  #:export (char-set
+            char-set?
+            char-set=
+            char-set:whitespace
+            char-set:digit
+            char-set:upper-case
+            char-set lst
+            string->char-set
+            string->char-set!
+            char-set-adjoin
+            char-set-contains?
+            char-set-complement
+            char-whitespace?
+            char-set-copy
+            char-upcase
+            char-downcase))
 
 ;; FIXME: have structs
 (define (char-set . x)
