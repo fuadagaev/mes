@@ -98,6 +98,7 @@
   #t)
 
 (define-macro (define-module module . rest)
+  (display "BOOT-5 DEFINE-MODULE")
   #t)
 ;; end boot-02.scm
 
