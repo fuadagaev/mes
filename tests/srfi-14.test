@@ -1,5 +1,7 @@
 #! /bin/sh
 # -*-scheme-*-
+MES_BOOT=boot-5.mes
+export MES_BOOT
 exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests srfi-14)' -s "$0" "$@"
 !#
 
@@ -27,9 +29,6 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
   #:use-module (srfi srfi-14)
   #:use-module (mes mes-0)
   #:use-module (mes test))
-
-(mes-use-module (srfi srfi-14))
-(mes-use-module (mes test))
 
 (pass-if "first dummy" #t)
 (pass-if-not "second dummy" #f)
