@@ -522,7 +522,7 @@
   (let ((file (or (search-path %load-path (string-append file-name ".mes"))
                   (search-path %load-path (string-append file-name ".scm")))))
     (when (> %debug 1)
-      (format (current-error-port) " => ~s\n" file))
+      (format (current-error-port) " *file-name => ~s\n" file))
     file))
 
 
@@ -1575,6 +1575,10 @@
 		      identity))
          (module (resolve-module name))
          (public-i (and module (module-public-interface module))))
+    (and (not module)
+         (error "no such module" name))
+    (and (not public-i)
+         (error "module has no public-i" name))
     (and (or (not module) (not public-i))
          (error "no code for module" name))
     (if (and (not select) (null? hide) (eq? renamer identity))
