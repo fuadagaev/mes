@@ -28,5 +28,4 @@
   #:export (foo))
 
 (define foo "foo")
-
-;;(primitive-load 0)
+(primitive-load -1)

@@ -864,6 +864,13 @@ begin_expand:
                 input = set_current_input_port (open_input_file (R1));
               else if (R1->type == TPORT)
                 input = set_current_input_port (R1);
+              else if ((R1->type == TNUMBER) && R1->value == -1)
+                {
+                  eputs ("primitive-load: R1=-1 => RETURN\n");
+                  display_error_ (R1);
+                  gc_pop_frame ();
+                  goto vm_return;
+                }
               else
                 {
                   eputs ("begin_expand failed, R1=");
