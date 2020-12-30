@@ -22,9 +22,7 @@
 
 ;;; Code:
 
-(pke "hello foo!!!")
-
-(define-module (tests data foo)
+(define-module (data foo)
   #:export (foo))
 
 (define foo "foo")

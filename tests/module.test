@@ -1,7 +1,7 @@
 #! /bin/sh
 # -*-scheme-*-
 srcdir=${srcdir-.}
-GUILE_LOAD_PATH=mes/module:module:$srcdir
+GUILE_LOAD_PATH=$srcdir/tests
 export GUILE_LOAD_PATH
 MES_BOOT=boot-5.mes
 export MES_BOOT
@@ -11,7 +11,7 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -29,20 +29,25 @@ exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests 
 ;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (tests module)
-  ;; #:use-module (mes mes-0)
-  #:use-module (tests data foo)
-  #:use-module (tests data bar)
-  ;;#:use-module (mes test)
-  )
+  #:use-module (data foo)
+  #:use-module (data bar)
+  #:use-module (mes test))
 
-(define (tests . rest) (format (current-error-port) "zis is tests: rest=~s\n" rest))
-(define (module) "zis is module")
-(pke "hiero")
-(format (current-error-port) "foo=~s\n" foo)
-(format (current-error-port) "bar=~s\n" bar)
+(pass-if "first dummy" #t)
+(pass-if-not "second dummy" #f)
 
+(pass-if "defined foo"
+  (defined? 'foo))
 
-;; (pass-if "first dummy" #t)
-;; (pass-if-not "second dummy" #f)
+(pass-if-equal "foo"
+    "foo"
+  (and (defined? 'foo) foo))
 
-;;(result 'report)
+(pass-if "defined bar"
+  (defined? 'bar))
+
+(pass-if-equal "bar"
+    "bar"
+  (and (defined? 'bar) bar))
+
+(result 'report)

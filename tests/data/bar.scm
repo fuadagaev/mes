@@ -22,8 +22,7 @@
 
 ;;; Code:
 
-(pke "hello bar!!!")
-(define-module (tests data bar)
+(define-module (data bar)
   #:export (bar))
 
 (define bar "bar")
