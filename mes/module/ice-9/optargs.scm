@@ -59,16 +59,17 @@
 
 (define-module (ice-9 optargs)
   #:use-module (system base pmatch)
-  #:replace (lambda*)
-  #:export-syntax (let-optional
-		  let-optional*
-		  let-keywords
-		  let-keywords*
-		  define*
-                  define*-public
-		  defmacro*
-		  defmacro*-public))
-
+  #:export (lambda*
+            let-optional
+            let-optional*
+            let-keywords
+            let-keywords*
+            define*
+            define*-public
+            defmacro*
+            defmacro*-public
+            define-macro*))
+;
 ;; let-optional rest-arg (binding ...) . body
 ;; let-optional* rest-arg (binding ...) . body
 ;;   macros used to bind optional arguments
@@ -418,6 +419,9 @@
   `(begin
      (defmacro* ,NAME ,ARGLIST ,@BODY)
      (export-syntax ,NAME)))
+
+(define-macro (define-macro* NAME+ARGLIST . BODY)
+  `(define-macro ,(car NAME+ARGLIST) #f (lambda* ,(cdr NAME+ARGLIST) ,@BODY)))
 
 ;;; Support for optional & keyword args with the interpreter.
 (define *uninitialized* (list 'uninitialized))
