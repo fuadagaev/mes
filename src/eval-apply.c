@@ -389,6 +389,8 @@ eval_apply:
     goto macro_expand_define_macro;
   else if (R3 == cell_vm_begin_primitive_load)
     goto begin_primitive_load;
+  else if (R3 == cell_vm_primitive_load_return)
+    goto primitive_load_return;
 
   else if (R3 == cell_vm_evlis)
     goto evlis;
@@ -863,7 +865,13 @@ begin_expand:
               goto eval;
             begin_expand_primitive_load:
               if ((R1->type == TNUMBER) && R1->value == 0)
-                0;
+                {
+                  /* Chain-loading stdin. */
+                  push_cc (input, R2, R0, cell_vm_return);
+                  R1 = read_input_file_env (R0);
+                  goto begin_expand_while;
+                  continue; /* FIXME: M2-PLanet */
+                }
               else if (R1->type == TSTRING)
                 input = set_current_input_port (open_input_file (R1));
               else if (R1->type == TPORT)
@@ -875,11 +883,10 @@ begin_expand:
                   assert_msg (0, "begin-expand-boom 0");
                 }
 
-              push_cc (input, R2, R0, cell_vm_return);
+              push_cc (input, R2, R0, cell_vm_primitive_load_return);
               x = read_input_file_env (R0);
               if (g_debug > 5)
                 hash_table_printer (R0);
-              gc_pop_frame ();
               input = R1;
               R1 = x;
               set_current_input_port (input);
@@ -957,6 +964,10 @@ call_with_values2:
     R1 = R1->cdr;
   R1 = cons (R2->cdr->car, R1);
   goto apply;
+
+primitive_load_return:
+  gc_pop_frame ();
+  /* fall through */
 
 vm_return:
   x = R1;
