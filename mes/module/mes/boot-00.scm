@@ -30,5 +30,3 @@
 (define-macro (cond-expand . clauses)
   (cons 'begin (cond-expand-expander clauses)))
 ;; end boot-00.scm
-
-(primitive-load 0)

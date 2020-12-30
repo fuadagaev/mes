@@ -40,6 +40,7 @@ struct scm *cell_vm_begin_expand_eval;
 struct scm *cell_vm_begin_expand_macro;
 struct scm *cell_vm_begin_expand_primitive_load;
 struct scm *cell_vm_begin_primitive_load;
+struct scm *cell_vm_primitive_load_return;
 struct scm *cell_vm_begin_read_input_file;
 struct scm *cell_vm_call_with_current_continuation2;
 struct scm *cell_vm_call_with_values2;
@@ -136,8 +137,8 @@ struct scm *cell_type_broken_heart;
 struct scm *cell_symbol_program;
 struct scm *cell_symbol_test;
 
-// CONSTANT SYMBOL_MAX 113
-#define SYMBOL_MAX 113
+// CONSTANT SYMBOL_MAX 114
+#define SYMBOL_MAX 114
 
 // CONSTANT CELL_UNSPECIFIED 7
 #define CELL_UNSPECIFIED 7
