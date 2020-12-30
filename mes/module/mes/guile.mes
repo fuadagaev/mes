@@ -44,6 +44,9 @@
 (define-macro (defmacro name args . body)
   `(define-macro ,(cons name args) ,@body))
 
+(define-macro (set-object-property! object key value)
+  object)
+
 (define-macro (set-procedure-property! proc key value)
   proc)
 
