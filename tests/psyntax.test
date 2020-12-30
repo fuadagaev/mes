@@ -1,6 +1,6 @@
 #! /bin/sh
 # -*-scheme-*-
-MES_BOOT=boot-0.scm
+MES_BOOT=boot-5.mes
 export MES_BOOT
 MES_ARENA=${MES_ARENA-10000000} exec ${MES-bin/mes} --no-auto-compile -L ${0%/*} -L module -C module -e '(tests psyntax)' -s "$0" "$@"
 !#
@@ -29,10 +29,13 @@ MES_ARENA=${MES_ARENA-10000000} exec ${MES-bin/mes} --no-auto-compile -L ${0%/*}
   #:use-module (mes mes-0)
   #:use-module (mes test))
 
+(include-from-path "mes/psyntax.mes")
 (cond-expand
  (mes
-  (mes-use-module (mes psyntax))
-  (mes-use-module (mes test)))
+  ;;(mes-use-module (mes test))
+  ;;(mes-use-module (mes psyntax))
+
+  )
  (guile-2.2
   (define sc-expand identity)
   (define syntax-object->datum syntax->datum)
