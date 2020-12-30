@@ -223,7 +223,7 @@
                    (string-label (string->label label))
                    (string? (not (equal? string-label "_string_#f"))))
               (cond ((and (pair? o) (global? (cdr o))) (string-append "&" (global->string o)))
-                    ((and (not string?) (not function?)) (stderr "warning: unresolved label: ~s\n" label))
+                    ((and (not string?) (not function?)) (format (current-error-port) "warning: unresolved label: ~s\n" label))
                     ((equal? string-label "%0") o) ;; FIXME: 64b
                     (else (string-append "&" label))))))
       (define (display-align size)
