@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017,2018,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -21,6 +21,12 @@
 ;;; Commentary:
 
 ;;; srfi-9.mes - GNU immutable records.
+
+;;; Code:
+
+(define-module (srfi srfi-9 gnu)
+  #:export (define-immutable-record-type
+            set-field))
 
 (define-macro (define-immutable-record-type type constructor+params predicate . fields)
   `(define-record-type ,type ,constructor+params ,predicate ,@(map (lambda (f) (list-head f 2)) fields)))

@@ -1,5 +1,5 @@
 #! /bin/sh
-# -*-scheme-*-
+-*-scheme-*-
 if [ "$MES" != guile ]; then
     MES_BOOT=boot-03.scm exec ${MES-bin/mes} < $0
 fi

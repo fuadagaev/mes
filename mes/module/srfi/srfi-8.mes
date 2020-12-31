@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -23,6 +23,9 @@
 ;;; srfi-8.mes - receive
 
 ;;; Code:
+
+(define-module (ice-9 receive)
+  #:export (receive))
 
 (define-macro (receive vars vals . body)
   `(call-with-values (lambda () ,vals)

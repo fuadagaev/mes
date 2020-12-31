@@ -178,7 +178,11 @@
 (mes-use-module (mes guile))
 ;; end boot-04.scm
 
+(include-from-path "ice-9/optargs.scm")
+(include-from-path "srfi/srfi-9.mes")
+(include-from-path "ice-9/getopt-long.scm")
 (mes-use-module (mes main))
+
 (top-main)
 (primitive-load 0)
 (primitive-load (open-input-string %main))

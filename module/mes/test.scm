@@ -36,6 +36,7 @@
             result
             seq? ; deprecated
             sequal? ; deprecated
+            sequal2? ;deprecated
             ))
 
 (cond-expand
