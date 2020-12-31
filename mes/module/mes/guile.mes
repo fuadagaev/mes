@@ -153,3 +153,5 @@
 
 (define (file-exists? o)
   (access? o R_OK))
+
+(define (set-port-encoding! port encoding) #t)
