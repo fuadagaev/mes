@@ -94,6 +94,10 @@ struct scm **g_stack_array;
 struct scm *g_cells;
 struct scm *g_news;
 long g_stack;
+size_t gc_count;
+struct timespec *gc_start_time;
+struct timespec *gc_end_time;
+size_t gc_time;
 
 char **__execl_c_argv;
 char *__getcwd_buf;
@@ -169,6 +173,7 @@ void gc_pop_frame ();
 void gc_push_frame ();
 void gc_stats_ (char const* where);
 void init_symbols_ ();
+long seconds_and_nanoseconds_to_long (long s, long ns);
 
 #include "mes/builtins.h"
 #include "mes/constants.h"
