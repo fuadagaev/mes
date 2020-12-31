@@ -1,5 +1,5 @@
 #! @GUILE@ \
---no-auto-compile -e main -L @guile_site_dir@ -C @guile_site_ccache_dir@ -s
+--no-auto-compile -L @guile_site_dir@ -C @guile_site_ccache_dir@ -s
 !#
 ;;; GNU Mes --- Maxwell Equations of Software
 ;;; Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -61,12 +61,6 @@
 (setenv "%kernel" %kernel)
 (setenv "%numbered_arch" (if %numbered-arch? "true" "false"))
 
-(cond-expand
- (mes
-  (mes-use-module (mescc))
-  (mescc:main (command-line)))
- (guile
-  (use-modules (mescc))))
+(use-modules (mescc))
 
-(define (main args)
-  (mescc:main args))
+(mescc:main (command-line))
