@@ -1,5 +1,5 @@
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2017,2018,2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -19,22 +19,9 @@
 (define-module (mescc)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 getopt-long)
-  #:use-module (mes guile)
   #:use-module (mes misc)
   #:use-module (mescc mescc)
   #:export (mescc:main))
-
-(cond-expand
- (mes
-  (define (set-port-encoding! port encoding) #t)
-  (mes-use-module (mes guile))
-  (mes-use-module (mes misc))
-  (mes-use-module (mes getopt-long))
-  (mes-use-module (mes display))
-  (mes-use-module (mescc mescc))
-  )
- (guile
-  (define-macro (mes-use-module . rest) #t)))
 
 (define %host-arch (or (getenv "%arch") %arch))
 (define %host-kernel (or (getenv "%kernel") "linux")) ;; FIXME
@@ -191,5 +178,3 @@ General help using GNU software: <http://gnu.org/gethelp/>
           (compile? (mescc:compile options))
           (assemble? (mescc:assemble options))
           (else (mescc:link options)))))
-
-(define main mescc:main)
