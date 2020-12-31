@@ -63,7 +63,6 @@ fi
 
 ${SCHEME-$MES} \
     --no-auto-compile\
-    -e main\
     -L @guile_site_dir@\
     -C @guile_site_ccache_dir@\
     $bindir/mescc.scm\
