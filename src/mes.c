@@ -171,6 +171,8 @@ init (char **envp)
   g_datadir = malloc (1024);
   g_start_time = malloc (sizeof (struct timespec));
   memset (g_start_time, 0, sizeof (struct timespec));
+  gc_start_time = malloc (sizeof (struct timespec));
+  gc_end_time = malloc (sizeof (struct timespec));
 
   char *p = getenv ("MES_DEBUG");
   if (p != 0)

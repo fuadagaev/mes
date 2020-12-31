@@ -57,6 +57,7 @@ struct scm *set_env_x (struct scm *x, struct scm *e, struct scm *a);
 struct scm *add_formals (struct scm *formals, struct scm *x);
 struct scm *eval_apply ();
 /* src/gc.c */
+struct scm *gc_stats ();
 struct scm *cons (struct scm *x, struct scm *y);
 struct scm *gc_check ();
 struct scm *gc ();
