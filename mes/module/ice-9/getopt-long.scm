@@ -19,6 +19,12 @@
 ;;;                      (regexps removed by Jan (janneke) Nieuwenhuizen)
 ;;;                      (srfi-9 backport by Jan (janneke) Nieuwenhuizen)
 
+(define-module (ice-9 getopt-long)
+  #:use-module (ice-9 optargs)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
+  #:export (getopt-long option-ref))
+
 ;;; Commentary:
 
 ;;; This module implements some complex command line option parsing, in
@@ -158,12 +164,6 @@
 ;;; (option-ref (getopt-long ...) 'not-a-key! 31) => 31
 
 ;;; Code:
-
-(define-module (mes getopt-long)
-  #:use-module (ice-9 optargs)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-9)
-  #:export (getopt-long option-ref))
 
 (define-record-type option-spec
   (%make-option-spec name value required? option-spec->single-char predicate value-policy)

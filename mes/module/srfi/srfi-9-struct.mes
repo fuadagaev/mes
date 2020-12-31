@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017,2018,2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -21,6 +21,22 @@
 ;;; Commentary:
 
 ;;; srfi-9.mes - records, based on struct.
+
+;;; Code:
+
+(define-module (srfi srfi-9)
+  #:export (define-record-type
+            make-record-type
+            record-type?
+            struct-vtable
+            record-type-name
+            record-type-descriptor
+            record-type-fields
+            record-predicate
+            record?
+            record-constructor
+            record-accessor
+            record-modifier))
 
 (define-macro (define-record-type name constructor+field-names predicate . fields)
   (let ((type (make-record-type name (map car fields))))
