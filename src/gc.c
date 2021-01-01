@@ -30,9 +30,6 @@
 
 int g_dump_filedes;
 
-// CONSTANT FRAME_SIZE 5
-#define FRAME_SIZE 5U
-
 #define M2_CELL_SIZE 1U
 // CONSTANT M2_CELL_SIZE 12
 
