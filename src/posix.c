@@ -392,7 +392,13 @@ gettimeofday_ ()                /*:((name . "gettimeofday")) */
 long
 seconds_and_nanoseconds_to_long (long s, long ns)
 {
-  return s * TIME_UNITS_PER_SECOND + ns / (1000000000 / TIME_UNITS_PER_SECOND);
+  size_t uns = ns;
+  if (ns < 0)
+    {
+      uns = - ns;
+      return s * TIME_UNITS_PER_SECOND - uns / (1000000000 / TIME_UNITS_PER_SECOND);
+    }
+  return s * TIME_UNITS_PER_SECOND + uns / (1000000000 / TIME_UNITS_PER_SECOND);
 }
 
 struct scm *
