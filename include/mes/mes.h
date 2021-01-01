@@ -100,7 +100,6 @@ struct timespec *gc_end_time;
 size_t gc_time;
 
 char **__execl_c_argv;
-char *__getcwd_buf;
 char *__open_boot_buf;
 char *__open_boot_file_name;
 char *__setenv_buf;
