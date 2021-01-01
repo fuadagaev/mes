@@ -31,9 +31,9 @@
 int g_dump_filedes;
 
 // CONSTANT FRAME_SIZE 5
-#define FRAME_SIZE 5
+#define FRAME_SIZE 5U
 
-#define M2_CELL_SIZE 1
+#define M2_CELL_SIZE 1U
 // CONSTANT M2_CELL_SIZE 12
 
 char *
@@ -50,6 +50,10 @@ news_bytes (struct scm *x)
   return p + (2 * sizeof (long));
 }
 
+#define U10 10U
+// CONSTANT U10 10
+#define U100 100U
+// CONSTANT U100 100
 void
 gc_init ()
 {
@@ -74,11 +78,11 @@ gc_init ()
   p = getenv ("MES_ARENA");
   if (p != 0)
     ARENA_SIZE = atoi (p);
-  JAM_SIZE = ARENA_SIZE / 10;
+  JAM_SIZE = ARENA_SIZE / U10;
   p = getenv ("MES_JAM");
   if (p != 0)
     JAM_SIZE = atoi (p);
-  GC_SAFETY = ARENA_SIZE / 100;
+  GC_SAFETY = ARENA_SIZE / U100;
   p = getenv ("MES_SAFETY");
   if (p != 0)
     GC_SAFETY = atoi (p);
