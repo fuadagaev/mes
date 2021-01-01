@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * aSCM with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
+ * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <linux/syscall.h>
@@ -23,9 +23,9 @@
 #include <mes/lib.h>
 #include <fcntl.h>
 
-SCM
-read (int filedes, void *buffer, SCM size)
+long
+read (int filedes, void *buffer, long size)
 {
-  SCM bytes = _sys_call3 (SYS_read, filedes, buffer, size);
+  long bytes = _sys_call3 (SYS_read, filedes, buffer, size);
   return bytes;
 }
