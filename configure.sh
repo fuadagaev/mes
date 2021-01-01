@@ -221,7 +221,13 @@ elif $CC --version | grep tcc; then
     compiler=gcc
 else
     compiler=mescc
-    AR=${AR-$PWD/scripts/mesar}
+    if ! $CC --version; then
+        CC="$PWD/pre-inst-env mescc"
+    fi
+    if test "$CC" = "M2-Planet"; then
+        CC="$PWD/pre-inst-env mescc"
+    fi
+    AR=${AR-$PWD/pre-inst-env mesar}
 fi
 
 AR=${AR-$(command -v ar)} || true
