@@ -116,7 +116,14 @@
 
       ((char ,value) (get-type "char" info))
       ((enum-ref . _) (get-type "default" info))
-      ((fixed ,value) (get-type "default" info))
+      ((fixed ,value)
+       (let ((type (cond ((string-suffix? "ULL"value) "unsigned long long")
+                         ((string-suffix? "UL" value) "unsigned long")
+                         ((string-suffix? "U" value) "unsigned")
+                         ((string-suffix? "LL" value) "long long")
+                         ((string-suffix? "L" value) "long")
+                         (else "default"))))
+         (get-type type info)))
       ((float ,float) (get-type "float" info))
       ((void) (get-type "void" info))
 
