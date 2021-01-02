@@ -121,7 +121,7 @@ M2_SOURCES =					\
  lib/linux/ioctl3.c  				\
  lib/m2/isatty.c				\
  lib/linux/fork.c				\
- lib/linux/execve.c				\
+ lib/m2/execve.c				\
  lib/m2/execv.c					\
  lib/linux/waitpid.c				\
  lib/linux/gettimeofday.c			\
