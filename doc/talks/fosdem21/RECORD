@@ -1,0 +1,15 @@
+guix environment --ad-hoc espeak xwininfo recordmydesktop
+xwininfo
+recordmydesktop --delay 3 --windowid 0x1e0000e -x 50 -y 130 --width 1280 --height 960 --no-cursor
+
+recordmydesktop --delay 3 --fps 15 --windowid 0x1e0000e -x 375 -y 340 --width 480 --height 350 --no-cursor
+
+# stop after 1 sec of silence
+sox -t alsa default recording.wav silence 1 0.1 5% 1 1.0 5%
+
+# stop after 20 sec of silence
+sox -t alsa default recording.wav silence 1 0.1 5% 20 1.0 5%
+
+ffmpeg -i recording-0.ogg -i recording-1.ogg -filter_complex '[0:0][1:0]concat=n=2:v=0:a=1[out]' -map '[out]' concat.ogg
+
+ffmpeg $(for i in recordings/*.ogg; do echo "-i $i "; done) -filter_complex '[0:0][1:0][2:0][3:0]concat=n=47:v=0:a=1[out]' -map '[out]' fosdem21.ogg

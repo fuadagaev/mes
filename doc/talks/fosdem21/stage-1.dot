@@ -1,0 +1,59 @@
+digraph  {
+  node[shape=box,width=1,height=0.25];
+  edge [height=0.25];
+
+  # "hex0 Monitor" [label = "hex0 Monitor", color = black, shape = box];
+  # "hex0 Assembler" [label = "hex0 Assembler", color = black, shape = box];
+  # "SET" [label = "SET editor", color = cyan3, shape = box];
+  "hex1 Assembler" [label = "hex1 Assembler", color = black, shape = box];
+  "hex2 Linker" [label = "hex2 Linker", color = black, shape = box];
+  "M1 Macro Assembler" [label = "M1 Macro Assembler", color = black, shape = box];
+  "catm" [label = "catm", color = black, shape = box];
+  "Slow_Lisp" [label = "Slow Lisp", color = green3, shape = box];
+  "Stage0-FORTH" [label = "Stage0 FORTH", color = green3, shape = box];
+  "cc_x86" [label = "cc_x86", color = black, shape = box];
+  "M2-Planet" [label = "M2-PLanet", color = black, shape = box];
+  "M2-Moon" [label = "M2-Moon", color = orange, shape = box];
+  # "mescc-tools-seed" [label = "mescc-tools-seed", color = black, shape = box];
+  # "?" [label = "?", color = red1, shape = box];
+  # "MesCC-Tools" [label = "MesCC Tools", color = cyan, shape = box];
+  # "Mes Libc" [label = "Mes Libc", color = cyan3, shape = box];
+  # "Mes" [label = "Mes", color = cyan3, shape = box];
+  # "mescc" [label = "mescc", color = black, shape = box];
+  # "Mes Libc +tcc" [label = "Mes Libc +tcc", color = black, shape = box];
+  # "tcc" [label = "tcc", color = black, shape = box];
+  # "Mes Libc +GNU" [label = "Mes Libc +GNU", color = black, shape = box];
+  # "gcc-core 2.95.3" [label = "gcc-core 2.95.3", color = black, shape = box];
+  # "glibc 2.2.5" [label = "glibc 2.2.5", color = black, shape = box];
+  # "gcc 2.95.3" [label = "gcc 2.95.3", color = black, shape = box];
+  # "glibc 2.16" [label = "glibc 2.16", color = black, shape = box];
+  # "gcc 4.7.4" [label = "gcc 4.7.4", color = black, shape = box];
+
+  # "SET" -> "hex0 Monitor" [color = cyan3];
+  # "hex0 Assembler" -> "hex0 Monitor" [color = black];
+  # "hex1 Assembler" -> "hex0 Assembler" [color = black];
+  "hex2 Linker" -> "hex1 Assembler" [color = black];
+  "hex2 Linker" -> "catm" [color = black];
+  "M1 Macro Assembler" -> "hex2 Linker" [color = black];
+  "M1 Macro Assembler" -> "catm" [color = black];
+  "catm" -> "hex0 Assembler" [color = black];
+  "Slow_Lisp" -> "M1 Macro Assembler" [color = green3];
+  "Stage0-FORTH" -> "M1 Macro Assembler" [color = green3];
+  "cc_x86" -> "M1 Macro Assembler" [color = black];
+  "M2-Planet" -> "cc_x86" [color = black];
+  "M2-Planet" -> "M1 Macro Assembler" [color = black];
+  "M2-Planet" -> "hex2 Linker" [color = black];
+  "M2-Moon" -> "M1 Macro Assembler" [color = orange];
+
+  node [shape=plaintext]
+  subgraph cluster_01 {
+    key [label=<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
+      <tr><td align="left"><font color="black">black</font></td><td align="left">done, essential</td></tr>
+      <tr><td align="left"><font color="cyan3">cyan</font></td><td align="left">done, optional</td></tr>
+      <tr><td align="left"><font color="green3">green</font></td><td align="left">done, undecided</td></tr>
+<!--      <tr><td align="left"><font color="red1">red</font></td><td align="left">in progress, essential</td></tr>
+!-->
+      <tr><td align="left"><font color="orange">orange</font></td><td align="left">in progress, undecided</td></tr>
+      </table>>]
+  }
+}

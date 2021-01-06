@@ -1,0 +1,331 @@
+# grep -E '^([^#]|$|^[*] )' autocue.org | grep -v '^[*] ' | sed -re 's/^[*]+.*/. . slide. ./' | head -274 | tr '\n' ' ' | espeak -s 110 -l 1  --stdin -w fosdem21.wav
+# ffmpeg -i fosdem21.wav |& grep Duration:
+#+TITLE: GNU Mes
+
+* Top
+
+** GNU Mes
+
+hello, i am janneke.
+
+this talk is about GNU Mes and the ongoing effort to remove all
+the binaries that we inject into our free software stack.
+
+* Introduction
+
+** Introduction
+
+at the end of my talk i hope you have learned what bootstrapping is about.
+
+** Full Source Bootstrap: Why?
+
+richard stallman is helping us understand
+that software freedom is a human right
+
+if we loose one of these rights,
+it becomes much harder to maintain our freedom.
+
+every time you say free software instead of Open Source, for example,
+you are already helping.
+
+we need to care for our free software rights;
+if we neglect bootstrappability or if we lose it,
+we also loose freedom of our computing.
+
+** Full Source Bootstrap: GNU Mes
+
+to crack the chicken and egg problem that bootstrapping is,
+i wrote GNU Mes.
+
+MesCC is a C99 compiler written in a subset of Guile Scheme
+and comes with Mes, a Scheme interpreter to run it.
+
+** The Holy Grail
+
+The Stage0 project is an amazing bootstrap story
+it all starts with a 357-byte, well-audited binary, hex0,
+and as some of you may have heard...
+
+** Full Source Bootstrap: *WE DID IT!!!*
+. . we . . did . . it . .
+
+when i started this, five years ago my youngest daughter was a big messi
+and fc barcelona fan.  that inpsired me while i was working on mescc.
+
+** Full Source Bootstrap: hex0 => M2-Planet => GNU Mes
+GNU Mes can now be built by M2-Planet,
+and thus bootstrapped from these initial 357 bytes
+** A big problem, predicted 40y ago
+
+in the eighties, ken thompson showed us in his Turing lecture, that we
+were having a big problem in computing.
+
+** Journey to the Source?
+his message has mostly been ignored.
+
+every day we are becoming more dependent on more and larger binaries
+to create our free software systems.
+
+* Reproducibility
+
+** Carl Dong -- bitcoin build system security
+
+the importance to stop this trend was evident to bitcoin developer Carl
+Dong of Chaincode Labs.
+
+i warmly recommend his talk he gave at the breaking bitcoin conference
+in 2019, it will only take 18 minutes of your time.
+
+** Reproducible-Builds.org
+
+carl dong explains that bitcoin, driven by the wish to provide secure
+bitcoin downloads, have implemented Gitian, a system that uses
+reproducible builds.
+
+** What is a Bootstrap?
+
+let's say you wrote the first ever GNU CC compiler and you wrote it in
+C; it is impossible to compile this C source code into an executable gcc
+program.
+
+** How to Bootstrap: An Old Recipe...
+
+ah but that's like making yoghurt: use fresh milk and just add some
+yoghurt leftover from yesterday.
+
+** How to Bootstrap: Create your second GCC
+
+using this insight, we can now create our second GCC!
+
+** Pour milk
+
+we take fresh, security-audited milk.
+
+** Add yoghurt
+
+we publish the recipe, so that others may verify the result.
+
+** We're reproducible
+
+and low and behold, your second compiler exactly matches ours!
+
+as long as you follow our recipe.
+
+** Add evil yoghurt
+
+and use the exact same, FIRST compiler...
+
+** We're reproducible
+
+everyone is ...
+
+** Evil yoghurt
+
+just as bug-free and secure
+
+** We're reproducibly malicous
+
+as our shared, FIRST compiler was
+
+** Reproducibility is not enough
+
+reproducibility is no substitute for bootstrappability
+
+** Reproducibility plus clean source code is not enough
+
+and while bug-free source code remains important, we need something
+else.
+
+* Bootstrappability
+** Guix /pronounced geeks/
+
+enter GNU Guix.
+
+in Guix, we implemented the Full Source Bootstrap.
+
+** NLnet Foundation
+
+so we are very excited that NlNet provided a grant to make that possible
+
+** WE DID IT!  We did what?
+
+to make GNU Mes ready for M2 Planet,
+we first removed all pre-processor statements,
+then switched from SICP-like number-based cells
+to pointer-based cells
+
+an interesting operation, notably for the garbage collector
+
+then, we rewrote all non-supported C constructs for M2 Planet
+in a way that GCC also still likes them
+
+notice how easy it sounds, now that it has been done
+
+on, to integrate this new mes into guix
+
+** Bottom of Guix package graph
+
+on the wip-full-source-bootstrap branch, this is what the bottom of the
+graph looks like
+
+i think a generated graph like this is very cool,
+an introduction works probably better when we remove some detail
+
+** Full Source Bootstrap: Stage 0
+Stage0 was a big inspiration to start working on mes, to address
+bootstrappability.
+
+the first stage creates the hex1 assembler from the initial hex0 seed.
+
+it is the binary form of as ASCII-equivalent.  therefore we can bless it
+as source and have our full source bootstrap.
+
+hex1 is just a bit richer than hex0, but not a language to write big
+programs in.
+
+** Full Source Bootstrap: Stage 1
+
+the second stage builds the hex2 linker, the M1 Macro assembler and
+M2-Planet.
+
+** Full Source Bootstrap: Stage 2
+
+the third stage builds mes and the mes c library
+
+** Full Source Bootstrap: Stage mes
+
+after mes we build a bootstrappable fork of tinycc, that we maintain
+ourselves.
+
+from mes onwards, we need a shell.
+
+we use gash with gash-utils and cheat just a bit by running them on
+bootstrap guile; the driver we need for guix anyway.
+
+in the future we would like to run gash and gash utils on mes.
+
+you will forgive us this little lie, any shell with utilities will do
+fine here anyway.
+
+** Full Source Bootstrap: Stage mesboot
+
+from tcc it goes up via ancient binutils and glibc versions to gcc.
+
+you may notice that most of the packages in this graph are unmaintained.
+
+that is a problem.
+
+anyway, this brings us to
+
+** Long path: Full Source Bootstrap
+
+a full GNU/Linux system that is bootstrapped from 357-bytes.
+
+** Trusted Computing Base
+
+anything else?
+** Trusted Computing Base
+
+when building a package on Guix, the trusted computing base includes
+the build daemon and the linux kernel.
+
+ludovic has built a package in the intial ramdisk, thereby removing the
+build daemon from the trusted computing base.
+
+an obvious next step is linux.
+
+mes v0.22 now runs on the hurd, a micro kernel is another possibility to
+reduce the trusted computing base.
+
+last year GNU Guix has made it very easy to run the hurd in a vm,
+a so-called childhurd.
+
+** What's Next?
+
+apart from the real big plans, there is lots of fun work ahead, let's
+find some time and money for that.
+
+* Freedom
+** Free Software as a Human Right
+
+at the start of this talk i showed this image with richard's view on
+free software
+
+** Freedom of Computing
+
+have i strayed too far when i reinterpret this as freedom of computing?
+
+if we have free software, and our binaries are compromised, do we really
+have freedom of computing, can we enjoy this human right?
+
+** Moving target: Are we losing GCC?
+when gnu guix started, GCC could be bootstrapped by any C compiler.
+
+four years later, when gnu mes started, gcc also needed C++,
+ensuring bootstrappability would only require for GCC developers
+to continue maintaining 4.6 or 4.7
+
+after four years of work we can bootstrap gcc-4.7, our target is moving.
+
+is it moving faster than we are?
+
+** Contemplate: What is happening?
+
+i call upon you to understand the problem of bootstrapping
+
+to contemplate on where we are, and where we going
+
+and to decide where you would really want to go
+** Joy of Source
+
+are we doing this only to counter the trusting trust attack?
+
+i'm not sure, i think that building from source is the proper way to do
+computing; and the trusting trust attack is only a symptom of confusing
+a binary substitute with the compilation of source code.
+
+** Choices: More control, or less control?
+
+apparently, bitcoin users rather have more control over what their
+computer does when it handles money.
+
+so it seems to me that our choices are simple: raise awareness and slay
+this dragon together, or sit back and place our bets on what the
+apocalypse will look like.
+
+i mean, why bother, i'm betting heavily on climate change.
+
+* Thanks
+
+i am very grateful for getting so much help and seeing this crazy
+project grow!
+
+** Want to join?
+
+that's all folks!
+
+*** You can help
+  * make Guix run on Mes
+  * write a bootstrappable syntax-case
+  * simplify MesCC and target GCC-4.6
+  * bootstrap NixOS, Debian
+  * port MesCC to the Hurd, FreeBSD
+  * spread the message
+  * retweet =@janneke_gnu= =janneke@octodon.social=
+
+*** Connect
+    * irc  freenode.net [[irc://bootstrappable@freenode.net][#bootstrappable]] [[irc://guix@freenode.net][#guix]]
+    * mail [[mailto:bug-mes@gnu.org][bug-mes@gnu.org]] [[mailto://guix-devel@gnu.org][guix-devel@gnu.org]]
+    * git  [[https://git.savannah.gnu.org/git/mes.git][https://git.savannah.gnu.org/git/mes.git]]
+    * web  [[http://bootstrappable.org][bootstrappable.org]]
+
+* legalese
+  Copyright \copy 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+
+  #+BEGIN_QUOTE
+  Permission is granted to copy, distribute and/or modify this document
+  under the terms of the GNU Free Documentation License, Version 1.3 or
+  any later version published by the Free Software Foundation; with no
+  Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+  Texts.
+  #+END_QUOTE

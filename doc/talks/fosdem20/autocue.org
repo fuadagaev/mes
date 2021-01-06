@@ -1,4 +1,5 @@
-# time grep -E '^([^#]|$)' autocue.org | sed -re 's/^[*]+.*/. . slide. ./' | head -264 | tr '\n' ' ' | espeak -s 110 -l 1
+# grep -E '^([^#]|$)' autocue.org | sed -re 's/^[*]+.*/. . slide. ./' | head -264 | tr '\n' ' ' | espeak -s 110 -l 1 --stdin -w fosdem20.wav
+# ffmpeg -i fosdem21.wav |& grep Duration:
 #+TITLE: GNU Mes
 
 * Introduction

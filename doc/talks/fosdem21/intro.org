@@ -1,0 +1,163 @@
+#+TITLE: Bootstrapping Intro
+#+TITLE: \smaller[2]{-- Current status}
+#+DATE:2020-01-30
+#+EMAIL: janneke@gnu.org
+#+AUTHOR: janneke@gnu.org
+#+COPYRIGHT: janneke (Jan Nieuwenhuizen) <janneke@gn.org>
+#+LICENSE: GNU Free Documentation License, version 1.3 or later.
+#+OPTIONS: H:2 @:t ::t
+#+OPTIONS: tex:t latex:t todo:t tasks:t
+#+LATEX_HEADER:\institute{GNU Guix Days @FOSDEM'20}
+#+LATEX_HEADER:\def\ahref#1#2{\htmladdnormallink{#2}{#1}}
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LATEX_HEADER: \usepackage{relsize}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \mode<beamer>{\usetheme{X}}
+#+KEYWORDS: GNU, Mes, Mes, Guix, bootstrappable, reproducible
+#+BEAMER_THEME: X
+#+BEAMER_FRAME_LEVEL: 2
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+
+* Bootstrapping Guix v1.0
+
+** Guix v1.0: The First Package
+#+LATEX:\includegraphics[width=1.0\textwidth]{gnu-make-boot0.png}
+
+** Guix Graph
+
+#+BEGIN_SRC sh
+$ guix graph make
+$ guix graph make | dot -T png > make.png
+$ guix graph -e '(@@ (gnu packages commencement) gnu-make-boot0)'
+#+END_SRC
+
+** Guix v1.0: The First GCC
+#+LATEX:\includegraphics[width=1.3\textwidth]{gcc-boot0-black.png}
+
+** Guix bootstrap tarballs
+#+BEGIN_SRC sh
+$ guix build bootstrap-tarballs
+#+END_SRC
+
+** Guix v1.0 bootstrap binary seed
+#+BEGIN_SRC sh
+$ du -schx $(readlink $(guix build bootstrap-tarballs)/*)
+2.1M	/gnu/store/9623n4bq6iq5c8cwwdq99qb7d0xj93ym-binutils-static-stripped-tarball-2.28.1/binutils-static-stripped-2.28.1-x86_64-linux.tar.xz
+18M	/gnu/store/437xwygmmwwpkddcyy1qvjcv4hak89pb-gcc-stripped-tarball-5.5.0/gcc-stripped-5.5.0-x86_64-linux.tar.xz
+1.8M	/gnu/store/55ccx18a0d1x5y6a575jf1yr0ywizvdg-glibc-stripped-tarball-2.26.105-g0890d5379c/glibc-stripped-2.26.105-g0890d5379c-x86_64-linux.tar.xz
+5.7M	/gnu/store/bqf0ajclbvnbm0a46819f30804y3ilx0-guile-static-stripped-tarball-2.2.3/guile-static-stripped-2.2.3-x86_64-linux.tar.xz
+5.8M	/gnu/store/j8yzjmh9sy4gbdfwjrhw46zca43aah6x-static-binaries-tarball-0/static-binaries-0-x86_64-linux.tar.xz
+33M	total
+$ for i in $(readlink $(guix build bootstrap-tarballs)/*);\
+  do sudo tar xf $i; done
+$ du -schx *
+130M	bin
+13M	include
+54M	lib
+51M	libexec
+5.2M	share
+252M	total
+#+END_SRC
+
+** Reduce binary seeds to bare minimum
+   #+BEGIN_QUOTE
+These big chunks of binary code are practically non-auditable which
+breaks the source to binary transparency that we get in the rest of
+the package dependency graph.
+   #+END_QUOTE
+   #+BEGIN_QUOTE
+Every unauditable binary leaves us vulnerable to compiler backdoors as
+described by Ken Thompson in the 1984 paper *Reflections on Trusting
+Trust*.
+   #+END_QUOTE
+   #+BEGIN_QUOTE
+Thus, our goal is to reduce the set of bootstrap binaries to the bare
+minimum.  -- Ludovic Courtès (GNU Guix documentation, December 2017)
+   #+END_QUOTE
+
+** Guix Reduced Binary Seed
+#+BEGIN_SRC sh
+$ du -schx $(readlink $(guix build bootstrap-tarballs)/*)
+5.7M	/gnu/store/9f8gi8raqfx9j3l9d00qrrc0jg3r1kyj-guile-static-stripped-tarball-2.2.6/guile-static-stripped-2.2.6-x86_64-linux.tar.xz
+80K	/gnu/store/b6rjl52hibhmvyw4dg8678pwryhla0h2-linux-libre-headers-stripped-tarball-4.19.56/linux-libre-headers-stripped-4.19.56-x86_64-linux.tar.xz
+12K	/gnu/store/d7zlxsjcnqilmvqwx7scija9x9bjw8cw-mescc-tools-static-stripped-tarball-0.5.2-0.bb062b0/mescc-tools-static-stripped-0.5.2-0.bb062b0-x86_64-linux.tar.xz
+428K	/gnu/store/n7zc4kpi8ny6jlfaikkzxlwhc5fvr1vr-mes-minimal-stripped-tarball-0.19/mes-minimal-stripped-0.19-x86_64-linux.tar.xz
+6.0M	/gnu/store/nv4djwlrljfqmynqr2cqvfwz0ydx7kxb-static-binaries-tarball-0/static-binaries-0-x86_64-linux.tar.xz
+13M	total
+$ for i in $(readlink $(guix build bootstrap-tarballs)/*);\
+  do sudo tar xf $i; done
+Password:
+$ du -schx *
+93M	bin
+700K	include
+38M	lib
+14M	share
+145M	total
+#+END_SRC
+
+** Guix Scheme-only bootstrap
+#+BEGIN_SRC sh
+$ du -schx $(readlink $(~/src/guix/wip-bootstrap/pre-inst-env guix build bootstrap-tarballs)/*)
+5.7M	/gnu/store/1mq2pcd2h7g54xpi2jrgj6ibbi4lgi3c-guile-static-stripped-tarball-2.2.6/guile-static-stripped-2.2.6-x86_64-linux.tar.xz
+80K	/gnu/store/bl1r2bpk6fam8r2gjvr5mvr48i3dm2hn-linux-libre-headers-stripped-tarball-4.19.56/linux-libre-headers-stripped-4.19.56-x86_64-linux.tar.xz
+12K	/gnu/store/w0dlz486dhb8aiq8pxm5akllz628fqin-mescc-tools-static-stripped-tarball-0.5.2-0.bb062b0/mescc-tools-static-stripped-0.5.2-0.bb062b0-x86_64-linux.tar.xz
+428K	/gnu/store/15j6l18q44ymlrh1cfp4s4hc9835xic5-mes-minimal-stripped-tarball-0.19/mes-minimal-stripped-0.19-x86_64-linux.tar.xz
+6.2M	total
+$ for i in $(readlink $(~/src/guix/wip-bootstrap/pre-inst-env guix build bootstrap-tarballs)/*);\
+  do sudo tar xf $i; done
+$ du -schx *
+4.9M	bin
+700K	include
+38M	lib
+14M	share
+57M	total
+#+END_SRC
+
+** Scheme-only bootstrap: Gash Core Utils
+
+#+BEGIN_SRC sh
+awk       cp       gash   mv      sleep  uname
+basename  cut      grep   pwd     sort   uniq
+bash      diff     gzip   reboot  tar    wc
+cat       dirname  head   rm      test   which
+chmod     expr     ln     rmdir   touch
+cmp       false    ls     sed     tr
+compress  find     mkdir  sh      true
+#+END_SRC
+
+* Aim for the Stars: Full Source Bootstrap
+
+** Full Source Bootstrap
+#+LATEX:\includegraphics[width=0.6\textwidth]{fsb-logo-guile-guix-mes.png}
+
+** Full Source Bootstrap: Stage 0
+#+LATEX:\rightskip=2cm\includegraphics[width=0.8\textwidth]{stage-0.png}
+
+** Full Source Bootstrap: Stage 1
+#+LATEX:\rightskip=2cm\includegraphics[width=0.85\textwidth]{stage-1.png}
+
+** Full Source Bootstrap: Stage 2
+#+LATEX:\rightskip=2cm\includegraphics[width=0.75\textwidth]{stage-2.png}
+
+** Full Source Bootstrap: Stage mes
+#+LATEX:\rightskip=2cm\includegraphics[width=0.75\textwidth]{stage-mes.png}
+
+** Full Source Bootstrap: Stage mesboot
+#+LATEX:\rightskip=2cm\includegraphics[width=1.0\textwidth]{stage-mesboot.png}
+
+* legalese
+  :PROPERTIES:
+  :BEAMER_ENV: note
+  :COPYING: t
+  :END:
+
+  Copyright \copy 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+
+  #+BEGIN_QUOTE
+  Permission is granted to copy, distribute and/or modify this
+  document under the terms of the GNU Free Documentation License,
+  Version 1.3 or any later version published by the Free Software
+  Foundation; with no Invariant Sections, with no Front-Cover Texts,
+  and with no Back-Cover Texts.
+  #+END_QUOTE

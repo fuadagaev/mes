@@ -1,0 +1,81 @@
+https://www.scivision.dev/beamer-latex-dual-display-pdf-notes/
+
+* oproep: wereld moet het gaan begrijpen
+* hardware boys
+* politiek actiever worden om dit te vereisen: trusted computing base
+* free software: moet mensenrecht worden
+* need your help
+
+
+Technical requirements: Please adhere to the following technical requirements for your FOSDEM 2021 presentation video:
+
+    resolution: 1280x720
+    frame rate: 25 fps
+    video codec: h264 video codec, main profile
+    video bitrate: <= 2Mbit/s
+    audio codec: aac audio codec
+    audio sample rate: 48 KHz mono
+    audio bitrate: 128 Kbit/s
+    media container: mp4
+
+
+https://github.com/stikonas/live-bootstrap
+
+
+On May 18, 2020, GCC moved away from ISO/IEC C++03 standard to ISO/IEC
+C++11 standard needed to compile, bootstrap, the compiler itself.
+
+Supported releases
+
+
+GCC 4.9.4 released [2016-08-03]
+
+June 12, 2014
+
+The GNU project and the GCC developers are pleased to announce the release of GCC 4.7.4.
+
+
+GCC 4.8.1 will be C++11 feature-complete [2013-04-01]
+    Support for C++11 ref-qualifiers was added to the GCC 4.8 branch, making G++ the first C++ compiler to implement all the major language features of the C++11 standard. This functionality will be available in GCC 4.8.1.
+
+* hoe sturen we olietanker bij
+
+* als je bootstrappen serieus wilt nemen, zullen we dit moeten
+  supporten
+
+* voldongen feit, geen awareness
+
+** megolomane visie **: all software must be bootstrappable
+
+** niet-bootstrappable: geen controle over binaries, trust
+
+*** Choices: *giving up*
+**** finding great reasons for giving up
+
+ik houd van yoghurt, melk is verzekerd, moet ik vasthouden aan yoghurt
+* stel nou dat iemand mijn yoghurt, lawyers
+* stel nou op n dag, mijn yoghurt is bedorven
+
+* it just doesn't feel right
+
+* i call upon you to understand what it means for You (you, me, the free
+  software world, humanity)
+
+* ultieme vrijheid: als je niemand nodig hebt
+* je hebt niks aan broncode, het moet omgezet
+* 0001100101 machine code is abundant, maar geen garantie
+* imagine this press release: intel,ppc,arm are all compromised
+
+* wat gaat de wereld hiermee doen?
+** gaan we een vrijere wereld cre-eren?
+** do we just forget this idea, and keep trusting yoghurt
+
+** bitcoin example
+** sit back and place your bets on the apocolypse
+** hardware
+
+** less control or more control ... place your bets
+** bootstrappability pandamic
+** enormous gamble
+** bitcoin?
+** health care?

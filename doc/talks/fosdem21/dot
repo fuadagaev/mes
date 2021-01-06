@@ -1,0 +1,12 @@
+dot -T png < stage-0.dot > stage-0.png
+dot -T png < stage-0.dot > stage-0.png
+dot -T png < stage-1.dot > stage-1.png
+dot -T png < stage-2.dot > stage-2.png
+dot -T png < stage-mes.dot > stage-mes.png
+dot -T png < stage-mesboot.dot > stage-mesboot.png
+dot -T png < stage-mesboot.dot > stage-mesboot.png
+
+dot -T png < gcc-core-mesboot0-fsb.dot > gcc-core-mesboot0-fsb.png
+dot -T png < gcc-core-mesboot0-fsb-unversioned.dot > gcc-core-mesboot0-fsb-unversioned.png
+
+dot -T png < gcc-core-mesboot0-fsb-no-guile-unversioned.dot > gcc-core-mesboot0-fsb-no-guile-unversioned.png
