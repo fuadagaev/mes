@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;;; srfi-13.mes is the minimal srfi-13
+;;; srfi-13.scm is the minimal srfi-13
 
 ;;; Code:
 
