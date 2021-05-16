@@ -31,7 +31,7 @@
             char-set:whitespace
             char-set:digit
             char-set:upper-case
-            char-set lst
+            list->char-set
             string->char-set
             string->char-set!
             char-set-adjoin
