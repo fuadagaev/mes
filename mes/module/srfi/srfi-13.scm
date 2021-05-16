@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016,2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2017,2018,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -24,7 +24,34 @@
 
 ;;; Code:
 
-(mes-use-module (srfi srfi-14))
+(define-module (srfi srfi-13)
+  #:use-module (srfi srfi-14)
+  #:export (string-join
+            string-copy
+            string=
+            string-split
+            string-take
+            string-drop
+            drop-right
+            string-drop-right
+            string-delete
+            string-index
+            string-rindex
+            reverse-list->string
+            substring/copy
+            substring/shared
+            string-null?
+            string-fold
+            string-fold-right
+            string-contains
+            string-trim
+            string-trim-right
+            string-trim-both
+            string-map
+            string-replace
+            string-downcase
+            string-upcase
+            string-tokenize))
 
 (define (string-join lst . delimiter+grammar)
   (let ((delimiter (or (and (pair? delimiter+grammar) (car delimiter+grammar))
