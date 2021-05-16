@@ -28,7 +28,7 @@
 (mes-use-module (srfi srfi-14))
 
 (define-module (mes repl)
-  ;;#:use-module (srfi srfi-14)
+  #:use-module (srfi srfi-14)
   #:export (repl))
 
 (define welcome
