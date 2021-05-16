@@ -1,7 +1,7 @@
 ;;; -*-scheme-*-
 
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright © 2016,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016,2018,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; mes-0.scm: This file is part of GNU Mes.
 ;;;
@@ -26,12 +26,10 @@
 ;;; Code:
 
 (define-module (mes mes-0)
-  #:export (
-            mes?
+  #:export (mes?
             guile?
             guile-1.8?
-            guile-2?
-            ))
+            guile-2?))
 
 (define mes? #t)
 (define guile? #f)
