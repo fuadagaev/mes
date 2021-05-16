@@ -1,5 +1,5 @@
 ;;; GNU Mes --- Maxwell Equations of Software
-;;; Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+;;; Copyright © 2016,2017,2018,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Mes.
 ;;;
@@ -16,101 +16,155 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; From Guile-1.8
+;;; Commentary:
 
-;;; Author: Martin Grabmueller <mgrabmue@cs.tu-berlin.de>
-;;; Date: 2001-06-06
+;;; srfi-1.scm is the minimal srfi-1 needed to run mescc.
 
-;;; Searching
+;;; Code:
 
-;; Internal helper procedure.  Map `f' over the single list `ls'.
-;;
+(define-module (srfi srfi-1)
+  #:export (every
+            find
+            filter
+            append-map
+            filter-map
+            fold
+            fold-right
+            unfold
+            remove
+            reverse!
+            srfi-1:member
+            member
+            srfi-1:iota
+            iota
+            srfi-1:iota
+            delete-duplicates
+            any
+            any1
+            every
+            every1
+            list-index
+            lset-union
+            lset-intersection
+            lset-difference
+            reverse!
+            take-while))
 
-(define map1 map)
+(define (find pred lst)
+  (let loop ((lst lst))
+    (if (null? lst) #f
+        (if (pred (car lst)) (car lst)
+            (loop (cdr lst))))))
 
-(define (any pred ls . lists)
-  (if (null? lists)
-      (any1 pred ls)
-      (let lp ((lists (cons ls lists)))
-	(cond ((any1 null? lists)
-	       #f)
-	      ((any1 null? (map1 cdr lists))
-	       (apply pred (map1 car lists)))
-	      (else
-	       (or (apply pred (map1 car lists)) (lp (map1 cdr lists))))))))
+(define (filter pred lst)
+  (let loop ((lst lst))
+    (if (null? lst) '()
+        (if (pred (car lst))
+            (cons (car lst) (loop (cdr lst)))
+            (loop (cdr lst))))))
 
-(define (any1 pred ls)
-  (let lp ((ls ls))
-    (cond ((null? ls)
-	   #f)
-	  ((null? (cdr ls))
-	   (pred (car ls)))
-	  (else
-	   (or (pred (car ls)) (lp (cdr ls)))))))
+(define (append-map f lst . rest)
+  (apply append (apply map f (cons lst rest))))
 
-(define (every pred ls . lists)
-  (if (null? lists)
-      (every1 pred ls)
-      (let lp ((lists (cons ls lists)))
-	(cond ((any1 null? lists)
-	       #t)
-	      ((any1 null? (map1 cdr lists))
-	       (apply pred (map1 car lists)))
-	      (else
-	       (and (apply pred (map1 car lists)) (lp (map1 cdr lists))))))))
+(define (filter-map f h . t)
+  (if (null? h) '()
+      (if (null? t)
+          (let ((r (f (car h))))
+            (if r (cons r (filter-map f (cdr h)))
+                (filter-map f (cdr h))))
+          (if (null? (cdr t))
+              (let ((r (f (car h) (caar t))))
+                (if r (cons r (filter-map f (cdr h) (cdar t)))
+                    (filter-map f (cdr h) (cdar t))))
+              (error 'unsupported (cons* "filter-map 3:" f h t))))))
 
-(define (every1 pred ls)
-  (let lp ((ls ls))
-    (cond ((null? ls)
-	   #t)
-	  ((null? (cdr ls))
-	   (pred (car ls)))
-	  (else
-	   (and (pred (car ls)) (lp (cdr ls)))))))
-
-(define (list-index pred clist1 . rest)
+(define (fold proc init lst1 . rest)
   (if (null? rest)
-    (let lp ((l clist1) (i 0))
-      (if (null? l)
-	#f
-	(if (pred (car l))
-	  i
-	  (lp (cdr l) (+ i 1)))))
-    (let lp ((lists (cons clist1 rest)) (i 0))
-      (cond ((any1 null? lists)
-	     #f)
-	    ((apply pred (map car lists)) i)
-	    (else
-	     (lp (map cdr lists) (+ i 1)))))))
+      (let loop ((lst1 lst1) (result init))
+        (if (null? lst1) result
+            (loop (cdr lst1) (proc (car lst1) result))))
+      (if (null? (cdr rest))
+          (let loop ((lst1 lst1) (lst2 (car rest)) (result init))
+            (if (or (null? lst1)
+                    (null? lst2)) result
+                    (loop (cdr lst1) (cdr lst2) (proc (car lst1) (car lst2) result))))
+          (let loop ((lst1 lst1) (lst2 (car rest)) (lst3 (cadr rest)) (result init))
+            (if (or (null? lst1)
+                    (null? lst2)
+                    (null? lst3)) result
+                    (loop (cdr lst1) (cdr lst2) (cdr lst3) (proc (car lst1) (car lst2) (car lst3) result))))
+          (error "FOLD-4-NOT-SUPPORTED"))))
 
-;;; Set operations on lists
-
-(define (lset-union = . rest)
-  (let ((acc '()))
-    (for-each (lambda (lst)
-		(if (null? acc)
-		    (set! acc lst)
-		    (for-each (lambda (elem)
-				(if (not (member elem acc =))
-				    (set! acc (cons elem acc))))
-			      lst)))
-	      rest)
-    acc))
-
-(define (lset-intersection = list1 . rest)
-  (let lp ((l list1) (acc '()))
-    (if (null? l)
-      (reverse! acc)
-      (if (every (lambda (ll) (member (car l) ll =)) rest)
-	(lp (cdr l) (cons (car l) acc))
-	(lp (cdr l) acc)))))
-
-(define (lset-difference = list1 . rest)
+(define (fold-right proc init lst1 . rest)
   (if (null? rest)
-    list1
-    (let lp ((l list1) (acc '()))
-      (if (null? l)
-	(reverse! acc)
-	(if (any (lambda (ll) (member (car l) ll =)) rest)
-	  (lp (cdr l) acc)
-	  (lp (cdr l) (cons (car l) acc)))))))
+      (let loop ((lst lst1))
+        (if (null? lst) init
+            (proc (car lst) (loop (cdr lst)))))
+      (if (null? (cdr rest))
+          (let loop ((lst1 lst1) (lst2 (car rest)))
+            (if (or (null? lst1)
+                    (null? lst2)) init
+                    (proc (car lst1) (car lst2) (loop (cdr lst1) (cdr lst2)))))
+          (let loop ((lst1 lst1) (lst2 (car rest)) (lst3 (cadr rest)))
+            (if (or (null? lst1)
+                    (null? lst2)
+                    (null? lst3)) init
+                    (proc (car lst1) (car lst2) (car lst3) (loop (cdr lst1) (cdr lst2) (cdr lst3)))))
+          (error "FOLD-RIGHT-4-NOT-SUPPORTED"))))
+
+(define (unfold p f g seed . rest)
+  (let ((tail-gen (if (null? rest) (const '())
+                      (car rest))))
+    (define (reverse+tail lst seed)
+            (let loop ((lst lst)
+                       (result (tail-gen seed)))
+              (if (null? lst) result
+                  (loop (cdr lst)
+                        (cons (car lst) result)))))
+    (let loop ((seed seed) (result '()))
+      (if (p seed) (reverse+tail result seed)
+          (loop (g seed)
+                (cons (f seed) result))))))
+
+(define (remove pred lst) (filter (lambda (x) (not (pred x))) lst))
+
+(define (reverse! lst . term)
+  (if (null? term) (core:reverse! lst term)
+      (core:reverse! lst (car term))))
+
+(define (srfi-1:member x lst eq)
+  (if (null? lst) #f
+      (if (eq x (car lst)) lst
+          (srfi-1:member x (cdr lst) eq))))
+
+(define (member x lst . rest)
+  (if (null? rest) (mes:member x lst)
+      (srfi-1:member x lst (car rest))))
+
+(define (srfi-1:iota n start step)
+  (if (<= n 0) '()
+      (cons start (srfi-1:iota (- n 1) (+ start step) step))))
+
+(define (iota n . rest)
+  (if (null? rest) (mes:iota n)
+      (let ((start (car rest))
+            (step (if (null? (cdr rest)) 1
+                      (cadr rest))))
+        (srfi-1:iota n start step))))
+
+(define last (compose car last-pair))
+
+(define (delete-duplicates lst . equal)
+  (let ((equal (and (pair? equal) (car equal))))
+    (let loop ((lst lst))
+      (if (null? lst) '()
+          (if (if equal (member (car lst) (cdr lst) equal)
+                  (member (car lst) (cdr lst)))
+              (loop (cdr lst))
+                (cons (car lst) (loop (cdr lst))))))))
+
+(include-from-path "srfi/srfi-1-guile.scm")
+
+(define (take-while pred lst)
+  (if (or (null? lst) (not (pred (car lst)))) '()
+          (cons (car lst) (take-while pred (cdr lst)))))

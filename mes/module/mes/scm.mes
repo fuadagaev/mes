@@ -132,10 +132,12 @@
 
 (define memv memq)
 
-(define (member x lst)
+(define (mes:member x lst)
   (if (null? lst) #f
       (if (equal? x (car lst)) lst
-          (member x (cdr lst)))))
+          (mes:member x (cdr lst)))))
+
+(define member mes:member)
 
 
 ;;; Lists
@@ -163,9 +165,11 @@
   (if (= 0 n) x
       (list-tail (cdr x) (- n 1))))
 
-(define (iota n)
+(define (mes:iota n)
   (if (<= n 0) '()
-      (append2 (iota (- n 1)) (list (- n 1)))))
+      (append2 (mes:iota (- n 1)) (list (- n 1)))))
+
+(define iota mes:iota)
 
 (define (reverse lst)
   (let loop ((lst lst) (r '()))

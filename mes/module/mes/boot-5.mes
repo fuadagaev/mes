@@ -170,15 +170,12 @@
 (mes-use-module (mes scm))
 ;; end boot-03.scm
 
-(mes-use-module (srfi srfi-1)) ;; XXX TODO: [test] macros may need srfi-1
 (mes-use-module (srfi srfi-13))
 (mes-use-module (mes fluids))
 (mes-use-module (mes catch))
 (mes-use-module (mes posix))
 (mes-use-module (mes guile))
 ;; end boot-04.scm
-
-;; FIXME: need no load before booting guile module -- srfi-1 stuff
 
 (mes-use-module (srfi srfi-9))
 (mes-use-module (mes syntax))
