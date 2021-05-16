@@ -18,12 +18,13 @@
 ;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (mescc mescc)
+  #:use-module (mes mes-0)
+  #:use-module (mes misc)
+  #:use-module (mes guile)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 getopt-long)
-  #:use-module (mes mes-0)
-  #:use-module (mes misc)
 
   #:use-module (mescc info)
   #:use-module (mescc armv4 info)

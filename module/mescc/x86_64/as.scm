@@ -26,10 +26,7 @@
   #:use-module (mes guile)
   #:use-module (mescc as)
   #:use-module (mescc info)
-  #:use-module (mescc x86_64 info)
-  #:export (
-            x86_64:instructions
-            ))
+  #:export (x86_64:instructions))
 
 (define (r->e o)
   (string-append "e" (string-drop o 1)))
@@ -117,16 +114,16 @@
 (define x86_64:calling-convention-registers '("rax" "rdi" "rsi" "rdx" "rcx" "r8" "r9"))
 
 ;; AMD
-(define (x86_64:r->arg info i)
-  (let ((r (get-r info))
-        (r1 (list-ref x86_64:calling-convention-registers (1+ i))))
-    `((,(string-append "mov____%" r ",%" r1))))) ; debug fail-safe check
+;; (define (x86_64:r->arg info i)
+;;   (let ((r (get-r info))
+;;         (r1 (list-ref x86_64:calling-convention-registers (1+ i))))
+;;     `((,(string-append "mov____%" r ",%" r1))))) ; debug fail-safe check
 
-(define (x86_64:label->arg info label i)
-  (let ((r0 (list-ref x86_64:registers (1+ i))))
-    (if (< label #x80000000)
-        `((,(string-append "mov____$i32,%" r0) (#:address ,label)))
-        `((,(string-append "mov____$i64,%" r0) (#:address8 ,label))))))
+;; (define (x86_64:label->arg info label i)
+;;   (let ((r0 (list-ref x86_64:registers (1+ i))))
+;;     (if (< label #x80000000)
+;;         `((,(string-append "mov____$i32,%" r0) (#:address ,label)))
+;;         `((,(string-append "mov____$i64,%" r0) (#:address8 ,label))))))
 
 ;; traditional
 (define (x86_64:r->arg info i)
