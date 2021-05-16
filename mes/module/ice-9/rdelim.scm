@@ -16,4 +16,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (ice-9 rdelim))
+(define-module (ice-9 rdelim)
+  #:export (read-line))
+
+(define (read-line . rest)
+  (let* ((port (if (pair? rest) (car rest) (current-input-port)))
+         (handle-delim (if (and (pair? rest) (pair? (cdr rest))) (cadr rest) 'trim))
+         (c (read-char port)))
+    (if (eof-object? c) c
+        (list->string
+         (let loop ((c c))
+           (if (or (eof-object? c) (eq? c #\newline)) (case handle-delim
+                                                        ((trim) '())
+                                                        ((concat) '(#\newline))
+                                                        (else (error (format #f "not supported: handle-delim=~a" handle-delim))))
+               (cons c (loop (read-char port)))))))))
