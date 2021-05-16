@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;;; repl.scm defines repl, a repl for Mes.
+;;; repl.mes defines repl, a repl for Mes.
 
 ;;; Code:
 
