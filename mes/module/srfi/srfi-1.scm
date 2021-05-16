@@ -23,7 +23,8 @@
 ;;; Code:
 
 (define-module (srfi srfi-1)
-  #:export (every
+  #:export (drop-right
+            every
             find
             filter
             append-map
@@ -49,6 +50,9 @@
             lset-difference
             reverse!
             take-while))
+
+(define (drop-right lst n)
+  (list-head lst (- (length lst) n)))
 
 (define (find pred lst)
   (let loop ((lst lst))

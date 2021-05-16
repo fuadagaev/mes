@@ -32,7 +32,6 @@
             string-split
             string-take
             string-drop
-            drop-right
             string-drop-right
             string-delete
             string-index
@@ -97,9 +96,6 @@
   (cond ((zero? n) s)
         ((> n 0) (list->string (list-tail (string->list s) n)))
         (else s (error "string-drop: not supported: (n s)=" (cons n s)))))
-
-(define (drop-right lst n)
-  (list-head lst (- (length lst) n)))
 
 (define (string-drop-right s n)
   (cond ((zero? n) s)

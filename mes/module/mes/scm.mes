@@ -194,6 +194,9 @@
       (lambda args
         (proc (apply (apply compose rest) args)))))
 
+(define (drop-right lst n)
+  (list-head lst (- (length lst) n)))
+
 
 ;; Hash
 
