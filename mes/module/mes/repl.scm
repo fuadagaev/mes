@@ -20,12 +20,9 @@
 
 ;;; Commentary:
 
-;;; repl.mes defines repl, a repl for Mes.
+;;; repl.scm defines repl, a repl for Mes.
 
 ;;; Code:
-
-;;; XXX FIXME
-(mes-use-module (srfi srfi-14))
 
 (define-module (mes repl)
   #:use-module (srfi srfi-14)
