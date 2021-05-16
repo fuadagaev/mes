@@ -298,6 +298,25 @@
         (if (= 0 n) (list->string (append sign lst))
             (loop n lst))))))
 
+(define (string-index s pred . rest)
+  (let* ((start (and (pair? rest) (car rest)))
+         (end (and start (pair? (cdr rest)) (cadr rest)))
+         (pred (if (char? pred) (lambda (c) (eq? c pred)) pred)))
+    (if start (error "string-index: not supported: start=" start))
+    (if end (error "string-index: not supported: end=" end))
+    (let loop ((lst (string->list s)) (i 0))
+      (if (null? lst) #f
+          (if (pred (car lst)) i
+              (loop (cdr lst) (1+ i)))))))
+
+(define (string-split s c)
+  (let loop ((lst (string->list s)) (result '()))
+    (let ((rest (memq c lst)))
+      (if (not rest) (append result (list (list->string lst)))
+          (loop (cdr rest)
+                (append result
+                        (list (list->string (list-head lst (- (length lst) (length rest)))))))))))
+
 
 ;;; Symbols
 (define (symbol-prefix? prefix symbol)
