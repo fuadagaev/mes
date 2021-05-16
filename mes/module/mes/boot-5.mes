@@ -173,6 +173,8 @@
 (mes-use-module (mes fluids))
 (mes-use-module (mes catch))
 (mes-use-module (mes posix))
+(mes-use-module (mes display))
+(mes-use-module (mes simple-format))
 (mes-use-module (mes guile))
 ;; end boot-04.scm
 
