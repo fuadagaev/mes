@@ -254,6 +254,11 @@
      (>= length suffix-length)
      (equal? (substring string (- length suffix-length)) suffix))))
 
+(define (string-drop s n)
+  (cond ((zero? n) s)
+        ((> n 0) (list->string (list-tail (string->list s) n)))
+        (else s (error "string-drop: not supported: (n s)=" (cons n s)))))
+
 (define (string->number s . rest)
   (if (string-prefix? "#x" s) (string->number (string-drop s 2) 16)
       (let ((lst (string->list s)))
