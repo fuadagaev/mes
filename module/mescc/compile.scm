@@ -27,7 +27,6 @@
   #:use-module (system base pmatch)
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 pretty-print)
-  #:use-module (nyacc lang c99 pprint)
 
   #:use-module (mes guile)
   #:use-module (mes misc)
@@ -40,6 +39,11 @@
   #:export (c99-ast->info
             c99-input->info
             c99-input->object))
+
+(cond-expand
+ (guile
+  (use-modules (nyacc lang c99 pprint)))
+ (mes))
 
 (define mes? (pair? (current-module)))
 (define mes-or-reproducible? #t)
