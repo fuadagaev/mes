@@ -2,13 +2,26 @@
 #+TITLE: GNU Mes NEWS – history of user-visible changes
 #+STARTUP: content hidestars
 
-Copyright © 2016,2017,2018,2019,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+Copyright © 2016,2017,2018,2019,2021,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 
   Copying and distribution of this file, with or without modification,
   are permitted in any medium without royalty provided the copyright
   notice and this notice are preserved.
 
 Please send Mes bug reports to bug-mes@gnu.org.
+
+* Changes in 0.23.1 since 0.23
+** Build: Move to libera.chat.
+** Core
+*** Mes and Mes C Library can now support ARM bootstrap.
+** MesCC
+*** MesCC now supports ARM bootstrap.
+** Noteworthy bug fixes
+*** Stack frame 0 does not perform out of bounds access.
+*** MesCC's -m64 works again.
+*** Guile-2 support has been resurrected.
+*** logand has been fixed.
+*** Mes C Library now supports more than 255 command line parameters.
 
 * Changes in 0.23 since 0.22
 ** Core
