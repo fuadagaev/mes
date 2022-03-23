@@ -181,7 +181,6 @@
 (mes-use-module (srfi srfi-9))
 (mes-use-module (mes syntax))
 (mes-use-module (mes boot-6))
-(include-from-path "mes/guile.scm")
 (use-modules (mes main))
 (top-main)
 (primitive-load 0)

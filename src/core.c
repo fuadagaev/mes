@@ -178,12 +178,12 @@ append2 (struct scm *x, struct scm *y)
 }
 
 struct scm *
-append_reverse_ (struct scm *x, struct scm *y)
+append_reverse (struct scm *x, struct scm *y)
 {
   if (x == cell_nil)
     return y;
   if (x->type != TPAIR)
-    error (cell_symbol_not_a_pair, cons (x, cstring_to_symbol ("core:append-reverse")));
+    error (cell_symbol_not_a_pair, cons (x, cstring_to_symbol ("append-reverse")));
   while (x != cell_nil)
     {
       y = cons (x->car, y);

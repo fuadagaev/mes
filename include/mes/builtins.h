@@ -38,7 +38,7 @@ struct scm *acons (struct scm *key, struct scm *value, struct scm *alist);
 struct scm *length (struct scm *x);
 struct scm *error (struct scm *key, struct scm *x);
 struct scm *append2 (struct scm *x, struct scm *y);
-struct scm *append_reverse_ (struct scm *x, struct scm *y);
+struct scm *append_reverse (struct scm *x, struct scm *y);
 struct scm *reverse_x_ (struct scm *x, struct scm *t);
 struct scm *assq (struct scm *x, struct scm *a);
 struct scm *assoc (struct scm *x, struct scm *a);

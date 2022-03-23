@@ -25,9 +25,7 @@
 (define-module (mescc i386 info)
   #:use-module (mescc info)
   #:use-module (mescc i386 as)
-  #:export (x86-info
-            i386:type-alist
-            i386:registers))
+  #:export (x86-info))
 
 (define (x86-info)
   (make <info> #:types i386:type-alist #:registers i386:registers #:instructions i386:instructions))

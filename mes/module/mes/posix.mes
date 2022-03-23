@@ -26,7 +26,7 @@
 (define S_IRWXU #o700)
 
 (define (basename file-name . ext)
-  (let ((base (car (last-pair (string-split file-name #\/))))
+  (let ((base (last (string-split file-name #\/)))
         (ext (and (pair? ext) (car ext))))
     (if (and ext
              (string-suffix? ext base)) (string-drop-right base (string-length ext))
