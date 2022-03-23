@@ -21,22 +21,16 @@
 ;;; Code:
 
 (define-module (mescc preprocess)
-  #:use-module (mes guile)
   #:use-module (ice-9 optargs)
   #:use-module (system base pmatch)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
-  #:use-module (nyacc lang c99 paars)
-  ;;#:use-module (nyacc lang c99 parser)
-  ;;#:use-module (nyacc version)
-  #:export (c99-input->ast
-            c99-input->full-ast
+  #:use-module (nyacc lang c99 parser)
+  #:use-module (nyacc lang c99 parser)
+  #:use-module (nyacc version)
+  #:use-module (mes guile)
+  #:export (c99-input->ast))
 
-            ast-strip-attributes
-            ast-strip-const
-            ast-strip-comment))
-
-(define *nyacc-version* "1.0.1")
 (define mes-or-reproducible? #t)
 
 (when (getenv "MESC_DEBUG")
@@ -68,12 +62,12 @@
 	       (apply (vector-ref act-v ix) args))))
         (loop (1+ ix))))))
 
-;; (cond-expand
-;;  (guile
-;;   (insert-progress-monitors (@@ (nyacc lang c99 parser) c99-act-v)
-;;                             (@@ (nyacc lang c99 parser) c99-len-v)))
-;;  (mes
-;;   (insert-progress-monitors c99-act-v c99-len-v)))
+(cond-expand
+ (guile
+  (insert-progress-monitors (@@ (nyacc lang c99 parser) c99-act-v)
+                            (@@ (nyacc lang c99 parser) c99-len-v)))
+ (mes
+  (insert-progress-monitors c99-act-v c99-len-v)))
 
 (define* (c99-input->full-ast #:key (prefix "") (defines '()) (includes '()) (arch "") verbose?)
   (let* ((sys-include (if (equal? prefix "") "include"
@@ -100,18 +94,14 @@
     (when (and verbose? (> verbose? 1))
       (format (current-error-port) "includes: ~s\n" includes)
       (format (current-error-port) "defines: ~s\n" defines))
-    (warn "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" "gonna parse")
     (parse-c99
      #:inc-dirs includes
      #:cpp-defs defines
      #:mode 'code)))
 
 (define* (c99-input->ast #:key (prefix "") (defines '()) (includes '()) (arch "") verbose?)
-  (warn "hiero" "c99-input->ast")
   (when verbose?
-    (warn "1111")
     (format (current-error-port) "parsing: input\n"))
-  (warn "2222")
   ((compose ast-strip-attributes
             ast-strip-const
             ast-strip-comment)

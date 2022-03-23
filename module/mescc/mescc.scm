@@ -22,37 +22,24 @@
   #:use-module (mes misc)
   #:use-module (mes guile)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 getopt-long)
 
   #:use-module (mescc info)
-  ;; #:use-module (mescc armv4 info)
+  #:use-module (mescc armv4 info)
   #:use-module (mescc i386 info)
-  ;; #:use-module (mescc x86_64 info)
+  #:use-module (mescc x86_64 info)
   #:use-module (mescc preprocess)
-  ;;#:use-module (mescc foo-process)
-  ;;#:use-module (mescc compile)
-  ;;#:use-module (mescc M1)
+  #:use-module (mescc compile)
+  #:use-module (mescc M1)
   #:export (count-opt
             mescc:preprocess
             mescc:get-host
             mescc:compile
             mescc:assemble
             mescc:link
-            multi-opt
-
-            M1->hex2
-            replace-suffix
-
-            arch-get
-            arch-get-defines
-            c->info
-            c->ast
-            .E?
-            .c?
-            .s?))
+            multi-opt))
 
 (define GUILE-with-output-to-file with-output-to-file)
 (define (with-output-to-file file-name thunk)
@@ -60,13 +47,11 @@
       (GUILE-with-output-to-file file-name thunk)))
 
 (define (mescc:preprocess options)
-  (warn "mescc:preprocess")
   (let* ((pretty-print/write (string->symbol (option-ref options 'write (if guile? "pretty-print" "write"))))
          (pretty-print/write (if (eq? pretty-print/write 'pretty-print) pretty-print write))
          (files (option-ref options '() '("a.c")))
          (input-file-name (car files))
          (input-base (basename input-file-name))
-         (foo (warn "********************************"))
          (ast-file-name (cond ((and (option-ref options 'preprocess #f)
                                     (option-ref options 'output #f)))
                               (else (replace-suffix input-base ".E"))))
@@ -75,30 +60,15 @@
          (includes (reverse (filter-map (multi-opt 'include) options)))
          (includes (cons (option-ref options 'includedir #f) includes))
          (includes (cons dir includes))
-         (foo (warn "1111111111111111111111111111111111"))
          (prefix (option-ref options 'prefix ""))
          (machine (option-ref options 'machine "32"))
          (arch (arch-get options))
-         (foo (warn "2222222222222222222222222222222222"))
          (defines (append (arch-get-defines options) defines))
-         (foo (warn "3333333333333333333333333333333333"))
          (verbose? (count-opt options 'verbose)))
     (with-output-to-file ast-file-name
       (lambda _ (for-each (cut c->ast prefix defines includes arch pretty-print/write verbose? <>) files)))))
 
-(define (with-input-from-file file thunk)
-  (let ((port (open-input-file file)))
-    (warn "opened" file "=>" port)
-    (if (= port -1)
-        (error 'no-such-file file)
-        (let* ((save (current-input-port))
-               (foo (warn 'poort (set-current-input-port port)))
-               (r (thunk)))
-          (set-current-input-port save)
-          r))))
-
 (define (c->ast prefix defines includes arch write verbose? file-name)
-  (warn "c->ast")
   (with-input-from-file file-name
     (cut write (c99-input->ast #:prefix prefix #:defines defines #:includes includes #:arch arch #:verbose? verbose?))))
 

@@ -20,26 +20,23 @@
 
 ;;; Commentary:
 
-;;; srfi-9.scm - records, based on struct.
+;;; srfi-9.mes - records, based on struct.
 
 ;;; Code:
 
-;; FIXME: a second use-modules of srfi-9 gives STACK_FULL
-;; (define-module (srfi srfi-9)
-;;   #:export (define-record-type
-;;             make-record-type
-;;             record-type?
-;;             struct-vtable
-;;             record-type-name
-;;             record-type-descriptor
-;;             record-type-fields
-;;             record-predicate
-;;             record?
-;;             record-constructor
-;;             record-accessor
-;;             record-modifier))
-
-(define-module (srfi srfi-9))
+(define-module (srfi srfi-9)
+  #:export (define-record-type
+            make-record-type
+            record-type?
+            struct-vtable
+            record-type-name
+            record-type-descriptor
+            record-type-fields
+            record-predicate
+            record?
+            record-constructor
+            record-accessor
+            record-modifier))
 
 (define-macro (define-record-type name constructor+field-names predicate . fields)
   (let ((type (make-record-type name (map car fields))))
@@ -116,7 +113,7 @@
 (define (record-accessor type field)
   (let ((i (record-field-index type field)))
     (lambda (o . field?)
-      (if (and #f (not (eq? (record-type-descriptor o) type))) (error "record accessor: record expected" type field o)
+      (if (not (eq? (record-type-descriptor o) type)) (error "record accessor: record expected" type field o)
           (if (pair? field?) field
               (struct-ref o i))))))
 
