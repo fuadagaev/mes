@@ -148,7 +148,7 @@ mes_builtins (struct scm *a)            /*:((internal)) */
   a = init_builtin (builtin_type, "length", 1, &length, a);
   a = init_builtin (builtin_type, "error", 2, &error, a);
   a = init_builtin (builtin_type, "append2", 2, &append2, a);
-  a = init_builtin (builtin_type, "append-reverse", 2, &append_reverse, a);
+  a = init_builtin (builtin_type, "core:append-reverse", 2, &append_reverse_, a);
   a = init_builtin (builtin_type, "core:reverse!", 2, &reverse_x_, a);
   a = init_builtin (builtin_type, "assq", 2, &assq, a);
   a = init_builtin (builtin_type, "assoc", 2, &assoc, a);

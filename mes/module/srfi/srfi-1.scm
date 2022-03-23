@@ -28,6 +28,7 @@
             find
             filter
             append-map
+            append-reverse
             filter-map
             fold
             fold-right
@@ -51,6 +52,8 @@
             lset-difference
             reverse!
             take-while))
+
+(define append-reverse core:append-reverse)
 
 (define (drop-right lst n)
   (list-head lst (- (length lst) n)))
