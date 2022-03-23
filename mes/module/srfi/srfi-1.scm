@@ -40,6 +40,7 @@
             iota
             srfi-1:iota
             delete-duplicates
+            last
             any
             any1
             every
