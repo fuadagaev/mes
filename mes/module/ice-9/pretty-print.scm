@@ -21,8 +21,8 @@
 ;;; Taken from GNU Guile
 
 (define-module (ice-9 pretty-print)
-  :use-module (ice-9 optargs)
-  :export (pretty-print))
+  ;;#:use-module (ice-9 optargs)
+  #:export (pretty-print))
 
 ;; From SLIB.
 

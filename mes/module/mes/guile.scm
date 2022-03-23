@@ -46,10 +46,11 @@
 
 (define (with-input-from-file file thunk)
   (let ((port (open-input-file file)))
+    (warn "opened" file "=>" port)
     (if (= port -1)
         (error 'no-such-file file)
         (let* ((save (current-input-port))
-               (foo (set-current-input-port port))
+               (foo (warn 'poort (set-current-input-port port)))
                (r (thunk)))
           (set-current-input-port save)
           r))))

@@ -62,3 +62,116 @@
 
 (define (port-filename p) "<stdin>")
 (define (port-line p) 0)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Hacks for Nyacc with modules
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Strings/srfi-13
+(define reverse-list->string (compose list->string reverse))
+(define string-null? (compose null? string->list))
+
+
+;;; Char-sets/srfi-14
+;; FIXME: have structs
+(define (char-set . x)
+  (cons '*char-set* x))
+
+(define char-set:whitespace (char-set #\tab #\page #\return #\vtab #\newline #\space))
+
+(define (string->char-set x . base)
+  (apply char-set (append (string->list x) (if (null? base) '() (cdar base)))))
+
+(define (string->char-set! x base)
+  (set-cdr! (last-pair base) (string->list x))
+  base)
+
+(define (char-set-copy cs)
+  (map identity cs))
+
+(define (list->char-set lst)
+  (apply char-set lst))
+
+
+;;; ice-9 optargs/macros
+(define (rest-arg->keyword-binding-list rest-arg keywords allow-other-keys?)
+  (if (null? rest-arg)
+      '()
+      (let loop ((first (car rest-arg))
+		 (rest (cdr rest-arg))
+		 (accum '()))
+	(let ((next (lambda (a)
+		      (if (null? (cdr rest))
+			  a
+			  (loop (cadr rest) (cddr rest) a)))))
+	  (if (keyword? first)
+	      (cond
+	       ((memq first keywords)
+		(if (null? rest)
+                    (error "Keyword argument has no value:" first)
+		    (next (cons (cons (keyword->symbol first)
+				      (car rest)) accum))))
+	       ((not allow-other-keys?)
+                (error "Unknown keyword in arguments:" first))
+	       (else (if (null? rest)
+			 accum
+			 (next accum))))
+	      (if (null? rest)
+		  accum
+		  (loop (car rest) (cdr rest) accum)))))))
+
+;; (define (make-ident-like-p . rest)
+;;   (warn "fubar: make-ident-like-p" rest))
+
+;; (define (make-comm-reader . rest)
+;;   (warn "fubar: make-comm-reader" rest))
+
+;; (define (make-lexer-generator . rest)
+;;   (warn "fubar: make-lexer-generator" rest))
+
+;; (define (move-attributes . rest)
+;;   (warn "fubar: move-attributes" rest))
+
+;; (define (read-c-ident . rest)
+;;   (warn "fubar: read-c-ident" rest))
+
+;; (define (filter-mt . rest)
+;;   (warn "fubar: filter-mt" rest))
+
+;; (define (map-mt . rest)
+;;   (warn "fubar: map-mt" rest))
+
+;; (define (remove-mt . rest)
+;;   (warn "fubar: remove-mt" rest))
+
+;; (define (make-chseq-reader . rest)
+;;   (warn "fubar: make-chseq-reader" rest))
+
+;; (define (count-opt . rest)
+;;   (warn "fubar: count-opt" rest))
+
+;; (define (read-c-chlit . rest)
+;;   (warn "fubar: read-c-chlit" rest))
+
+;; (define (read-c-num . rest)
+;;   (warn "fubar: read-c-num" rest))
+
+;; (define (make-lalr-parser . rest)
+;;   (warn "fubar: make-lalr-parser" "..."))
+
+;; (define (c99-len-v . rest)
+;;   (warn "fubar: c99-len-v" rest))
+
+
+;; (define (filter pred lst)
+;;   (let loop ((lst lst))
+;;     (if (null? lst) '()
+;;         (if (pred (car lst))
+;;             (cons (car lst) (loop (cdr lst)))
+;;             (loop (cdr lst))))))
+
+;; (define (multi-opt option-name) (lambda (o) (and (eq? (car o) option-name) (cdr o))))
+
+;; (define (count-opt options option-name)
+;;   (let ((lst (filter identity (map (multi-opt option-name) options))))
+;;     (and (pair? lst) (length lst))))
