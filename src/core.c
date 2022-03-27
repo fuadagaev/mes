@@ -149,7 +149,7 @@ struct scm *
 error (struct scm *key, struct scm *x)
 {
 #if !__MESC_MES__ && !__M2_PLANET__
-  struct scm *throw = module_ref (R0, cell_symbol_throw);
+  struct scm *throw = lookup_value (cell_symbol_throw);
   if (throw != cell_undefined)
     return apply (throw, cons (key, cons (x, cell_nil)), R0);
 #endif
