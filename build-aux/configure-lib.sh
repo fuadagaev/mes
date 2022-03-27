@@ -451,5 +451,6 @@ src/stack.c
 src/string.c
 src/struct.c
 src/symbol.c
+src/variable.c
 src/vector.c
 "
