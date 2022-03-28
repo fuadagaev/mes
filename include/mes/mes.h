@@ -50,6 +50,7 @@ struct scm
     long value;
     FUNCTION function;
     struct scm *vector;
+    long lexical_p; /* for bindings */
   };
 };
 
@@ -131,7 +132,7 @@ struct scm *cell_ref (struct scm *cell, long index);
 struct scm *fdisplay_ (struct scm *, int, int);
 struct scm *init_symbols ();
 struct scm *init_time (struct scm *a);
-struct scm *lookup_handle (struct scm *name);
+struct scm *lookup_binding (struct scm *name);
 struct scm *lookup_value (struct scm *name);
 struct scm *make_builtin_type ();
 struct scm *make_bytes (char const *s, size_t length);
