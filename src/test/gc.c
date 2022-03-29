@@ -44,6 +44,7 @@ test_setup ()
   g_macros = cell_zero;
   g_stack = STACK_SIZE;
   M0 = cell_zero;
+  M1 = cell_f;
 
   memset (g_arena + sizeof (struct scm), 0, ARENA_SIZE * sizeof (struct scm));
   cell_zero->type = TCHAR;
@@ -186,6 +187,7 @@ main (int argc, char **argv, char **envp)
   g_macros = cell_zero;
   g_stack = STACK_SIZE;
   M0 = cell_zero;
+  M1 = cell_f;
 
   test_empty ();
   test_number ();
