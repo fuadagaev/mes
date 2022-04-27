@@ -68,7 +68,10 @@
   (use-modules (mescc)))
  (mes
   (mes-use-module (mescc))
-  (mescc:main (command-line))))
+  ;; FIXME: This currently makes main run twice
+  ;; when/where was/is this needed???
+  ;; (mescc:main (command-line))
+  ))
 
 (define (main args)
   (mescc:main args))
