@@ -62,13 +62,13 @@
 (setenv "%numbered_arch" (if %numbered-arch? "true" "false"))
 
 (cond-expand
- (mes
-  (if (current-module)
-      (use-modules (mescc))
-      (mes-use-module (mescc)))
-  (mescc:main (command-line)))
  (guile
-  (use-modules (mescc))))
+  (use-modules (mescc)))
+ (mes-guile-modules
+  (use-modules (mescc)))
+ (mes
+  (mes-use-module (mescc))
+  (mescc:main (command-line))))
 
 (define (main args)
   (mescc:main args))

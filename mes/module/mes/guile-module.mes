@@ -1886,6 +1886,12 @@
 
 
 
+;;; {Mes: Features for cond-expand}
+;;;
+
+(define mes-guile-modules #t)
+
+
 ;;; Place the user in the guile-user module.
 ;;;
 

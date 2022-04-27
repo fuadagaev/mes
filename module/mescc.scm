@@ -25,16 +25,17 @@
   #:export (mescc:main))
 
 (cond-expand
+ (guile
+  (define-macro (mes-use-module . rest) #t))
+ (mes-guile-modules
+  (define-macro (mes-use-module . rest) #t))
  (mes
   (define (set-port-encoding! port encoding) #t)
   (mes-use-module (mes guile))
   (mes-use-module (mes misc))
   (mes-use-module (mes getopt-long))
   (mes-use-module (mes display))
-  (mes-use-module (mescc mescc))
-  )
- (guile
-  (define-macro (mes-use-module . rest) #t)))
+  (mes-use-module (mescc mescc))))
 
 (define %host-arch (or (getenv "%arch") %arch))
 (define %host-kernel (or (getenv "%kernel") "linux")) ;; FIXME
