@@ -38,7 +38,7 @@
 	push___%r1      ; argv
 	push___%r2      ; environ
 	mov____%r2,0x32 &GLOBAL_environ
-	^~main bl
+	^~FUNCTION_main bl
 	!0x0 add____$i8,%esp
 	!0x0 cmp____$i8,%r0
 	SYS_exit mov____$i8,%r7
