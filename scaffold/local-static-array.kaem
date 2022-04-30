@@ -51,7 +51,7 @@ hex2                                            \
     --architecture ${stage0_cpu}                \
     --BaseAddress 0x1000000                     \
     --exec_enable                               \
-    -f lib/m2/${mes_cpu}/ELF-i386-debug.hex2    \
+    -f lib/m2/${mes_cpu}/ELF-${mes_cpu}.hex2    \
     -f scaffold/local-static-array.hex2         \
     -o scaffold/local-static-array
 
