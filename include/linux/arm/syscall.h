@@ -24,8 +24,6 @@
 /* See https://github.com/torvalds/linux/blob/v4.19/arch/arm/tools/syscall.tbl */
 
 /* libc-mini */
-
-/* libc-mini */
 #ifndef SYS_exit
 // CONSTANT SYS_exit 0x01
 #define SYS_exit    0x01
