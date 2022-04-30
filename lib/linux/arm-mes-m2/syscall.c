@@ -19,7 +19,7 @@
  */
 
 #include <errno.h>
-#include <linux/x86/syscall.h>
+#include <linux/arm/syscall.h>
 
 int errno;
 
