@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # GNU Mes --- Maxwell Equations of Software
-# Copyright © 2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2017,2018,2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Mes.
 #
@@ -30,18 +30,6 @@ fi
 . ./config.sh
 . ${srcdest}build-aux/trace.sh
 
-if $courageous; then
-    set +e
-    set_min_e () {
-        echo "Applying courage"
-    }
-    set_min_e
-else
-    set_min_e () {
-        set -e
-    }
-fi
-
 case "$mes_cpu" in
     arm)
         stage0_arch=40
@@ -60,6 +48,18 @@ case "$mes_cpu" in
         stage0_cpu=$mes_cpu
         ;;
 esac
+
+if $courageous; then
+    set +e
+    set_min_e () {
+        echo "Applying courage"
+    }
+    set_min_e
+else
+    set_min_e () {
+        set -e
+    }
+fi
 
 trace "CCLD       ${srcdest}lib/$mes_kernel/$mes_cpu-mes-$compiler/exit-42.S" $CC\
       -nostdlib\
