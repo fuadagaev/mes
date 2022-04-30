@@ -455,7 +455,7 @@ Some influential environment variables:
                          (cons (check-program-version program) results))
                        '()
                        (list (make-dep "kaem" #:version '(0 6) #:optional? #t)
-                             (make-dep "M2-Planet" #:version '(1 8 0) #:optional? #t)
+                             (make-dep "M2-Planet" #:version '(1 9 0) #:optional? #t)
                              (make-dep "hex2")
                              (make-dep "M1")
                              (make-dep "blood-elf")
