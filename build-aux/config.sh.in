@@ -101,8 +101,10 @@ export V
 export colors
 export compiler
 export courageous
+export mes_cpu
 export srcdest
 export srcdir
+export stage0_cpu
 export GUILE_AUTO_COMPILE
 export MES_PREFIX
 export TESTS
