@@ -25,7 +25,8 @@ M2-Planet                                       \
     --debug                                     \
     --architecture x86                          \
     -f lib/mes/globals.c                        \
-    -f lib/linux/x86-mes-m2/mini.c              \
+    -f lib/linux/x86-mes-m2/_exit.c             \
+    -f lib/linux/x86-mes-m2/_write.c            \
     -f lib/mes/mini-write.c                     \
     -f lib/string/strlen.c                      \
     -f lib/string/strcpy.c                      \

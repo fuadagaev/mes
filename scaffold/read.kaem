@@ -26,7 +26,8 @@ M2-Planet                                       \
     --architecture x86                          \
     -f include/m2/lib.h                         \
     -f lib/linux/x86-mes-m2/crt1.c              \
-    -f lib/linux/x86-mes-m2/mini.c              \
+    -f lib/linux/x86-mes-m2/_exit.c             \
+    -f lib/linux/x86-mes-m2/_write.c            \
     -f lib/linux/x86-mes-m2/syscall.c           \
     -f include/linux/x86/syscall.h              \
     -f lib/m2/cast.c                            \
