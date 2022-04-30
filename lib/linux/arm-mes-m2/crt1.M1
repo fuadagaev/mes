@@ -1,0 +1,53 @@
+### GNU Mes --- Maxwell Equations of Software
+### Copyright © 2017,2018,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+### Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
+###
+### This file is part of GNU Mes.
+###
+### GNU Mes is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 3 of the License, or (at
+### your option) any later version.
+###
+### GNU Mes is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
+
+:_start
+	push___%lr
+	push___%ebp
+	mov____%esp,%ebp
+	allocate_stack_4180
+	!0 mov____$i8,%r0
+	mov____%r0,0x32 &GLOBAL___stdin
+	!1 mov____$i8,%r0
+	mov____%r0,0x32 &GLOBAL___stdout
+	!2 mov____$i8,%r0
+	mov____%r0,0x32 &GLOBAL___stderr
+	!8 ldr____%r0,(%fp,+#$i8)
+	mov____%fp,%r1
+	!12 add____%r1,$i8
+	add____%r2,%r1,%r0,lsl#2
+	!4 add____%r2,$i8
+; M2-Planet calling convention pushes forward
+	push___%r0	; argc
+	push___%r1      ; argv
+	push___%r2      ; environ
+	mov____%r2,0x32 &GLOBAL_environ
+	^~main bl
+	!0x0 add____$i8,%esp
+	!0x0 cmp____$i8,%r0
+	SYS_exit mov____$i8,%r7
+	swi____$0
+:__start_loop
+	wfi
+	!0x1 mov____$i8,%r0
+	!0x0 cmp____$i8,%r0
+	^~__start_loop b
+	mov____%ebp,%esp
+	pop____%ebp
+	ret
