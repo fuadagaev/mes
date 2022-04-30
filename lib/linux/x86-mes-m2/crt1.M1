@@ -28,7 +28,7 @@
 	mov____%eax,0x32 &GLOBAL___stderr
 	mov____%ebp,%eax
 	add____$i8,%eax !4
-	movzbl_(%eax),%eax
+	mov____(%eax),%eax
 	add____$i8,%eax !3
 	shl____$i8,%eax !0x02
 	add____%ebp,%eax
@@ -37,7 +37,7 @@
 	mov____%esp,%edi  	; M2-Planet calling convention pushes forward
 	mov____%ebp,%eax 	; argc
 	add____$i8,%eax !4
-	movzbl_(%eax),%eax
+	mov____(%eax),%eax
 	push___%eax
 
 	mov____%ebp,%eax 	; argv
