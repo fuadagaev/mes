@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright © 2019,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2019,2021,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Mes.
 #
@@ -21,6 +21,7 @@
 # scaffold/local-array
 
 M2-Planet                                       \
+    --bootstrap-mode                            \
     --debug                                     \
     --architecture x86                          \
     -f lib/mes/globals.c                        \
