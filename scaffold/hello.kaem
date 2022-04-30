@@ -23,7 +23,7 @@
 M2-Planet                                       \
     --bootstrap-mode                            \
     --debug                                     \
-    --architecture ${mes_cpu}                   \
+    --architecture ${stage0_cpu}                \
     -f include/m2/lib.h                         \
     -f lib/linux/${mes_cpu}-mes-m2/crt1.c       \
     -f lib/linux/${mes_cpu}-mes-m2/_exit.c      \
@@ -38,7 +38,7 @@ blood-elf -f scaffold/hello.M1 -o scaffold/hello.blood-elf-M1
 
 M1                                              \
     --LittleEndian                              \
-    --architecture ${mes_cpu}                   \
+    --architecture ${stage0_cpu}                \
     -f lib/m2/${mes_cpu}/${mes_cpu}_defs.M1     \
     -f lib/${mes_cpu}-mes/${mes_cpu}.M1         \
     -f lib/linux/${mes_cpu}-mes-m2/crt1.M1      \
@@ -48,7 +48,7 @@ M1                                              \
 
 hex2                                            \
     --LittleEndian                              \
-    --architecture ${mes_cpu}                   \
+    --architecture ${stage0_cpu}                \
     --BaseAddress 0x1000000                     \
     --exec_enable                               \
     -f lib/m2/${mes_cpu}/ELF-i386-debug.hex2    \
