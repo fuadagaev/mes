@@ -121,7 +121,7 @@ fi
     fi
 )
 
-if test -n "$M2_PLANET" -a "$mes_cpu" = x86; then
+if test -n "$M2_PLANET"; then
     (
         . ${srcdest}build-aux/trace.sh
         if [ -z "$V" -o "$V" = 0 ]; then
