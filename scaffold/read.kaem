@@ -23,13 +23,13 @@
 M2-Planet                                       \
     --bootstrap-mode                            \
     --debug                                     \
-    --architecture x86                          \
+    --architecture ${mes_cpu}                   \
     -f include/m2/lib.h                         \
-    -f lib/linux/x86-mes-m2/crt1.c              \
-    -f lib/linux/x86-mes-m2/_exit.c             \
-    -f lib/linux/x86-mes-m2/_write.c            \
-    -f lib/linux/x86-mes-m2/syscall.c           \
-    -f include/linux/x86/syscall.h              \
+    -f lib/linux/${mes_cpu}-mes-m2/crt1.c       \
+    -f lib/linux/${mes_cpu}-mes-m2/_exit.c      \
+    -f lib/linux/${mes_cpu}-mes-m2/_write.c     \
+    -f lib/linux/${mes_cpu}-mes-m2/syscall.c    \
+    -f include/linux/${mes_cpu}/syscall.h       \
     -f lib/m2/cast.c                            \
     -f lib/string/strlen.c                      \
     -f lib/mes/mini-write.c                     \
@@ -50,20 +50,20 @@ blood-elf -f scaffold/read.M1 -o scaffold/read.blood-elf-M1
 
 M1                                              \
     --LittleEndian                              \
-    --architecture x86                          \
-    -f lib/m2/x86/x86_defs.M1                   \
-    -f lib/x86-mes/x86.M1                       \
-    -f lib/linux/x86-mes-m2/crt1.M1             \
+    --architecture ${mes_cpu}                   \
+    -f lib/m2/${mes_cpu}/${mes_cpu}_defs.M1     \
+    -f lib/${mes_cpu}-mes/${mes_cpu}.M1         \
+    -f lib/linux/${mes_cpu}-mes-m2/crt1.M1      \
     -f scaffold/read.M1                         \
     -f scaffold/read.blood-elf-M1               \
     -o scaffold/read.hex2
 
 hex2                                            \
     --LittleEndian                              \
-    --architecture x86                          \
+    --architecture ${mes_cpu}                   \
     --BaseAddress 0x1000000                     \
     --exec_enable                               \
-    -f lib/m2/x86/ELF-i386-debug.hex2           \
+    -f lib/m2/${mes_cpu}/ELF-i386-debug.hex2    \
     -f scaffold/read.hex2                       \
     -o scaffold/read-m2
 
