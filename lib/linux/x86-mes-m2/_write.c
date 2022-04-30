@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -17,14 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-void
-_exit ()
-{
-  asm ("mov____$i32,%eax SYS_exit");
-  asm ("mov____0x8(%ebp),%ebx !-4");
-  asm ("int____$0x80");
-}
 
 void
 _write (int filedes, void *buffer, int size)
