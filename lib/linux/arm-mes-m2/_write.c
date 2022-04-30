@@ -23,8 +23,8 @@ void
 _write ()
 {
   asm ("SYS_write mov____$i8,%r7");
-  asm ("!-4 ldr____%r0,(%fp,+#$i8)");
-  asm ("!-8 ldr____%r1,(%fp,+#$i8)");
-  asm ("!-12 ldr____%r2,(%fp,+#$i8)");
+  asm ("!20 ldr____%r0,(%fp,+#$i8)");
+  asm ("!16 ldr____%r1,(%fp,+#$i8)");
+  asm ("!12 ldr____%r2,(%fp,+#$i8)");
   asm ("swi____$0");
 }
