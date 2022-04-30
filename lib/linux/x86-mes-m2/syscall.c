@@ -64,7 +64,7 @@ __sys_call4 (int sys_call, int one, int two, int three, int four)
   asm ("mov____0x8(%ebp),%ebx !-8");
   asm ("mov____0x8(%ebp),%ecx !-12");
   asm ("mov____0x8(%ebp),%edx !-16");
-  asm ("mov____0x8(%ebp),%esi !-24");
+  asm ("mov____0x8(%ebp),%esi !-20");
   asm ("int____$0x80");
 }
 
