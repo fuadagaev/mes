@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018,2019,2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019,2020,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -29,11 +29,11 @@ waitpid (int pid, int *status_ptr, int options)
   long long_pid = pid;
   long long_status_ptr = cast_voidp_to_long (status_ptr);
   long long_options = options;
-#if __i386__
-  return _sys_call3 (SYS_waitpid, long_pid, long_status_ptr, long_options);
-#elif __x86_64__ || __arm__
+//##if __i386__
+//#  return _sys_call3 (SYS_waitpid, long_pid, long_status_ptr, long_options);
+//##elif __x86_64__ || __arm__
   return _sys_call4 (SYS_wait4, long_pid, long_status_ptr, long_options, 0);
-#else
-#error arch not supported
-#endif
+//##else
+//##error arch not supported
+//##endif
 }
