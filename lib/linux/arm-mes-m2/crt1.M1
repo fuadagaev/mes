@@ -18,7 +18,7 @@
 ### You should have received a copy of the GNU General Public License
 ### along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
-:_start
+:XXX_start
 	'0' SP BP NO_SHIFT MOVE_ALWAYS  ; Setup Base Pointer
 	push___%lr
 	push___%ebp
@@ -53,6 +53,41 @@
 	mov____%ebp,%esp
 	pop____%ebp
 	ret
+
+:_start
+	'0' SP BP NO_SHIFT MOVE_ALWAYS  ; Setup Base Pointer
+
+	;; Prepare argv
+	!4 R0 ADD BP ARITH_ALWAYS       ; ARGV_address = BP + 4
+	{R0} PUSH_ALWAYS                ; Put argv on the stack
+
+	;; Prepare envp
+	'0' BP R0 NO_SHIFT MOVE_ALWAYS  ; Address we need to load from
+	!0 R0 LOAD32 R0 MEMORY          ; Get ARGC
+	!2 R0 ADD R0 ARITH_ALWAYS       ; OFFSET = ARGC + 2
+	'0' R0 R0 '1' MOVE_ALWAYS       ; OFFSET = OFFSET * WORDSIZE
+	'0' R0 R0 ADD BP ARITH2_ALWAYS  ; ENVP_address = BP + OFFSET
+	{R0} PUSH_ALWAYS                ; Put envp on the stack
+
+	mov____%r0,0x32 &GLOBAL_environ
+
+	;; Stack offset
+	!4 BP ADD BP ARITH_ALWAYS       ; Fix BP
+
+	;;^~FUNCTION___init_io CALL_ALWAYS ; Setup for FILE*
+
+	!0 mov____$i8,%r0
+	mov____%r0,0x32 &GLOBAL___stdin
+	!1 mov____$i8,%r0
+	mov____%r0,0x32 &GLOBAL___stdout
+	!2 mov____$i8,%r0
+	mov____%r0,0x32 &GLOBAL___stderr
+
+	^~FUNCTION_main CALL_ALWAYS     ; Jump right into main
+
+	SYS_exit mov____$i8,%r7
+	swi____$0
+
 
 # Unsigned Divide
 :divide
