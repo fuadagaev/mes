@@ -23,6 +23,6 @@ void
 _exit ()
 {
   asm ("SYS_exit mov____$i8,%r7");
-  asm ("!20 ldr____%r0,(%fp,+#$i8)");
+  asm ("!4 ldr____%r0,(%fp,-#$i8)");
   asm ("swi____$0");
 }

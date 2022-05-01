@@ -143,7 +143,6 @@ DEFINE pop____%lr 04e09de4
 # L1y:
 
 DEFINE push___$i32 04909fe504902de5000000ea
-
 DEFINE push___%r0 04002de5 # str r0, [sp, #-4]!
 DEFINE push___%r1 04102de5 # str r1, [sp, #-4]!
 DEFINE push___%r2 04202de5 # str r2, [sp, #-4]!
