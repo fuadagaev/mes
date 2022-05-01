@@ -26,7 +26,10 @@ int
 main (int argc, char **argv)
 {
   __stdin = open ("scaffold/read.data", 0, 0);
-  int c = getchar ();
+  //# avoid core dump on ARM
+  //#int c = getchar ();
+  int c;
+  c = getchar ();
   if (c != 'm')
     return c;
   while (c != EOF)
