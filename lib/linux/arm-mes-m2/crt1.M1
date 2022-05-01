@@ -18,6 +18,7 @@
 ### along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
 
 :_start
+	'0' SP BP NO_SHIFT MOVE_ALWAYS  ; Setup Base Pointer
 	push___%lr
 	push___%ebp
 	mov____%esp,%ebp
