@@ -73,7 +73,8 @@ MES_SOURCES =					\
 
 M2_SOURCES =					\
  lib/linux/x86-mes-m2/crt1.c			\
- lib/linux/x86-mes-m2/mini.c			\
+ lib/linux/x86-mes-m2/_exit.c			\
+ lib/linux/x86-mes-m2/_write.c			\
  lib/m2/exit.c					\
  lib/mes/write.c				\
  lib/linux/x86-mes-m2/syscall.c			\
