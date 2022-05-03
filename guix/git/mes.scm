@@ -87,7 +87,7 @@ get_machine.")
 (define-public m2-planet
   (package
     (name "m2-planet")
-    (version "1.9.0")
+    (version "1.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -97,7 +97,7 @@ get_machine.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cgvvq91cbxxm93k8ayyvhpaf3c2lv10qw4wyqwn3hc1qb1cfyvr"))))
+                "03ixvfdzhyy1d94iqpwl0p924pdvdp7yq4ggm05w3c013kzy2y12"))))
     (native-inputs (list mescc-tools))
     (build-system gnu-build-system)
     (arguments
