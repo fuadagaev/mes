@@ -23,7 +23,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if __M2_PLANET__ || !(__MESC__ && __arm__)
+#if __MESC__ && __arm__
+#define __MESC__and__arm__
+#endif
+
+// FIXME: M2-Planet 1.10.0 crashes on this...
+// #if __M2__ || !(__MESC__ && __arm__)
+#if __M2__ || !__MESC__and__arm__
 size_t
 __mesabi_uldiv (size_t a, size_t b, size_t *remainder)
 {

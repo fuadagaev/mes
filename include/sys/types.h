@@ -142,7 +142,11 @@ typedef long sigval_t;
 #ifndef __MES_SIZE_T
 #define __MES_SIZE_T
 #undef size_t
+#if __M2__
+typedef unsigned size_t;
+#else
 typedef unsigned long size_t;
+#endif
 #endif
 #endif
 

@@ -36,7 +36,29 @@ typedef int mode_t;
 #endif
 
 // *INDENT-OFF*
-#if __i386__ || __arm__
+#if __M2__
+struct stat
+{
+  unsigned  st_dev;
+  unsigned  st_ino;
+  char st_mode[2];
+  char st_nlink[2];
+  char st_uid[2];
+  char st_gid[2];
+  unsigned st_rdev;
+  long     st_size; /* Linux: unsigned long; glibc: off_t (i.e. signed) */
+  unsigned st_blksize;
+  unsigned st_blocks;
+  time_t   st_atime; /* Linux: unsigned long; glibc: time_t */
+  unsigned st_atime_usec;
+  time_t   st_mtime; /* Linux: unsigned long; glibc: time_t */
+  unsigned st_mtime_usec;
+  time_t   st_ctime; /* Linux: unsigned long; glibc: time_t */
+  unsigned st_ctime_usec;
+  unsigned __foo0;
+  unsigned __foo1;
+};
+#elif __i386__ || __arm__
 struct stat
 {
   unsigned long  st_dev;
