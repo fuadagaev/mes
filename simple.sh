@@ -106,7 +106,7 @@ MES_DEBUG=3 MES_ARENA=10000 MES_MAX_ARENA=10000 MES_BOOT=tests/gc.test out-syste
 #          lib/linux/$mes_cpu-mes-mescc/_write.c\
 #          \
 #          lib/mes/globals.c\
-#          lib/mes/mini-write.c\
+#          lib/mes/write.c\
 #          lib/string/strlen.c\
 #          \
 #          scaffold/hello.c
@@ -120,7 +120,7 @@ cat                                             \
     lib/linux/$mes_cpu-mes-mescc/_write.c       \
                                                 \
     lib/mes/globals.c                           \
-    lib/mes/mini-write.c                        \
+    lib/mes/write.c                             \
     lib/string/strlen.c                         \
                                                 \
     scaffold/hello.c                            \
@@ -302,7 +302,7 @@ MES_DEBUG=3 MES_ARENA=10000 MES_MAX_ARENA=10000 MES_BOOT=tests/gc.test out-mes/m
 #          lib/linux/$mes_cpu-mes-mescc/_write.c\
 #          \
 #          lib/mes/globals.c\
-#          lib/mes/mini-write.c\
+#          lib/mes/write.c\
 #          lib/string/strlen.c\
 #          \
 #          scaffold/hello.c
@@ -316,7 +316,7 @@ cat                                             \
     lib/linux/$mes_cpu-mes-mescc/_write.c       \
                                                 \
     lib/mes/globals.c                           \
-    lib/mes/mini-write.c                        \
+    lib/mes/write.c                             \
     lib/string/strlen.c                         \
                                                 \
     scaffold/hello.c                            \
