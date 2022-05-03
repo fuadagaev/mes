@@ -1,6 +1,6 @@
 # GNU Mes --- Maxwell Equations of Software
 # Copyright © 2019 Jeremiah Orians <jeremiah@pdp10.guru>
-# Copyright © 2018,2019,2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2018,2019,2020,2021,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 #
 # This file is part of GNU Mes.
 #
