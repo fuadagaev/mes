@@ -33,7 +33,7 @@ M2_PLANET_FUBAR = i386
 
 #M2_PLANET_ARCH = amd64
 #M2_PLANET_FUBAR = amd64
-M2_PLANET_FLAGS = --debug --architecture $(M2_PLANET_ARCH)
+M2_PLANET_FLAGS = --bootstrap-mode --debug --architecture $(M2_PLANET_ARCH)
 
 CFLAGS:=					\
   $(CFLAGS)					\
@@ -80,8 +80,9 @@ M2_SOURCES =					\
  lib/m2/exit.c					\
  lib/mes/write.c				\
  lib/linux/x86-mes-m2/syscall.c			\
+ lib/stub/__raise.c				\
  lib/linux/brk.c				\
- lib/stdlib/malloc.c				\
+ lib/m2/malloc.c				\
  lib/string/memset.c				\
 						\
  lib/m2/read.c					\
@@ -216,12 +217,12 @@ m2/mes-m2.hex2: m2/mes-m2.blood-elf.M1
 	    -o $@
 
 bin/mes-m2: m2/mes-m2.hex2
-	hex2					\
-	    --architecture $(M2_PLANET_ARCH)	\
-	    --little-endian			\
-	    --base-address 0x1000000		\
-	    -f lib/x86-mes/elf32-header.hex2	\
-	    -f m2/mes-m2.hex2			\
+	hex2						\
+	    --architecture $(M2_PLANET_ARCH)		\
+	    --little-endian				\
+	    --base-address 0x1000000			\
+	    -f lib/linux/x86-mes/elf32-header.hex2	\
+	    -f m2/mes-m2.hex2				\
 	    -o $@
 	cp -f $@ bin/mes
 
