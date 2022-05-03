@@ -374,11 +374,10 @@
       (,(string-append "sd_____%" %tmpreg2 ",0(%" %tmpreg1 ")")))))
 
 (define (riscv64:label-mem-add info label v)
-  (let ((n (- 0 (* 8 n))))
-    `((,(string-append "li_____%" %tmpreg1 ",$i32") (#:address ,label))
-      (,(string-append "ld_____%" %tmpreg2 ",0(%" %tmpreg1 ")"))
-      ,(riscv64:addi %tmpreg2 %tmpreg2 v)
-      (,(string-append "sd_____%" %tmpreg2 ",0(%" %tmpreg1 ")")))))
+  `((,(string-append "li_____%" %tmpreg1 ",$i32") (#:address ,label))
+    (,(string-append "ld_____%" %tmpreg2 ",0(%" %tmpreg1 ")"))
+    ,(riscv64:addi %tmpreg2 %tmpreg2 v)
+    (,(string-append "sd_____%" %tmpreg2 ",0(%" %tmpreg1 ")"))))
 
 ;; no-operation
 (define (riscv64:nop info)
