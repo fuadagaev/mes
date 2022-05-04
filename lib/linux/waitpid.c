@@ -28,11 +28,9 @@ waitpid (pid_t pid, int *status_ptr, int options)
   long long_pid = pid;
   long long_status_ptr = cast_voidp_to_long (status_ptr);
   long long_options = options;
-#if __i386__
+#if SYS_waitpid
   return _sys_call3 (SYS_waitpid, long_pid, long_status_ptr, long_options);
-#elif __x86_64__ || __arm__
-  return _sys_call4 (SYS_wait4, long_pid, long_status_ptr, long_options, 0);
-#else
-#error arch not supported
+#elif SYS_wait4
+  return wait4 (pid, status_ptr, options, 0);
 #endif
 }
