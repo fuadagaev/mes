@@ -21,6 +21,9 @@
 #ifndef __MES_LINUX_RISCV_SYSCALL_H
 #define __MES_LINUX_RISCV_SYSCALL_H 1
 
+/* See https://github.com/torvalds/linux/blob/v4.19/arch/s390/kernel/syscalls/syscall.tbl
+ */
+
 /** RISC-V uses the asm-generic syscalls (asm-generic/unistd.h) with the following configuration for 64-bit:
  * #define __ARCH_WANT_NEW_STAT
  * #define __ARCH_WANT_SET_GET_RLIMIT
@@ -28,8 +31,11 @@
  */
 
 // libc-mini
-// #define SYS_exit        93
-// #define SYS_write       64
+#ifndef SYS_exit
+#define SYS_exit        93
+#endif
+#define SYS_write       64
+#endif
 
 // libc
 #define SYS_clone          220
