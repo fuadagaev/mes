@@ -130,6 +130,7 @@ M2_SOURCES =					\
  lib/linux/fork.c				\
  lib/m2/execve.c				\
  lib/m2/execv.c					\
+ lib/linux/wait4.c				\
  lib/linux/waitpid.c				\
  lib/linux/gettimeofday.c			\
  lib/linux/clock_gettime.c			\
@@ -195,6 +196,7 @@ M2_PLANET_INCLUDES =				\
  include/sys/types.h				\
  include/stdio.h				\
  include/limits.h				\
+ include/sys/resource.h				\
  include/sys/stat.h				\
  include/fcntl.h				\
  include/signal.h				\
