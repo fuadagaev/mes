@@ -126,7 +126,8 @@ M2_SOURCES =					\
  lib/linux/fork.c				\
  lib/m2/execve.c				\
  lib/m2/execv.c					\
- lib/m2/waitpid.c				\
+ lib/linux/wait4.c				\
+ lib/linux/waitpid.c				\
  lib/linux/gettimeofday.c			\
  lib/m2/clock_gettime.c				\
  lib/m2/time.c					\
@@ -190,7 +191,9 @@ bin/gc-gcc: simple.make $(GCC_SOURCES) $(TEST_GC_SOURCES) $(INCLUDES) | bin
 
 M2_PLANET_INCLUDES =				\
  include/m2/lib.h				\
+ include/m2/types.h				\
  include/linux/x86/syscall.h			\
+ include/sys/resource.h				\
  include/mes/mes.h				\
  include/mes/builtins.h				\
  include/mes/constants.h			\

@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -22,17 +22,15 @@
 #include <linux/syscall.h>
 #include <arch/syscall.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#include <sys/resource.h>
 
 pid_t
-waitpid (pid_t pid, int *status_ptr, int options)
+wait4 (pid_t pid, int *status_ptr, int options, struct rusage *rusage)
 {
   long long_pid = pid;
   long long_status_ptr = cast_voidp_to_long (status_ptr);
   long long_options = options;
-#if defined (SYS_waitpid)
-  return _sys_call3 (SYS_waitpid, long_pid, long_status_ptr, long_options);
-#elif defined (SYS_wait4)
-  return wait4 (pid, status_ptr, options, 0);
-#endif
+  long long_rusage = cast_voidp_to_long (rusage);
+  return _sys_call4 (SYS_wait4, long_pid, long_status_ptr, long_options,
+                     long_rusage);
 }
