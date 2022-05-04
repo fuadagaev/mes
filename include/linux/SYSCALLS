@@ -1,0 +1,51 @@
+#+COMMENT:                                                            -*- org -*-
+#+TITLE: Linux System Calls
+
+|--------------+----------+-----+--------+-----+---------|
+| name         | old      | x86 | x86_64 | arm | riscv64 |
+|--------------+----------+-----+--------+-----+---------|
+| exit         |          |   1 |     60 |   1 |       1 |
+| fork         |          |   2 |     57 |   2 |       2 |
+| open         |          |   5 |      2 |   5 |       5 |
+| waitpid      |          |   7 |        |     |         |
+| link         |          |   9 |     86 |   9 |       9 |
+| unlink       |          |  10 |     87 |  10 |      10 |
+| time         |          |  13 |    201 |  13 |         |
+| mknod        |          |  14 |    133 |  14 |      14 |
+| chmod        |          |  15 |     90 |  15 |      15 |
+| access       |          |  33 |     21 |  33 |      33 |
+| rename       |          |  38 |     82 |  38 |      38 |
+| mkdir        |          |  39 |     83 |  39 |      39 |
+| rmdir        |          |  40 |     84 |  40 |      40 |
+| pipe         |          |  42 |     22 |  42 |      42 |
+| dup2         |          |  63 |     33 |  63 |      63 |
+| gettimeofday | time     |  78 |     96 |  78 |      78 |
+| symlink      |          |  83 |     88 |  83 |      83 |
+| readlink     |          |  85 |     89 |  85 |      85 |
+| stat         |          | 106 |      4 | 106 |     106 |
+| lstat        |          | 107 |      6 | 107 |     107 |
+| wait4        | waitpid  | 114 |     61 | 114 |     114 |
+| clone        | fork     | 120 |     56 | 120 |     120 |
+| getdents     |          | 141 |     78 | 141 |     141 |
+| getdents64   | getdents | 220 |    217 | 217 |     220 |
+| openat       | open     | 295 |    257 | 322 |     288 |
+| mkdirat      | mkdir    | 296 |    258 | 323 |     289 |
+| mknodat      | mknod    | 297 |    259 | 324 |     290 |
+| unlinkat     | rmdir    | 301 |    263 | 328 |     294 |
+| unlinkat     | unlink   | 301 |    263 | 328 |     294 |
+| renameat     | rename   | 302 |    264 | 329 |     295 |
+| linkat       | link     | 303 |    265 | 330 |     296 |
+| symlinkat    | symlink  | 304 |    266 | 331 |     297 |
+| readlinkat   | readlink | 305 |    267 | 332 |     298 |
+| fchmodat     | chmod    | 306 |    268 | 333 |     299 |
+| faccessat    | access   | 307 |    269 | 334 |     300 |
+| dup3         | dup2     | 330 |    292 | 358 |     326 |
+| pipe2        | pipe     | 331 |    293 | 359 |     325 |
+|--------------+----------+-----+--------+-----+---------|
+
+* Legalese
+Copyright © 2022 Jan (janneke) Nieuwenhuizen <[[mailto:janneke@gnu.org][janneke@gnu.org]]>
+
+  Copying and distribution of this file, with or without modification,
+  are permitted in any medium without royalty provided the copyright
+  notice and this notice are preserved.
