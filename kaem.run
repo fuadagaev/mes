@@ -28,7 +28,11 @@ M2-Planet                                       \
     --bootstrap-mode                            \
     --debug                                     \
     --architecture ${stage0_cpu}                \
-    -f include/m2/lib.h                         \
+    -D __${mes_cpu}__=1                         \
+    -D __linux__=1                              \
+    -f include/mes/config.h                     \
+    -f include/mes/lib-mini.h                   \
+    -f include/mes/lib.h                        \
     -f lib/linux/${mes_cpu}-mes-m2/crt1.c       \
     -f lib/linux/${mes_cpu}-mes-m2/_exit.c      \
     -f lib/linux/${mes_cpu}-mes-m2/_write.c     \
