@@ -23,16 +23,6 @@
 
 #include <string.h>
 
-// char const *MES_VERSION = "0.24";
-
-#if __M2_PLANET__
-#define M2_CELL_SIZE 12
-// CONSTANT M2_CELL_SIZE 12
-#else
-#define M2_CELL_SIZE 1
-// CONSTANT M2_CELL_SIZE 12
-#endif
-
 struct scm *
 init_symbol (struct scm *x, long type, char const *name)
 {

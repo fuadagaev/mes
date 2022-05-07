@@ -24,9 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define M2_CELL_SIZE 1
-// CONSTANT M2_CELL_SIZE 12
-
 int g_debug;
 
 void

@@ -21,14 +21,6 @@
 #include "mes/lib.h"
 #include "mes/mes.h"
 
-#if __M2_PLANET__
-#define M2_CELL_SIZE 12
-// CONSTANT M2_CELL_SIZE 12
-#else
-#define M2_CELL_SIZE 1
-// CONSTANT M2_CELL_SIZE 12
-#endif
-
 struct scm *
 make_vector_ (long k, struct scm *e)
 {
