@@ -31,6 +31,7 @@ DEFINE add____$i8,%r0   0090e2 # adds r0, r0, #xx; ADDSI = immediate op1 '09' op
 #                       1090e2 # adds r1, r0, #xx; ADDSI = immediate op1 '09' op2 'e2'
 DEFINE add____$i8,%r1   1091e2 # adds    r1, r1, #xx
 DEFINE add____$i8,%r13  d09de2 # adds    r13, r13, #xx
+DEFINE add____$i8,%ebp  e28cc0 # adds    ip, ip, #xx
 DEFINE sub____$i8,%r0   0050e2 # subs    r0, r0, #xx
 DEFINE sub____$i8,%r1   1051e2 # subs    r1, r1, #xx
 DEFINE add____%r0,%r0 000090e0 # adds    r0, r0, r0
