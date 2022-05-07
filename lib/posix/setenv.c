@@ -22,9 +22,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// CONSTANT M2_PTR_SIZE 4
-#define M2_PTR_SIZE 1
-
 int
 setenv (char const *s, char const *v, int overwrite_p)
 {

@@ -22,9 +22,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// CONSTANT M2_PTR_SIZE 4
-#define M2_PTR_SIZE 1
-
 char *
 getenv (char const *s)
 {

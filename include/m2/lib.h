@@ -1,6 +1,6 @@
 /*
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -27,8 +27,11 @@ int __stdout;
 int __stderr;
 int errno;
 
+// CONSTANT M2_CELL_SIZE 12
+// CONSTANT M2_PTR_SIZE 4
 // CONSTANT EOF 0xffffffff
 // CONSTANT __FILEDES_MAX 512
+// char const *MES_VERSION = "0.24.2";
 
 char* cast_intp_to_charp (int *i);
 char* cast_long_to_charp (long i);

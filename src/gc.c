@@ -31,9 +31,6 @@
 
 int g_dump_filedes;
 
-#define M2_CELL_SIZE 1U
-// CONSTANT M2_CELL_SIZE 12
-
 char *
 cell_bytes (struct scm *x)
 {
