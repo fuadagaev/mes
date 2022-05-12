@@ -34,6 +34,7 @@
 #ifndef SYS_exit
 #define SYS_exit        93
 #endif
+#ifndef SYS_write
 #define SYS_write       64
 #endif
 
