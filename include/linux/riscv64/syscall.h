@@ -24,7 +24,7 @@
 /* See https://github.com/torvalds/linux/blob/v4.19/arch/s390/kernel/syscalls/syscall.tbl
  */
 
-#if 1
+#if 0
 
 // libc-mini
 #ifndef SYS_exit
@@ -124,10 +124,10 @@
 
 // libc-mini
 #ifndef SYS_exit
-#define SYS_exit        93
+#define SYS_exit        0x93
 #endif
 #ifndef SYS_write
-#define SYS_write       64
+#define SYS_write       0x13
 #endif
 
 // libc
@@ -186,7 +186,6 @@
 #define SYS_symlinkat      36
 #define SYS_readlinkat     78
 #define SYS_mknodat        33
-
 
 #endif
 
