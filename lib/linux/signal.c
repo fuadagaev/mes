@@ -34,9 +34,9 @@ _restorer_for_siginfo (void)
 sighandler_t
 signal (int signum, sighandler_t action)
 {
-#if __i386__
+#if SYS_signal
   return _sys_call2 (SYS_signal, signum, action);
-#else
+#elif SYS_rt_sigaction
   static struct sigaction setup_action = { 0 };
   static struct sigaction old = { 0 };
   unsigned short bitindex;
@@ -67,5 +67,7 @@ signal (int signum, sighandler_t action)
   if (r)
     return 0;
   return old.sa_handler;
+#else
+#error no signal
 #endif
 }
