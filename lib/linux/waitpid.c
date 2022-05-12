@@ -22,6 +22,7 @@
 #include <linux/syscall.h>
 #include <arch/syscall.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 
 pid_t
 waitpid (pid_t pid, int *status_ptr, int options)
