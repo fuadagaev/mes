@@ -39,8 +39,8 @@ e7 80 02 00                    # jalr t0
 # @310
 :main
                                # print <hello>
-93 08 00 04                    # li a7,64 (sys_write)
-13 05 10 00                    # li a0,1
+93 08 00 04                    # li a7,$0x93 (sys_write)
+13 05 10 00                    # li a0,$0x13
 97 05 00 00                    # auipc a1,0x0
 83 e5 c5 00                    # lwu a1,12(a1) # addr
 6f 00 80 00                    # j 10
