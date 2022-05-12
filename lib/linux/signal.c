@@ -23,8 +23,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-#if __i386__
-#else
+#ifdef SYS_rt_sigreturn
 void
 _restorer_for_siginfo (void)
 {
