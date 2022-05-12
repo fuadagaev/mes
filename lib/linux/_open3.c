@@ -27,7 +27,7 @@
 int
 _open3 (char const *file_name, int flags, int mask)
 {
-  long long_file_name = cast_voidp_to_long (file_name);
+  long long_file_name = cast_charp_to_long (file_name);
   int r = _sys_call3 (SYS_open, long_file_name, flags, mask);
 #if defined (SYS_open)
   int r = _sys_call3 (SYS_open, long_file_name, flags, mask);
