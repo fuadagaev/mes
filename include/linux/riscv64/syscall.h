@@ -114,7 +114,21 @@
 #define SYS_dup3          326
 #define SYS_pipe2         325
 
-#elif 0
+#else
+
+#define OLD_SYSCALL_THRESHOLD 1024
+
+// #define SYS_open 265
+// #define SYS_open 1024
+// #define SYS_link 1025
+// #define SYS_unlink 1026
+// #define SYS_mkdir 1030
+// #define SYS_access 1033
+// #define SYS_stat 1038
+// #define SYS_lstat 1039
+// #define SYS_time 1062
+
+// libc-mini
 
 /** RISC-V uses the asm-generic syscalls (asm-generic/unistd.h) with the following configuration for 64-bit:
  * #define __ARCH_WANT_NEW_STAT
@@ -124,10 +138,10 @@
 
 // libc-mini
 #ifndef SYS_exit
-#define SYS_exit        0x93
+#define SYS_exit        93
 #endif
 #ifndef SYS_write
-#define SYS_write       0x13
+#define SYS_write       64
 #endif
 
 // libc
