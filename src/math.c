@@ -43,7 +43,7 @@ assert_number (char const *name, struct scm *x)
 #define TYPE(x) x->type
 #define MAKE_NUMBER(x) make_number (x)
 
-#if 1
+#if 0
 struct scm *
 greater_p (struct scm *x)               /*:((name . ">") (arity . n)) */
 {
@@ -90,7 +90,7 @@ greater_p (struct scm *x)               /*:((name . ">") (arity . n)) */
 
 #endif
 
-#if 1
+#if 0
 struct scm *
 less_p (struct scm *x)                  /*:((name . "<") (arity . n)) */
 {
@@ -136,7 +136,7 @@ less_p (struct scm *x)                  /*:((name . "<") (arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 is_p (struct scm *x)                    /*:((name . "=") (arity . n)) */
 {
@@ -176,7 +176,7 @@ is_p (struct scm *x)                    /*:((name . "=") (arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 minus (struct scm *x)                   /*:((name . "-") (arity . n)) */
 {
@@ -216,7 +216,7 @@ minus (struct scm *x)                   /*:((name . "-") (arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 plus (struct scm *x)                    /*:((name . "+") (arity . n)) */
 {
@@ -361,7 +361,7 @@ modulo (struct scm *a, struct scm *b)
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 multiply (struct scm *x)                /*:((name . "*") (arity . n)) */
 {
@@ -393,7 +393,7 @@ multiply (struct scm *x)                /*:((name . "*") (arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 SCM
 logand (SCM x)                  ///((arity . n))
 {
@@ -425,7 +425,7 @@ logand (struct scm *x)                  /*:((arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 logior (struct scm *x)                  /*:((arity . n)) */
 {
@@ -457,7 +457,7 @@ logior (struct scm *x)                  /*:((arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 lognot (struct scm *x)
 {
@@ -475,7 +475,7 @@ lognot (struct scm *x)
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 logxor (struct scm *x)                  /*:((arity . n)) */
 {
@@ -507,7 +507,7 @@ logxor (struct scm *x)                  /*:((arity . n)) */
 }
 #endif
 
-#if 1
+#if 0
 struct scm *
 ash (struct scm *n, struct scm *count)
 {
