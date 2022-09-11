@@ -148,31 +148,6 @@ plus (struct scm *x)                    /*:((name . "+") (arity . n)) */
   return make_number (n);
 }
 
-#if 1
-struct scm *
-divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
-{
-  long n = 1;
-  if (x != cell_nil)
-    {
-      assert_number ("divide", CAR (x));
-      n = VALUE (car (x));
-      x = cdr (x);
-    }
-  while (x != cell_nil)
-    {
-      assert_number ("divide", CAR (x));
-      long y = VALUE (CAR (x));
-      if (y == 0)
-        error (cstring_to_symbol ("divide-by-zero"), x);
-      if (!n)
-        break;
-      n /= y;
-      x = cdr (x);
-    }
-  return MAKE_NUMBER (n);
-}
-#else
 struct scm *
 divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
 {
@@ -215,7 +190,6 @@ divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
     n = -n;
   return make_number (n);
 }
-#endif
 
 #if 1
 struct scm *
