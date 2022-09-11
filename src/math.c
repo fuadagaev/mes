@@ -149,7 +149,31 @@ plus (struct scm *x)                    /*:((name . "+") (arity . n)) */
 }
 
 struct scm *
-divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
+divide_023 (struct scm *x)                  /*:((name . "/") (arity . n)) */
+{
+  long n = 1;
+  if (x != cell_nil)
+    {
+      assert_number ("divide", CAR (x));
+      n = VALUE (car (x));
+      x = cdr (x);
+    }
+  while (x != cell_nil)
+    {
+      assert_number ("divide", CAR (x));
+      long y = VALUE (CAR (x));
+      if (y == 0)
+        error (cstring_to_symbol ("divide-by-zero"), x);
+      if (!n)
+        break;
+      n /= y;
+      x = cdr (x);
+    }
+  return MAKE_NUMBER (n);
+}
+
+struct scm *
+divide_024 (struct scm *x)                  /*:((name . "/") (arity . n)) */
 {
   long n = 1;
   struct scm *i;
@@ -191,9 +215,24 @@ divide (struct scm *x)                  /*:((name . "/") (arity . n)) */
   return make_number (n);
 }
 
-#if 1
 struct scm *
-modulo (struct scm *a, struct scm *b)
+divide (struct scm *a)
+{
+  struct scm* r23 = divide_023 (a);
+  struct scm* r24 = divide_024 (a);
+  if (r23->value != r24->value)
+    {
+      eputs ("divide!\n");
+      eputs ("a="); eputs (itoa (a->car->value)); eputs (",");
+      eputs ("b="); eputs (itoa (a->cdr->car->value)); eputs ("\n");
+      eputs ("23="); eputs (itoa (r23->value)); eputs ("\n");
+      eputs ("24="); eputs (itoa (r24->value)); eputs ("\n");
+    }
+  return r24;
+}
+
+struct scm *
+modulo_023 (struct scm *a, struct scm *b)
 {
   assert_number ("modulo", a);
   assert_number ("modulo", b);
@@ -206,34 +245,56 @@ modulo (struct scm *a, struct scm *b)
   x = x ? x % y : 0;
   return MAKE_NUMBER (x);
 }
-#else
+
 struct scm *
-modulo (struct scm *a, struct scm *b)
+modulo_024 (struct scm *a, struct scm *b)
 {
   assert_number ("modulo", a);
   assert_number ("modulo", b);
   long n = a->value;
   long v = b->value;
+  int sign_p = 0;
+  long w;
+  w = v;
+  //long u;
   if (v == 0)
     error (cstring_to_symbol ("divide-by-zero"), a);
-  int sign_p = 0;
-  size_t w = v;
-  if (v < 0)
-    {
-      sign_p = 1;
-      w = -v;
-    }
+  // int sign_p = 0;
+  // size_t w = v;
+  // if (v < 0)
+  //   {
+  //     sign_p = 1;
+  //     w = -v;
+  //   }
   while (n < 0)
     n = n + w;
-  size_t u = n;
-  if (u != 0)
-    u = u % w;
-  n = u;
+  // size_t u = n;
+  // u = n;
+  // if (u != 0)
+  //   u = u % w;
+  // n = u;
+  if (n != 0)
+    n = n % w;
   if (sign_p)
     n = -n;
   return make_number (n);
 }
-#endif
+
+struct scm *
+modulo (struct scm *a, struct scm *b)
+{
+  struct scm* r23 = modulo_023 (a, b);
+  struct scm* r24 = modulo_024 (a, b);
+  if (r23->value != r24->value)
+    {
+      eputs ("modulo!\n");
+      eputs ("a="); eputs (itoa (a->value)); eputs (",");
+      eputs ("b="); eputs (itoa (b->value)); eputs ("\n");
+      eputs ("23="); eputs (itoa (r23->value)); eputs ("\n");
+      eputs ("24="); eputs (itoa (r24->value)); eputs ("\n");
+    }
+  return r24;
+}
 
 struct scm *
 multiply (struct scm *x)                /*:((name . "*") (arity . n)) */
