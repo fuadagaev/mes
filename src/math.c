@@ -265,12 +265,17 @@ modulo_024 (struct scm *a, struct scm *b)
   while (n < 0)
     n = n + w;
   size_t u = n;
-  // u = n;
-  // if (u != 0)
-  //   u = u % w;
-  // n = u;
+#if 0
+  if (u != 0)
+    u = u % w;
+  n = u;
+#elif 0
   if (n != 0)
     n = n % w;
+#else
+  if (u != 0)
+    n = u % w;
+#endif
   if (sign_p)
     n = -n;
   return make_number (n);
