@@ -264,7 +264,7 @@ modulo_024 (struct scm *a, struct scm *b)
     }
   while (n < 0)
     n = n + w;
-  // size_t u = n;
+  size_t u = n;
   // u = n;
   // if (u != 0)
   //   u = u % w;
