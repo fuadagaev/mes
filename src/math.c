@@ -253,13 +253,10 @@ modulo_024 (struct scm *a, struct scm *b)
   assert_number ("modulo", b);
   long n = a->value;
   long v = b->value;
-  int sign_p = 0;
-  long w = v;
-  //long u;
   if (v == 0)
     error (cstring_to_symbol ("divide-by-zero"), a);
-  // int sign_p = 0;
-  // size_t w = v;
+  int sign_p = 0;
+  size_t w = v;
   // if (v < 0)
   //   {
   //     sign_p = 1;
