@@ -254,8 +254,7 @@ modulo_024 (struct scm *a, struct scm *b)
   long n = a->value;
   long v = b->value;
   int sign_p = 0;
-  long w;
-  w = v;
+  long w = v;
   //long u;
   if (v == 0)
     error (cstring_to_symbol ("divide-by-zero"), a);
