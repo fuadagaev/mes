@@ -257,11 +257,11 @@ modulo_024 (struct scm *a, struct scm *b)
     error (cstring_to_symbol ("divide-by-zero"), a);
   int sign_p = 0;
   size_t w = v;
-  // if (v < 0)
-  //   {
-  //     sign_p = 1;
-  //     w = -v;
-  //   }
+  if (v < 0)
+    {
+      sign_p = 1;
+      w = -v;
+    }
   while (n < 0)
     n = n + w;
   // size_t u = n;
