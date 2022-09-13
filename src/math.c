@@ -191,24 +191,13 @@ modulo (struct scm *a, struct scm *b)
   assert_number ("modulo", a);
   assert_number ("modulo", b);
   long n = a->value;
-  long v = b->value;
-  if (v == 0)
+  long d = b->value;
+  if (d == 0)
     error (cstring_to_symbol ("divide-by-zero"), a);
-  int sign_p = 0;
-  size_t w = v;
-  if (v < 0)
-    {
-      sign_p = 1;
-      w = -v;
-    }
   while (n < 0)
-    n = n + w;
-  size_t u = n;
-  if (u != 0)
-    u = u % w;
-  n = u;
-  if (sign_p)
-    n = -n;
+    n = n + d;
+  if (n != 0)
+    n = n % d;
   return make_number (n);
 }
 
