@@ -369,13 +369,10 @@
                `(,(string-append "push___%" r0))
                (armv4:call-label #f "__mesabi_idiv" 2))
         ;; __mesabi_uldiv(a, b, remainderp)
-        (append `(("push___%r3")        ; slot for remainder
-                  ("mov____%esp,%r3")
-                  ("push___%r3")        ; pointer to remainder
-                  (,(string-append "push___%" r1))
-                  (,(string-append "push___%" r0)))
-                (armv4:call-label #f "__mesabi_uldiv" 3)
-                `(("pop____%r3"))))))
+        (cons* `(,(string-append "push___0"))
+               `(,(string-append "push___%" r1))
+               `(,(string-append "push___%" r0))
+               (armv4:call-label #f "__mesabi_uldiv" 3)))))
 
 (define (armv4:r0%r1 info signed?)
   (let ((r0 (get-r0 info))
