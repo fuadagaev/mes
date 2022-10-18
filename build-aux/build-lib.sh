@@ -65,16 +65,6 @@ if test -e libc+tcc.s; then
     cp libc+tcc.s $mes_cpu-mes
 fi
 
-if $courageous; then
-    exit 0
-fi
-
-archive libc+gnu.a $libc_gnu_SOURCES
-cp libc+gnu.a $mes_cpu-mes
-if test -e libc+gnu.s; then
-    cp libc+gnu.s $mes_cpu-mes
-fi
-
 archive libtcc1.a $libtcc1_SOURCES
 cp libtcc1.a $mes_cpu-mes
 if test -e libtcc1.s; then
@@ -85,4 +75,14 @@ archive libgetopt.a lib/posix/getopt.c
 cp libgetopt.a $mes_cpu-mes
 if test -e libgetopt.s; then
     cp libgetopt.s $mes_cpu-mes
+fi
+
+if $courageous; then
+    exit 0
+fi
+
+archive libc+gnu.a $libc_gnu_SOURCES
+cp libc+gnu.a $mes_cpu-mes
+if test -e libc+gnu.s; then
+    cp libc+gnu.s $mes_cpu-mes
 fi
