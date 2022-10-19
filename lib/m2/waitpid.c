@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019,2020,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -17,20 +17,23 @@
  * You should have received a copy of the GNU General Public License
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __MES_SYS_IOCTL_H
-#define __MES_SYS_IOCTL_H 1
 
-#if SYSTEM_LIBC
-#undef __MES_SYS_IOCTL_H
-#include_next <sys/ioctl.h>
+#include <mes/lib.h>
+#include <linux/syscall.h>
+#include <syscall.h>
+#include <sys/types.h>
 
-#else // ! SYSTEM_LIBC
-
-#define TCGETS 0x5401
-#define TCGETA 0x5405
-int ioctl (int fd, unsigned long request, ...);
-int ioctl3 (int fd, unsigned long request, long data);
-
-#endif // ! SYSTEM_LIBC
-
-#endif // __MES_SYS_IOCTL_H
+int
+waitpid (int pid, int *status_ptr, int options)
+{
+  long long_pid = pid;
+  long long_status_ptr = cast_voidp_to_long (status_ptr);
+  long long_options = options;
+//##if __i386__
+//#  return _sys_call3 (SYS_waitpid, long_pid, long_status_ptr, long_options);
+//##elif __x86_64__ || __arm__
+  return _sys_call4 (SYS_wait4, long_pid, long_status_ptr, long_options, 0);
+//##else
+//##error arch not supported
+//##endif
+}

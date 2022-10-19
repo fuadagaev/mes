@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2016,2017,2018,2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2016,2017,2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -24,13 +24,23 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+#if !__MESC__ /* FIXME: We want bin/mes-mescc's x86-linux sha256sum to stay the same. */
+off_t
+_lseek (int filedes, off_t offset, int whence)
+{
+  return _sys_call3 (SYS_lseek, (int) filedes, (long) offset, (int) whence);
+}
+#endif
+
 off_t
 lseek (int filedes, off_t offset, int whence)
 {
-  long long_filedes = filedes;
-  long long_offset = offset;
+#if !__MESC__ /* FIXME: We want bin/mes-mescc's x86-linux sha256sum to stay the same. */
+  if (_lseek (filedes, 0, SEEK_CUR) == -1)
+    return -1;
+#endif
   size_t skip = __buffered_read_clear (filedes);
   if (whence == SEEK_CUR)
     offset -= skip;
-  return _sys_call3 (SYS_lseek, long_filedes, long_offset, whence);
+  return _sys_call3 (SYS_lseek, (int) filedes, (long) offset, (int) whence);
 }
