@@ -34,7 +34,7 @@ _lseek (int filedes, off_t offset, int whence)
 off_t
 lseek (int filedes, off_t offset, int whence)
 {
-#if !__MESC__
+#if !__MESC__ && !__M2__
   if (_lseek (filedes, 0, SEEK_CUR) == -1)
     return -1;
 #endif
