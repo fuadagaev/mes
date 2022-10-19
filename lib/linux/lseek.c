@@ -41,8 +41,6 @@ lseek (int filedes, off_t offset, int whence)
   size_t skip = __buffered_read_clear (filedes);
   if (whence == SEEK_CUR)
     offset -= skip;
-  //long long_offset = offset;
-  //return _sys_call3 (SYS_lseek, filedes, long_offset, whence);
-  //return _sys_call3 (SYS_lseek, (int) filedes, (long) offset, (int) whence);
-  return _sys_call3 (SYS_lseek, filedes, (long) offset, whence);
+  long long_offset = offset;
+  return _sys_call3 (SYS_lseek, filedes, long_offset, whence);
 }
