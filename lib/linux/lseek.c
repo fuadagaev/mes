@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#if !__MESC__
 off_t
 _lseek (int filedes, off_t offset, int whence)
 {
@@ -32,7 +31,6 @@ _lseek (int filedes, off_t offset, int whence)
   // long long_offset = offset;
   // return _sys_call3 (SYS_lseek, filedes, long_offset, whence);
 }
-#endif
 
 off_t
 lseek (int filedes, off_t offset, int whence)
