@@ -32,12 +32,7 @@
 #endif
 
 #ifndef EOF
-// FIXME M2_Planet chokes on -1, even inside #if ! __M2__
-#if __arm__ || __i386__
-#define EOF 0xffffffff
-#else
-#define EOF 0xffffffffffffffff
-#endif
+#define EOF -1
 #endif
 
 #ifndef NULL

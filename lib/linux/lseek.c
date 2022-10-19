@@ -27,9 +27,10 @@
 off_t
 lseek (int filedes, off_t offset, int whence)
 {
+  long long_filedes = filedes;
   long long_offset = offset;
   size_t skip = __buffered_read_clear (filedes);
   if (whence == SEEK_CUR)
     offset -= skip;
-  return _sys_call3 (SYS_lseek, filedes, long_offset, whence);
+  return _sys_call3 (SYS_lseek, long_filedes, long_offset, whence);
 }
