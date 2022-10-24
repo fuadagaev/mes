@@ -19,62 +19,69 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-void
-qswap (void *a, void *b, size_t size)
+#if 1
+static void
+qswap (char *a, char *b, size_t size)
 {
-  char *pa = a;
-  char *pb = b;
-  do
-  {
-    char tmp = *pa;
-    *pa++ = *pb;
-    *pb++ = tmp;
-  } while (--size > 0);
+  while (size-- > 0);
+    {
+      char tmp = *a;
+      *a++ = *b;
+      *b++ = tmp;
+    }
 }
-
-size_t
-qpart (void *base, size_t count, size_t size, int (*compare) (void const *, void const *))
+#else
+static void
+qswap (void *a, void *b, int size)
 {
-  void *p = base + count * size;
+  assert (a != b);
+  char buffer[size];
+  memcpy (buffer, a, size);
+  memcpy (a, b, size);
+  memcpy (b, buffer, size);
+}
+#endif
+
+static size_t
+qpart (char *base, size_t count, size_t size,
+       int (*compare) (void const *, void const *))
+{
+  void *p1 = base + count * size;
   size_t i = 0;
   for (size_t j = 0; j < count; j++)
     {
-      int c = compare (base + j * size, p);
-      if (c < 0)
+      char *p2 = base + j * size;
+      int c = p1 == p2 ? 0 : compare (p2, p1);
+      if (c == 0)
+        i++;
+      else if (c < 0)
         {
-#if 1                           //__x86_64__
-          qswap (base + i * size, base + j * size, size);
-#else
-          int p1 = base + i * size;
-          int p2 = base + j * size;
+          char *p1 = base + i * size;
           qswap (p1, p2, size);
-#endif
           i++;
         }
-      else if (c == 0)
-        i++;
     }
-  if (compare (base + count * size, base + i * size) < 0)
-    qswap (base + i * size, base + count * size, size);
+
+  char *p2 = base + i * size;
+  if (p1 != p2 && compare (p1, p2) < 0)
+    qswap (p1, p2, size);
   return i;
 }
 
 void
-qsort (void *base, size_t count, size_t size, int (*compare) (void const *, void const *))
+qsort (void *base, size_t count, size_t size,
+       int (*compare) (void const *, void const *))
 {
-  if (count > 1)
-    {
-      int p = qpart (base, count - 1, size, compare);
-      qsort (base, p, size, compare);
-#if 1                           //__x86_64__
-      qsort (base + p * size, count - p, size, compare);
-#else
-      int p1 = base + p * size;
-      int p2 = count - p;
-      qsort (p1, p2, size, compare);
-#endif
-    }
+  if (count <= 1)
+    return;
+  size_t p = qpart (base, count - 1, size, compare);
+  qsort (base, p, size, compare);
+  char *pbase = base;
+  char *p1 = pbase + p * size;
+  size_t c1 = count - p;
+  qsort (p1, c1, size, compare);
 }
