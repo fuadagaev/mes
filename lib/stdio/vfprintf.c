@@ -250,8 +250,8 @@ vfprintf (FILE * f, char const *format, va_list ap)
                   fputc (pad, f);
                   count++;
                 }
-              break;
 #endif
+              break;
             }
           case 'n':
             {
