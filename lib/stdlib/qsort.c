@@ -19,57 +19,53 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <assert.h>
 #include <stdlib.h>
-#include <string.h>
 
-#if 1
 static void
 qswap (char *a, char *b, size_t size)
 {
-  while (size-- > 0);
+  while (size-- > 0)
     {
       char tmp = *a;
       *a++ = *b;
       *b++ = tmp;
     }
 }
-#else
-static void
-qswap (void *a, void *b, int size)
-{
-  assert (a != b);
-  char buffer[size];
-  memcpy (buffer, a, size);
-  memcpy (a, b, size);
-  memcpy (b, buffer, size);
-}
-#endif
 
-static size_t
-qpart (char *base, size_t count, size_t size,
+static int
+qpart (char *base, int lo, int hi, size_t size,
        int (*compare) (void const *, void const *))
 {
-  void *p1 = base + count * size;
-  size_t i = 0;
-  for (size_t j = 0; j < count; j++)
+  char *pivot = base + hi * size;
+  int i = lo - 1;
+
+  for (int j = lo; j < hi; j++)
     {
-      char *p2 = base + j * size;
-      int c = p1 == p2 ? 0 : compare (p2, p1);
-      if (c == 0)
-        i++;
-      else if (c < 0)
+      char *pj = base + j * size;
+      if (pj != pivot && compare (pj, pivot) < 0)
         {
-          char *p1 = base + i * size;
-          qswap (p1, p2, size);
           i++;
+          void *pi = base + i * size;
+          qswap (pi, pj, size);
         }
     }
 
-  char *p2 = base + i * size;
-  if (p1 != p2 && compare (p1, p2) < 0)
-    qswap (p1, p2, size);
+  i++;
+  char *pi = base + i * size;
+  qswap (pi, pivot, size);
+
   return i;
+}
+
+static void
+_qsort (void *base, int lo, int hi, size_t size,
+        int (*compare) (void const *, void const *))
+{
+  if (lo >= hi || lo < 0)
+    return;
+  int pi = qpart (base, lo, hi, size, compare);
+  _qsort (base, lo, pi - 1, size, compare);
+  _qsort (base, pi + 1, hi, size, compare);
 }
 
 void
@@ -78,10 +74,5 @@ qsort (void *base, size_t count, size_t size,
 {
   if (count <= 1)
     return;
-  size_t p = qpart (base, count - 1, size, compare);
-  qsort (base, p, size, compare);
-  char *pbase = base;
-  char *p1 = pbase + p * size;
-  size_t c1 = count - p;
-  qsort (p1, c1, size, compare);
+  _qsort (base, 0, count - 1, size, compare);
 }
