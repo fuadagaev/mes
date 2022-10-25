@@ -37,20 +37,19 @@ qpart (char *base, int lo, int hi, size_t size,
        int (*compare) (void const *, void const *))
 {
   char *pivot = base + hi * size;
-  int i = lo - 1;
+  int i = lo;
 
   for (int j = lo; j < hi; j++)
     {
       char *pj = base + j * size;
       if (pj != pivot && compare (pj, pivot) < 0)
         {
-          i++;
           void *pi = base + i * size;
           qswap (pi, pj, size);
+          i++;
         }
     }
 
-  i++;
   char *pi = base + i * size;
   qswap (pi, pivot, size);
 
