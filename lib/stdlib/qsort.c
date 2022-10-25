@@ -19,26 +19,26 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-#if 0
-void
-qswap (void *a, void *b, size_t size)
+#if 1
+static void
+qswap (char *a, char *b, size_t size)
 {
-  char *pa = a;
-  char *pb = b;
-  do
+  while (size-- > 0);
     {
-      char tmp = *pa;
-      *pa++ = *pb;
-      *pb++ = tmp;
-    } while (--size > 0);
+      char tmp = *a;
+      *a++ = *b;
+      *b++ = tmp;
+    }
 }
 #else
-void
+static void
 qswap (void *a, void *b, int size)
 {
+  assert (a != b);
   char buffer[size];
   memcpy (buffer, a, size);
   memcpy (a, b, size);
@@ -46,7 +46,7 @@ qswap (void *a, void *b, int size)
 }
 #endif
 
-size_t
+static size_t
 qpart (char *base, size_t count, size_t size,
        int (*compare) (void const *, void const *))
 {
@@ -55,9 +55,10 @@ qpart (char *base, size_t count, size_t size,
   for (size_t j = 0; j < count; j++)
     {
       char *p2 = base + j * size;
-      if (p1 == p2)
+      int c = p1 == p2 ? 0 : compare (p2, p1);
+      if (c == 0)
         i++;
-      else if (compare (p2, p1) < 0)
+      else if (c < 0)
         {
           char *p1 = base + i * size;
           qswap (p1, p2, size);
