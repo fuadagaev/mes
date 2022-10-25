@@ -19,6 +19,8 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* See: https://en.wikipedia.org/wiki/Quicksort */
+
 #include <stdlib.h>
 
 static void
@@ -32,14 +34,14 @@ qswap (char *a, char *b, size_t size)
     }
 }
 
-static int
-qpart (char *base, int lo, int hi, size_t size,
+static size_t
+qpart (char *base, size_t lo, size_t hi, size_t size,
        int (*compare) (void const *, void const *))
 {
   char *pivot = base + hi * size;
-  int i = lo;
+  size_t i = lo;
 
-  for (int j = lo; j < hi; j++)
+  for (size_t j = lo; j < hi; j++)
     {
       char *pj = base + j * size;
       if (pj != pivot && compare (pj, pivot) < 0)
@@ -57,13 +59,14 @@ qpart (char *base, int lo, int hi, size_t size,
 }
 
 static void
-_qsort (void *base, int lo, int hi, size_t size,
+_qsort (void *base, size_t lo, size_t hi, size_t size,
         int (*compare) (void const *, void const *))
 {
-  if (lo >= hi || lo < 0)
+  if (lo >= hi)
     return;
-  int pi = qpart (base, lo, hi, size, compare);
-  _qsort (base, lo, pi - 1, size, compare);
+  size_t pi = qpart (base, lo, hi, size, compare);
+  if (pi > 0)
+    _qsort (base, lo, pi - 1, size, compare);
   _qsort (base, pi + 1, hi, size, compare);
 }
 
