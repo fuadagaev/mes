@@ -1,6 +1,7 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
  * Copyright © 2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2021 Paul Dersey <pdersey@gmail.com>
  *
  * This file is part of GNU Mes.
  *
@@ -21,77 +22,47 @@
 #include <stdlib.h>
 
 void
-qswap (void *a, void *b, size_t size)
+qswap (void* a, void* b, int size)
 {
-  char *pa = a;
-  char *pb = b;
-  do
-    {
-      char tmp = *pa;
-      *pa++ = *pb;
-      *pb++ = tmp;
-    } while (--size > 0);
-}
-
-size_t
-partition (void *base, size_t low, size_t high, size_t size,
-           int (*compare) (void const *, void const *))
-{
-  // select the rightmost element as pivot
-  void *pivot = base + high * size;
-
-  // pointer for greater element
-  size_t i = (low - 1);
-
-  // traverse each element of the array
-  // compare them with the pivot
-  for (int j = low; j < high; j++)
-    {
-      int c = compare (base + j * size, pivot);
-      if (c < 0)
-        {
-          // swap element at i with element at j
-          void *p1 = base + i * size;
-          void *p2 = base + j * size;
-          qswap (p1, p2, size);
-
-          // if element smaller than pivot is found
-          // swap it with the greater element pointed by i
-          i++;
-        }
-    }
-
-  // swap the pivot element with the greater element at i
-  void *p1 = base + (i + 1) * size;
-  void *p2 = base + high * size;
-  qswap (p1, p2, size);
-
-  // return the partition point
-  return (i + 1);
+  char buffer[size];
+  memcpy (buffer, a, size);
+  memcpy (a, b, size);
+  memcpy (b, buffer, size);
 }
 
 void
-_qsort (void *base, size_t low, size_t high, size_t size,
-        int (*compare) (void const *, void const *))
+_qsort (void *base, size_t size, size_t left, size_t right,
+        int (*compare)(void const*, void const*))
 {
-  if (low < high)
+  char *pbase = base;
+  int mid = (left + right) / 2;
+  if (left >= right)
+    return;
+
+  void *vl = pbase + (left * size);
+  void *vr = pbase + (mid * size);
+  qswap (vl, vr, size);
+
+  int last = left;
+  for (int i = left + 1; i <= right; i++)
     {
-      // find the pivot element such that
-      // elements smaller than pivot are on left of pivot
-      // elements greater than pivot are on right of pivot
-      int pi = partition (base, low, high, size, compare);
-
-      // recursive call on the left of pivot
-      _qsort (base, low, pi - 1, size, compare);
-
-      // recursive call on the right of pivot
-      _qsort (base, pi + 1, high, size, compare);
+      void *vt = pbase + (i * size);
+      if ((*compare)(vl, vt) > 0)
+        {
+          ++last;
+          void *v3 = pbase + (last * size);
+          qswap (vt, v3, size);
+        }
     }
+  void *v3 = pbase + (last * size);
+  qswap (vl, v3, size);
+  _qsort (base, size, left, last - 1, compare);
+  _qsort (base, size, last + 1, right, compare);
 }
 
 void
 qsort (void *base, size_t count, size_t size,
-       int (*compare) (void const *, void const *))
+       int (*compare)(void const*, void const*))
 {
-  _qsort (base, 0, count, size, compare);
+  _qsort (base, size, 0, count, compare);
 }
