@@ -1,7 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 202 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
- * Rich Felker © 2011 <dalias@aerifal.cx>
+ * Copyright © 2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  * Copyright © 2021 Paul Dersey <pdersey@gmail.com>
  *
  * This file is part of GNU Mes.
@@ -20,6 +19,7 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -27,77 +27,61 @@
 static void
 qswap (char *a, char *b, size_t size)
 {
-  while (size-- > 0)
+  while (size-- > 0);
     {
       char tmp = *a;
       *a++ = *b;
       *b++ = tmp;
     }
 }
-#elif 0
+#else
 static void
 qswap (void *a, void *b, int size)
 {
-  char buffer[128];
+  assert (a != b);
+  char buffer[size];
   memcpy (buffer, a, size);
   memcpy (a, b, size);
   memcpy (b, buffer, size);
 }
-#else
-#define MIN(a, b) ((a)<(b) ? (a) : (b))
-static void
-qswap (char *a, char *b, size_t size)
-{
-  char tmp[256];
-  size_t i;
-  while (size)
-    {
-      i = MIN (sizeof (tmp), size);
-      memcpy (tmp, a, i);
-      memcpy (a, b, i);
-      memcpy (b, tmp, i);
-      a += i;
-      b += i;
-      size -= i;
-    }
-}
-#undef MIN
 #endif
 
-static void
-sift (char *base, size_t low, size_t high, size_t size,
-      int (*compare)(const void *, const void *))
+static size_t
+qpart (char *base, size_t count, size_t size,
+       int (*compare) (void const *, void const *))
 {
-  while (2 * low <= high)
+  void *p1 = base + count * size;
+  size_t i = 0;
+  for (size_t j = 0; j < count; j++)
     {
-      size_t max = 2 * low;
-      if (max < high
-          && compare (base + max * size, base + (max + 1) * size) < 0)
-        max++;
-      if (max
-          && compare (base + low * size, base + max * size) < 0)
+      char *p2 = base + j * size;
+      int c = p1 == p2 ? 0 : compare (p2, p1);
+      if (c == 0)
+        i++;
+      else if (c < 0)
         {
-          qswap (base + low * size, base + max * size, size);
-          low = max;
+          char *p1 = base + i * size;
+          qswap (p1, p2, size);
+          i++;
         }
-      else
-        break;
     }
+
+  char *p2 = base + i * size;
+  if (p1 != p2 && compare (p1, p2) < 0)
+    qswap (p1, p2, size);
+  return i;
 }
 
 void
 qsort (void *base, size_t count, size_t size,
-       int (*compare)(const void *, const void *))
+       int (*compare) (void const *, void const *))
 {
   if (count <= 1)
     return;
-
+  size_t p = qpart (base, count - 1, size, compare);
+  qsort (base, p, size, compare);
   char *pbase = base;
-  for (size_t i = (count + 1) / 2; i; i--)
-    sift (pbase, i - 1, count - 1, size, compare);
-  for (size_t i = count - 1; i; i--)
-    {
-      qswap (pbase, pbase + i * size, size);
-      sift (pbase, 0, i - 1, size, compare);
-    }
+  char *p1 = pbase + p * size;
+  size_t c1 = count - p;
+  qsort (p1, c1, size, compare);
 }
