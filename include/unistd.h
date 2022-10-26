@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2017,2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2017,2018,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -90,6 +90,7 @@ char *sbrk (ptrdiff_t delta);
 void *sbrk (intptr_t delta);
 #endif
 int symlink (char const *old_name, char const *new_name);
+long sysconf (int name);
 int unlink (char const *file_name);
 ssize_t write (int filedes, void const *buffer, size_t size);
 
