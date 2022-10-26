@@ -321,6 +321,7 @@ lib/dirent/__getdirentries.c
 lib/dirent/closedir.c
 lib/dirent/opendir.c
 lib/dirent/readdir.c
+lib/locale/localeconv.c
 lib/math/ceil.c
 lib/math/fabs.c
 lib/math/floor.c
