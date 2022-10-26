@@ -69,7 +69,8 @@ void *__memset (void *s, int c, size_t n);
 int __raise (int signal);
 
 #if !SYSTEM_LIBC
-void __assert_fail (char *s);
+void __assert_fail (char const *s, char const *file, unsigned line,
+                    char const *function);
 ssize_t __buffered_read (int filedes, void *buffer, size_t size);
 size_t __buffered_read_clear (int filedes);
 void _exit (int code);
