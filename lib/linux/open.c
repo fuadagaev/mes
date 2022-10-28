@@ -18,6 +18,8 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <linux/syscall.h>
+#include <syscall.h>
 #include <mes/lib.h>
 #include <fcntl.h>
 #include <stdarg.h>
@@ -44,4 +46,4 @@ open (char const *file_name, int flags, ...)
     __ungetc_clear (r);
   return r;
 }
-#endif // __M2__
+#endif // !__M2__
