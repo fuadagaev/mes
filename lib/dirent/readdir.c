@@ -39,7 +39,7 @@ struct dirent *
 readdir (DIR * dirp)
 {
   struct dirent *dp;
-  int saved_errno = errno;
+  int save_errno = errno;
 
   do
     {
@@ -64,7 +64,7 @@ readdir (DIR * dirp)
             {
               /* Don't modifiy errno when reaching EOF.  */
               if (bytes == 0)
-                errno = saved_errno;
+                errno = save_errno;
               dp = 0;
               break;
             }
