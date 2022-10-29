@@ -22,7 +22,7 @@
 #include <syscall.h>
 #include <sys/stat.h>
 
-#if (__i386__ || __arm__) && SYS_lstat64
+#if (__i386__ || __arm__) && SYS_lstat64 && HAVE_LONG_LONG
 #undef SYS_lstat
 #define SYS_lstat SYS_lstat64
 #endif
