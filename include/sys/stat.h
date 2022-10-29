@@ -19,7 +19,7 @@
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef __MES_SYS_STAT_H
-#define __MES_SYS_STAT_H 1lei
+#define __MES_SYS_STAT_H 1
 
 #if SYSTEM_LIBC
 #undef __MES_SYS_STAT_H
@@ -30,84 +30,12 @@
 #include <time.h>
 #include <sys/types.h>
 #include <syscall.h>
+#include <kernel-stat.h>
 
 #ifndef __MES_MODE_T
 #define __MES_MODE_T
 typedef int mode_t;
 #endif
-
-// *INDENT-OFF*
-#if __M2__
-struct stat
-{
-  unsigned st_dev;
-  unsigned st_ino;
-  unsigned st_mode;
-  unsigned st_nlink;
-  unsigned st_uid;
-  unsigned st_gid;
-  unsigned st_rdev;
-  long     st_size; /* Linux: unsigned long; glibc: off_t (i.e. signed) */
-  unsigned st_blksize;
-  unsigned st_blocks;
-  time_t   st_atime; /* Linux: unsigned long; glibc: time_t */
-  unsigned st_atime_usec;
-  time_t   st_mtime; /* Linux: unsigned long; glibc: time_t */
-  unsigned st_mtime_usec;
-  time_t   st_ctime; /* Linux: unsigned long; glibc: time_t */
-  unsigned st_ctime_usec;
-  unsigned __foo0;
-  unsigned __foo1;
-};
-// FIXME: M2-Planet 1.10.0 crashes on this...
-// #elif (__i386__ || __arm__) && !SYS_stat64
-#define __i386__or__arm__ (__i386__or__arm__)
-#elif __i386__or__arm__ && !SYS_stat64
-struct stat
-{
-  unsigned long  st_dev;
-  unsigned long  st_ino;
-  unsigned short st_mode;
-  unsigned short st_nlink;
-  unsigned short st_uid;
-  unsigned short st_gid;
-  unsigned long  st_rdev;
-  long           st_size; /* Linux: unsigned long; glibc: off_t (i.e. signed) */
-  unsigned long  st_blksize;
-  unsigned long  st_blocks;
-  time_t         st_atime; /* Linux: unsigned long; glibc: time_t */
-  unsigned long  st_atime_usec;
-  time_t         st_mtime; /* Linux: unsigned long; glibc: time_t */
-  unsigned long  st_mtime_usec;
-  time_t         st_ctime; /* Linux: unsigned long; glibc: time_t */
-  unsigned long  st_ctime_usec;
-  unsigned long  __foo0;
-  unsigned long  __foo1;
-};
-#else
-struct stat
-{
-  unsigned long  st_dev;
-  unsigned long  st_ino;
-  unsigned int   st_mode;
-  unsigned int   st_nlink;
-  unsigned int   st_uid;
-  unsigned int   st_gid;
-  unsigned long  st_rdev;
-  long           st_size;
-  unsigned long  st_blksize;
-  unsigned long  st_blocks;
-  time_t         st_atime;
-  unsigned long  st_atime_usec;
-  time_t         st_mtime;
-  unsigned long  st_mtime_usec;
-  time_t         st_ctime;
-  unsigned long  st_ctime_usec;
-  unsigned long  __foo0;
-  unsigned long  __foo1;
-};
-#endif
-// *INDENT-ON*
 
 int chmod (char const *file_name, mode_t mode);
 int fstat (int filedes, struct stat *buf);
