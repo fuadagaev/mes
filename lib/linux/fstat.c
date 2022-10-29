@@ -1,6 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
- * Copyright © 2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ * Copyright © 2018,2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
  *
  * This file is part of GNU Mes.
  *
@@ -21,6 +21,11 @@
 #include <linux/syscall.h>
 #include <syscall.h>
 #include <sys/stat.h>
+
+#if (__i386__ || __arm__) && SYS_fstat64
+#undef SYS_fstat
+#define SYS_fstat SYS_fstat64
+#endif
 
 int
 fstat (int filedes, struct stat *statbuf)
