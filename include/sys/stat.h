@@ -29,6 +29,7 @@
 
 #include <time.h>
 #include <sys/types.h>
+#include <syscall.h>
 
 #ifndef __MES_MODE_T
 #define __MES_MODE_T
@@ -39,12 +40,12 @@ typedef int mode_t;
 #if __M2__
 struct stat
 {
-  unsigned  st_dev;
-  unsigned  st_ino;
-  char st_mode[2];
-  char st_nlink[2];
-  char st_uid[2];
-  char st_gid[2];
+  unsigned st_dev;
+  unsigned st_ino;
+  unsigned st_mode;
+  unsigned st_nlink;
+  unsigned st_uid;
+  unsigned st_gid;
   unsigned st_rdev;
   long     st_size; /* Linux: unsigned long; glibc: off_t (i.e. signed) */
   unsigned st_blksize;
@@ -58,7 +59,10 @@ struct stat
   unsigned __foo0;
   unsigned __foo1;
 };
-#elif __i386__ || __arm__
+// FIXME: M2-Planet 1.10.0 crashes on this...
+// #elif (__i386__ || __arm__) && !SYS_stat64
+#define __i386__or__arm__ (__i386__or__arm__)
+#elif __i386__or__arm__ && !SYS_stat64
 struct stat
 {
   unsigned long  st_dev;
@@ -80,7 +84,7 @@ struct stat
   unsigned long  __foo0;
   unsigned long  __foo1;
 };
-#elif __x86_64__
+#else
 struct stat
 {
   unsigned long  st_dev;

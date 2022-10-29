@@ -53,9 +53,9 @@
 #define SYS_lseek  0x13
 #define SYS_rmdir  0x28
 #define SYS_stat   0x6a
+#define SYS_stat64 0xc3
 
 /* libc+gnu */
-
 #define SYS_chdir     0x0c
 #define SYS_link      0x09
 #define SYS_getpid    0x14
@@ -72,8 +72,10 @@
 #define SYS_fcntl     0x37
 #define SYS_getrusage 0x4d
 #define SYS_lstat     0x6b
+#define SYS_lstat64   0xc4
 #define SYS_setitimer 0x68
 #define SYS_fstat     0x6c
+#define SYS_fstat64   0xc5
 #define SYS_nanosleep 0xa2
 #define SYS_getdents  0x8d
 
