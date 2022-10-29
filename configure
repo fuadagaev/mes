@@ -711,8 +711,8 @@ See \"Porting GNU Mes\" in the manual, or try --with-courage\n" mes-system)
         (define (copy-header file-name)
           (system* "cp" "-f" "-v"
                    (string-append arch-dir "/" file-name)
-                   (string-append "include/" file-name)))
-        (system* "mkdir" "-p" "include")
+                   (string-append "include/arch/" file-name)))
+        (system* "mkdir" "-p" "include/arch")
         (for-each copy-header '("kernel-stat.h" "syscall.h")))
 
       (let ((make (and=> (file-name "make" deps) basename)))

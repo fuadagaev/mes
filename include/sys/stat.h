@@ -29,7 +29,7 @@
 
 #include <time.h>
 #include <sys/types.h>
-#include <kernel-stat.h>
+#include <arch/kernel-stat.h>
 
 #ifndef __MES_MODE_T
 #define __MES_MODE_T
