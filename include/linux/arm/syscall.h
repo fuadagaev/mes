@@ -95,4 +95,23 @@
 #define SYS_mmap      0x5a
 #define SYS_munmap    0x5b
 
+#if __SIZEOF_LONG_LONG__ == 8
+
+#define SYS_stat64     0xc3
+#define SYS_lstat64    0xc4
+#define SYS_fstat64    0xc5
+#define SYS_fcntl64    0xdd
+#define SYS_getdents64 0xdc
+
+#undef SYS_stat
+#define SYS_stat SYS_stat64
+
+#undef SYS_lstat
+#define SYS_lstat SYS_lstat64
+
+#undef SYS_fstat
+#define SYS_fstat SYS_fstat64
+
+#endif  // __SIZEOF_LONG_LONG__ == 8
+
 #endif /* __MES_LINUX_ARM_SYSCALL_H */
