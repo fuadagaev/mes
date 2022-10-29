@@ -22,11 +22,6 @@
 #include <syscall.h>
 #include <sys/stat.h>
 
-#if (__i386__ || __arm__) && SYS_stat64 && HAVE_LONG_LONG
-#undef SYS_stat
-#define SYS_stat SYS_stat64
-#endif
-
 int
 stat (char const *file_name, struct stat *statbuf)
 {
