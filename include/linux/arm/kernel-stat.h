@@ -46,7 +46,7 @@ struct stat
   unsigned long  __pad0;
   unsigned long  __pad1;
 };
-#if HAVE_LONG_LONG
+#if __SIZEOF_LONG_LONG__ == 8
 struct stat64
 {
   unsigned long long st_dev;
