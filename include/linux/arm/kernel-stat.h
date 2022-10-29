@@ -17,10 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with GNU Mes.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __MES_LINUX_X86_KERNEL_STAT_H
-#define __MES_LINUX_X86_KERNEL_STAT_H 1
+#ifndef __MES_LINUX_ARM_KERNEL_STAT_H
+#define __MES_LINUX_ARM_KERNEL_STAT_H 1
 
-// https://github.com/torvalds/linux/blob/master/arch/x86/include/uapi/asm/stat.h
+// https://github.com/torvalds/linux/blob/master/arch/arm/include/uapi/asm/stat.h
 
 #include <syscall.h>
 
@@ -80,4 +80,4 @@ struct stat64
 
 #endif // HAVE_LONG_LONG
 
-#endif // __MES_LINUX_X86_KERNEL_STAT_H
+#endif // __MES_LINUX_ARM_KERNEL_STAT_H
