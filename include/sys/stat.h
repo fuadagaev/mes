@@ -29,7 +29,6 @@
 
 #include <time.h>
 #include <sys/types.h>
-#include <syscall.h>
 #include <kernel-stat.h>
 
 #ifndef __MES_MODE_T
