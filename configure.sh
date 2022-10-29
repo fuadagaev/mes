@@ -271,9 +271,9 @@ cat >> include/mes/config.h <<EOF
 #define MES_VERSION "$VERSION"
 EOF
 
-mkdir -p include
-cp -f -v ${srcdest}include/${mes_kernel}/${mes_cpu}/kernel-stat.h include
-cp -f -v ${srcdest}include/${mes_kernel}/${mes_cpu}/syscall.h include
+mkdir -p include/arch
+cp -f -v ${srcdest}include/${mes_kernel}/${mes_cpu}/kernel-stat.h include/arch
+cp -f -v ${srcdest}include/${mes_kernel}/${mes_cpu}/syscall.h include/arch
 
 cat <<EOF
 GNU Mes is configured for

@@ -135,9 +135,8 @@
 /doc/images/gcc-mesboot-graph.pdf
 /doc/web/
 /config.sh
-/include/kernel-stat.h
+/include/arch
 /include/mes/config.h
-/include/syscall.h
 /gcc-lib
 /mescc-lib
 /bin

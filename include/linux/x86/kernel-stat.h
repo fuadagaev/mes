@@ -22,7 +22,7 @@
 
 // https://github.com/torvalds/linux/blob/master/arch/x86/include/uapi/asm/stat.h
 
-#include <syscall.h>
+#include <arch/syscall.h>
 
 // *INDENT-OFF*
 struct stat
