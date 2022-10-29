@@ -88,6 +88,7 @@ M2-Planet                                       \
     -f lib/mes/fdungetc.c                       \
     -f lib/posix/setenv.c                       \
     -f lib/linux/access.c                       \
+    -f include/linux/m2/kernel-stat.h           \
     -f include/sys/stat.h                       \
     -f lib/linux/chmod.c                        \
     -f lib/linux/ioctl3.c                       \
