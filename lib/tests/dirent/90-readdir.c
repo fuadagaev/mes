@@ -19,8 +19,34 @@
  */
 
 #include <mes/lib.h>
+#include <sys/types.h>
 
-#include <dirent.h>
+//#include <dirent.h>
+
+struct dirent {
+ ino_t d_ino;
+ off_t d_off;
+ unsigned short d_reclen;
+ unsigned char d_type;
+ char d_name[256];
+};
+
+struct __dirstream
+{
+ off_t tell;
+ int fd;
+ int buf_pos;
+ int buf_end;
+ volatile int lock[1];
+
+
+ char buf[2048];
+};
+typedef struct __dirstream DIR;
+
+struct dirent *readdir(DIR *);
+DIR *opendir(const char *);
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
