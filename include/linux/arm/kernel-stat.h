@@ -24,17 +24,7 @@
 
 #include <arch/syscall.h>
 
-#if __SIZEOF_LONG_LONG__ == 8
-#define stat stat32
-#define stat64 stat
-
-#undef SYS_stat
-#define SYS_stat SYS_stat64
-#undef SYS_lstat
-#define SYS_lstat SYS_lstat64
-#undef SYS_fstat
-#define SYS_fstat SYS_fstat64
-#endif // __SIZEOF_LONG_LONG__ == 8
+#if __SIZEOF_LONG_LONG__ != 8
 
 // *INDENT-OFF*
 struct stat
@@ -59,7 +49,9 @@ struct stat
   unsigned long  __pad1;
 };
 
-struct stat64
+#else // __SIZEOF_LONG_LONG__ == 8
+
+struct stat
 {
   unsigned long long st_dev;
   unsigned char __pad0[4];
@@ -82,7 +74,13 @@ struct stat64
   unsigned long long st_ino;
 };
 
-#undef stat
-#undef stat64
+#undef SYS_stat
+#define SYS_stat SYS_stat64
+#undef SYS_lstat
+#define SYS_lstat SYS_lstat64
+#undef SYS_fstat
+#define SYS_fstat SYS_fstat64
+
+#endif // __SIZEOF_LONG_LONG__ == 8
 
 #endif // __MES_LINUX_ARM_KERNEL_STAT_H
