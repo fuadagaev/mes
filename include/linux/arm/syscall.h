@@ -70,6 +70,7 @@
 #define SYS_rt_sigaction 0xae
 #define SYS_rt_sigreturn 0xad
 #define SYS_fcntl     0x37
+#define SYS_fcntl64   0xdd
 #define SYS_getrusage 0x4d
 #define SYS_lstat     0x6b
 #define SYS_lstat64   0xc4
@@ -78,6 +79,7 @@
 #define SYS_fstat64   0xc5
 #define SYS_nanosleep 0xa2
 #define SYS_getdents  0x8d
+#define SYS_getdents64 0xdc
 
 /* bash */
 #define SYS_setuid    0x17

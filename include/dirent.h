@@ -48,7 +48,7 @@ struct dirent
   ino_t d_ino;
   off_t d_off;
   unsigned short int d_reclen;
-#if 0
+#if __SIZEOF_LONG_LONG__ == 8
   unsigned char d_type;
 #endif
   char d_name[256];             /* We must not include limits.h! */
