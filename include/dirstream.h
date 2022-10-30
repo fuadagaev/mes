@@ -36,6 +36,7 @@
 // Taken from GNU C Library 2.2.5
 
 /* Directory stream type.  */
+#if __SIZEOF_LONG_LONG__ != 8
 struct __dirstream
 {
   int fd;                       /* File descriptor.  */
@@ -47,6 +48,17 @@ struct __dirstream
 
   off_t filepos;                /* Position of next entry to read.  */
 };
+#else // __SIZEOF_LONG_LONG__ == 8
+struct __dirstream
+{
+  off_t tell;
+  int fd;
+  int buf_pos;
+  int buf_end;
+  int lock[1];
+  char buf[2048];
+};
+#endif // __SIZEOF_LONG_LONG__ == 8
 
 typedef struct __dirstream DIR;
 

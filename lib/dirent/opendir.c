@@ -53,7 +53,11 @@ opendir (char const *name)
       return 0;
     }
 
-  fd = open (name, O_RDONLY | O_DIRECTORY);
+  int flags = O_RDONLY | O_DIRECTORY;
+#if __SIZEOF_LONG_LONG__ == 8
+  flags |= O_LARGEFILE;
+#endif
+  fd = open (name, flags);
   if (fd < 0)
     return 0;
 
@@ -74,8 +78,10 @@ opendir (char const *name)
       errno = save_errno;
       return 0;
     }
+#if __SIZEOF_LONG_LONG__ != 8
   dirp->data = (char *) (dirp + 1);
   dirp->allocation = allocation;
+#endif
   dirp->fd = fd;
 
   return dirp;

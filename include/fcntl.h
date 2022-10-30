@@ -42,9 +42,17 @@
 #ifdef __arm__
 #define O_DIRECTORY 0x4000
 /*#define O_DIRECT 0x10000*/
+#define O_LARGEFILE 0x20000
 #else
 #define O_DIRECTORY 0x10000
+#if __i386__
+//#define O_LARGEFILE  0x8000
+#define O_LARGEFILE 0100000
+#else
+#define O_LARGEFILE 0
 #endif
+#endif
+
 
 #elif __GNU__
 #define	O_RDONLY	  1

@@ -71,10 +71,10 @@ typedef unsigned gid_t;
 #ifndef __MES_INO_T
 #define __MES_INO_T
 #undef ino_t
-#if __M2__
+#if __M2__ || __SIZEOF_LONG_LONG__ != 8
 typedef unsigned ino_t;
 #else
-typedef unsigned long ino_t;
+typedef unsigned long long ino_t;
 #endif
 #endif
 

@@ -40,6 +40,9 @@ open (char const *file_name, int flags, ...)
   va_list ap;
   va_start (ap, flags);
   int mask = va_arg (ap, int);
+#if __SIZEOF_LONG_LONG__ == 8
+  flags |= O_LARGEFILE;
+#endif
   int r = _sys_call3 (SYS_open, (long) file_name, flags, mask);
   va_end (ap);
   if (r > 2)
