@@ -106,7 +106,11 @@ typedef unsigned long uintptr_t;
 #ifndef __MES_OFF_T
 #define __MES_OFF_T
 #undef off_t
+#if __M2__
 typedef long off_t;
+#else
+typedef long long off_t;
+#endif
 #endif
 
 #if __SIZEOF_LONG_LONG__ == 8
