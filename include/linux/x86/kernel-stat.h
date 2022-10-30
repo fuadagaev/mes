@@ -74,21 +74,6 @@ struct stat
   unsigned long long st_ino;
 };
 
-#undef SYS_stat
-#define SYS_stat SYS_stat64
-
-#undef SYS_lstat
-#define SYS_lstat SYS_lstat64
-
-#undef SYS_fstat
-#define SYS_fstat SYS_fstat64
-
-#undef SYS_fctnl
-#define SYS_fctnl SYS_fcntl64
-
-#undef SYS_getdents
-#define SYS_getdents SYS_getdents64
-
 #endif // __SIZEOF_LONG_LONG__ == 8
 
 #endif // __MES_LINUX_X86_KERNEL_STAT_H
