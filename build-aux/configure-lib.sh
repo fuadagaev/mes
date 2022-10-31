@@ -432,6 +432,7 @@ lib/linux/munmap.c
 lib/linux/nanosleep.c
 lib/linux/pipe.c
 lib/linux/readlink.c
+lib/linux/readv.c
 lib/linux/rename.c
 lib/linux/setgid.c
 lib/linux/setitimer.c
@@ -439,6 +440,7 @@ lib/linux/setuid.c
 lib/linux/signal.c
 lib/linux/sigprogmask.c
 lib/linux/symlink.c
+lib/linux/writev.c
 "
 fi
 
