@@ -339,7 +339,9 @@ lib/stdio/feof.c
 lib/stdio/fgets.c
 lib/stdio/freopen.c
 lib/stdio/fscanf.c
+lib/stdio/pclose.c
 lib/stdio/perror.c
+lib/stdio/popen.c
 lib/stdio/rewind.c
 lib/stdio/vfscanf.c
 lib/stdlib/__exit.c
@@ -385,8 +387,6 @@ lib/stub/gmtime.c
 lib/stub/log.c
 lib/stub/mktime.c
 lib/stub/modf.c
-lib/stub/pclose.c
-lib/stub/popen.c
 lib/stub/pow.c
 lib/stub/rand.c
 lib/stub/setbuf.c
