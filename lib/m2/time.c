@@ -1,7 +1,6 @@
 /* -*-comment-start: "//";comment-end:""-*-
  * GNU Mes --- Maxwell Equations of Software
  * Copyright © 2018,2019,2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
- * Copyright © 2023 Meghan Denny <hello@nektro.net>
  *
  * This file is part of GNU Mes.
  *
@@ -29,10 +28,10 @@ time (long* result)
   int r;
   struct timeval tv;
   struct timezone tz;
-  r = _sys_call2 (SYS_gettimeofday, &tv, &tz);
+  r = _sys_call2 (SYS_gettimeofday, tv, tz);
   if (r != 0)
     return -1;
   if (result != 0)
-    result[0] = tv.tv_sec;
-  return tv.tv_sec;
+    result[0] = tv->tv_sec;
+  return tv->tv_sec;
 }
