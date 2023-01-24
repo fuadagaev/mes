@@ -33,6 +33,6 @@ time (long* result)
   if (r != 0)
     return -1;
   if (result != 0)
-    result[0] = tv->tv_sec;
-  return tv->tv_sec;
+    result[0] = tv.tv_sec;
+  return tv.tv_sec;
 }
